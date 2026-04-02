@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resumen Costos — Finanzas de Empresas 2025</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --bg2: #f5f4f0;
+      --bg3: #eeecea;
+      --text: #1a1a18;
+      --text2: #5f5e5a;
+      --text3: #888780;
+      --border: rgba(0,0,0,0.12);
+      --border2: rgba(0,0,0,0.22);
+      --info-bg: #e6f1fb;
+      --info-text: #0c447c;
+      --success-bg: #eaf3de;
+      --success-text: #27500a;
+      --warn-bg: #faeeda;
+      --warn-text: #633806;
+      --danger-bg: #fcebeb;
+      --danger-text: #791f1f;
+      --purple-bg: #eeedfe;
+      --purple-text: #3c3489;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1c1a;
+        --bg2: #252523;
+        --bg3: #2e2e2b;
+        --text: #e8e6de;
+        --text2: #b4b2a9;
+        --text3: #73726c;
+        --border: rgba(255,255,255,0.1);
+        --border2: rgba(255,255,255,0.2);
+        --info-bg: #042c53;
+        --info-text: #85b7eb;
+        --success-bg: #173404;
+        --success-text: #97c459;
+        --warn-bg: #412402;
+        --warn-text: #ef9f27;
+        --danger-bg: #501313;
+        --danger-text: #f09595;
+        --purple-bg: #26215c;
+        --purple-text: #afa9ec;
+      }
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 1.5rem 1rem 3rem;
+      line-height: 1.6;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    header { margin-bottom: 1.5rem; }
+    header h1 { font-size: 20px; font-weight: 600; }
+    header p  { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 1.5rem;
+    }
+    .tab {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border2);
+      font-size: 13px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text2);
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .tab:hover { background: var(--bg2); }
+    .tab.active {
+      background: var(--info-bg);
+      color: var(--info-text);
+      border-color: transparent;
+      font-weight: 500;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Cards */
+    .card {
+      background: var(--bg2);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 12px;
+      border: 0.5px solid var(--border);
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    /* Grid */
+    .row  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 540px) {
+      .row, .row3 { grid-template-columns: 1fr; }
+    }
+
+    /* Items */
+    .item {
+      font-size: 13px;
+      color: var(--text2);
+      padding: 3px 0;
+      line-height: 1.5;
+    }
+    .item::before { content: "→ "; color: var(--text3); }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text3);
+      margin: 1rem 0 6px;
+    }
+
+    /* Formula */
+    .formula {
+      background: var(--bg);
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--text);
+      margin: 8px 0;
+      text-align: center;
+    }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin: 2px;
+      font-weight: 500;
+    }
+    .tag-blue   { background: var(--info-bg);    color: var(--info-text);    }
+    .tag-orange { background: var(--warn-bg);    color: var(--warn-text);    }
+    .tag-green  { background: var(--success-bg); color: var(--success-text); }
+    .tag-red    { background: var(--danger-bg);  color: var(--danger-text);  }
+    .tag-purple { background: var(--purple-bg);  color: var(--purple-text);  }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+      border: 0.5px solid;
+    }
+    .badge-ok   { background: var(--success-bg); color: var(--success-text); border-color: var(--success-text); }
+    .badge-warn { background: var(--warn-bg);    color: var(--warn-text);    border-color: var(--warn-text);    }
+    .badge-info { background: var(--info-bg);    color: var(--info-text);    border-color: var(--info-text);    }
+
+    /* Table */
+    .vs-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .vs-table th {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--text2);
+      text-align: left;
+      padding: 6px 10px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .vs-table td {
+      padding: 6px 10px;
+      border-bottom: 0.5px solid var(--border);
+      color: var(--text2);
+      vertical-align: top;
+    }
+    .vs-table tr:last-child td { border-bottom: none; }
+
+    .highlight { color: var(--text); font-weight: 500; }
+
+    h3 { font-size: 15px; font-weight: 500; margin: 0 0 10px; color: var(--text); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Unidad 5 — Costos</h1>
+  <p>Resumen · Finanzas de Empresas 2025</p>
+</header>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="show('concepto', this)">Concepto</button>
+  <button class="tab" onclick="show('tipos', this)">Tipos de costos</button>
+  <button class="tab" onclick="show('sistemas', this)">Sistemas</button>
+  <button class="tab" onclick="show('abc', this)">ABC</button>
+  <button class="tab" onclick="show('variable', this)">Costeo variable</button>
+  <button class="tab" onclick="show('nivelacion', this)">Nivelación</button>
+</div>
+
+<!-- ── CONCEPTO ── -->
+<div class="section active" id="s-concepto">
+  <div class="card">
+    <div class="card-title">¿Qué es un costo?</div>
+    <p class="item" style="padding-left:0">Valor sacrificado <strong>(en plata)</strong> para obtener bienes o servicios que se espera traigan <strong>beneficios presentes o futuros</strong>.</p>
+    <p style="font-size:13px; color:var(--text3); margin:6px 0 0; font-style:italic">Si no genera beneficio → es un <strong>gasto</strong>, no un costo.</p>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <div class="card-title">Costo del producto</div>
+      <span class="tag tag-blue">Variable</span>
+      <p class="item">Lo que cuesta producir ese bien (materiales, tiempo, MOD)</p>
+      <p class="item">Se activa en el balance</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Costo del período</div>
+      <span class="tag tag-orange">Fijo</span>
+      <p class="item">Costos del período independiente de la producción</p>
+      <p class="item">Ej: alquiler, electricidad</p>
+    </div>
+  </div>
+
+  <div class="formula">Costos Totales = Costos del producto + Costos del período</div>
+
+  <div class="section-label">¿Por qué importan?</div>
+  <div class="row3">
+    <div class="card" style="padding:.75rem">
+      <div style="font-size:12px; font-weight:500;">Toma de decisiones</div>
+      <p style="font-size:12px; color:var(--text2); margin:4px 0 0">Estratégicas y operativas</p>
+    </div>
+    <div class="card" style="padding:.75rem">
+      <div style="font-size:12px; font-weight:500;">Rentabilidad</div>
+      <p style="font-size:12px; color:var(--text2); margin:4px 0 0">Ventas − Costos</p>
+    </div>
+    <div class="card" style="padding:.75rem">
+      <div style="font-size:12px; font-weight:500;">Control</div>
+      <p style="font-size:12px; color:var(--text2); margin:4px 0 0">Inventarios y mejora continua</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── TIPOS ── -->
+<div class="section" id="s-tipos">
+  <div class="section-label">Por naturaleza</div>
+  <div class="row">
+    <div class="card">
+      <div class="card-title">Directos (CD)</div>
+      <p class="item">Se identifican clara y directamente con el producto</p>
+      <p class="item">Ej: materia prima, MOD del producto</p>
+      <span class="tag tag-green">Rastreo directo</span>
+    </div>
+    <div class="card">
+      <div class="card-title">Indirectos (CI)</div>
+      <p class="item">No se pueden asignar sin criterio de distribución</p>
+      <p class="item">Ej: electricidad compartida, salario gerente</p>
+      <span class="tag tag-orange">Requiere asignación</span>
+    </div>
+  </div>
+
+  <div class="section-label">Por comportamiento</div>
+  <div class="row">
+    <div class="card">
+      <div class="card-title">Fijos (CF)</div>
+      <p class="item">No varían con cambios en producción/ventas</p>
+      <p class="item">A largo plazo se variabilizan</p>
+      <p class="item">Varían a "saltos"</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Variables (CV)</div>
+      <p class="item">Varían con la producción/ventas</p>
+      <p class="item">Corto plazo: lineales</p>
+      <p class="item">Largo plazo: crecientes → decrecientes (economías de escala)</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Semivariables</div>
+    <p class="item">Parte fija + parte variable · Ej: sueldo fijo + comisión → se separan en CF y CV</p>
+  </div>
+
+  <div class="section-label">Por función</div>
+  <div class="row" style="grid-template-columns:1fr 1fr">
+    <div class="card" style="padding:.75rem"><span class="tag tag-blue">Producción</span><p style="font-size:12px; color:var(--text2); margin:6px 0 0">MP + MOD + CIF</p></div>
+    <div class="card" style="padding:.75rem"><span class="tag tag-purple">Distribución</span><p style="font-size:12px; color:var(--text2); margin:6px 0 0">Transporte, almacenamiento, publicidad</p></div>
+    <div class="card" style="padding:.75rem"><span class="tag tag-orange">Administración</span><p style="font-size:12px; color:var(--text2); margin:6px 0 0">Personal admin, gastos de oficina</p></div>
+    <div class="card" style="padding:.75rem"><span class="tag tag-red">Financieros</span><p style="font-size:12px; color:var(--text2); margin:6px 0 0">Intereses, comisiones bancarias</p></div>
+  </div>
+
+  <div class="section-label">Por decisión</div>
+  <div class="row">
+    <div class="card">
+      <div class="card-title">Relevantes</div>
+      <p class="item">Varían entre alternativas → influyen en la decisión</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Irrelevantes (hundidos)</div>
+      <p class="item">Iguales en todas las alternativas → no influyen</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── SISTEMAS ── -->
+<div class="section" id="s-sistemas">
+  <div class="card">
+    <h3>Métodos de asignación de costos</h3>
+    <div class="item"><span class="highlight">Rastreo directo</span> — observación física o estequiométrica del producto</div>
+    <div class="item"><span class="highlight">Rastreo por generadores</span> — factor causal que mide el consumo del recurso (ej: horas/máquina)</div>
+    <div class="item"><span class="highlight">Distribución</span> — proporción arbitraria cuando no es posible rastrear</div>
+  </div>
+
+  <div class="section-label">Tasa presupuestada CIF</div>
+  <div class="formula">Tasa CIF = CIF anual presupuestado / Cantidad anual del generador</div>
+  <div class="formula">CIF aplicado = Tasa CIF × Uso real del generador</div>
+
+  <div class="section-label">Variación de indirectos</div>
+  <div class="row">
+    <div class="card">
+      <span class="badge badge-warn">Subaplicación</span>
+      <p class="item" style="margin-top:8px">CIF reales > CIF aplicados</p>
+      <p class="item">Gastamos más de lo previsto</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-ok">Sobreaplicación</span>
+      <p class="item" style="margin-top:8px">CIF reales &lt; CIF aplicados</p>
+      <p class="item">Gastamos menos de lo previsto</p>
+    </div>
+  </div>
+  <p style="font-size:12px; color:var(--text3); margin-top:4px">En ambos casos: <strong>re-analizar y justificar la variabilidad</strong></p>
+
+  <div class="section-label">Comparación de sistemas</div>
+  <table class="vs-table">
+    <tr>
+      <th>Criterio</th>
+      <th>Absorción / Tradicional</th>
+      <th>Costeo Variable</th>
+    </tr>
+    <tr>
+      <td>Agrupa por</td>
+      <td>Directos + Indirectos (CIF)</td>
+      <td>Fijos y Variables</td>
+    </tr>
+    <tr>
+      <td>Toma de decisiones</td>
+      <td>Más difícil</td>
+      <td class="highlight">Más fácil ✓</td>
+    </tr>
+    <tr>
+      <td>Impuestos</td>
+      <td class="highlight">Más fácil ✓</td>
+      <td>Más difícil</td>
+    </tr>
+    <tr>
+      <td>Uso en PyMEs</td>
+      <td>~90%</td>
+      <td>Menos común</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ── ABC ── -->
+<div class="section" id="s-abc">
+  <div class="card">
+    <div class="card-title">Idea central del ABC</div>
+    <p style="font-size:13px; color:var(--text2); line-height:1.6; margin:0">El producto no consume recursos directamente → <strong>consume actividades</strong>, y esas actividades demandan recursos y generan costos.</p>
+  </div>
+
+  <div class="section-label">Las 3 etapas de asignación</div>
+  <div class="card">
+    <div style="display:flex; gap:10px; align-items:flex-start; margin-bottom:10px">
+      <span class="badge badge-info">1°</span>
+      <div>
+        <div class="card-title" style="margin-bottom:2px">Asignación primaria</div>
+        <p class="item">Distribuir CIF a departamentos productivos y de servicio</p>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:flex-start; margin-bottom:10px">
+      <span class="badge badge-info">2°</span>
+      <div>
+        <div class="card-title" style="margin-bottom:2px">Asignación secundaria</div>
+        <p class="item">Redistribuir los depts de servicio en los productivos (empezando por el de mayor CIF)</p>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:flex-start">
+      <span class="badge badge-info">3°</span>
+      <div>
+        <div class="card-title" style="margin-bottom:2px">Asignación terciaria</div>
+        <p class="item">Distribuir los CIF de depts productivos a cada producto según horas usadas en cada sector</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">¿Cuándo usar ABC?</div>
+  <div class="row">
+    <div class="card">
+      <span class="badge badge-ok">Conviene usarlo</span>
+      <p class="item" style="margin-top:8px">Múltiples productos con distinto consumo de recursos</p>
+      <p class="item">CIF no dependen del volumen sino de actividades distintas</p>
+    </div>
+    <div class="card">
+      <span class="badge badge-warn">No conviene</span>
+      <p class="item" style="margin-top:8px">Un solo producto (todos los CI serían CD)</p>
+      <p class="item">CIF muy relacionados con el volumen de producción</p>
+    </div>
+  </div>
+
+  <div class="section-label">Ventaja clave</div>
+  <div class="card">
+    <p class="item">Usa más rastreo directo y menos distribución → <strong>más preciso</strong></p>
+    <p class="item">Obliga a analizar qué actividades agregan valor y cuáles no</p>
+  </div>
+</div>
+
+<!-- ── COSTEO VARIABLE ── -->
+<div class="section" id="s-variable">
+  <div class="section-label">Los 3 tipos de costos en el sistema variable</div>
+  <div class="card">
+    <div class="card-title">CV de Comercialización (CVC)</div>
+    <span class="tag tag-blue">Variable</span>
+    <p class="item">Comisiones, transporte · Varían con el volumen de ventas</p>
+    <div class="formula">CVC = cvc × Q vendida</div>
+  </div>
+  <div class="card">
+    <div class="card-title">CV de Producción (CVP)</div>
+    <span class="tag tag-blue">Variable</span>
+    <p class="item">MOD, materiales directos · Varían con la producción</p>
+    <div class="formula">CVP = cvp × Q vendida</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Costos Fijos (CF)</div>
+    <span class="tag tag-orange">Fijo</span>
+    <p class="item">Alquiler, salarios admin · Constantes independiente de la actividad</p>
+  </div>
+
+  <div class="section-label">Fórmulas clave</div>
+  <div class="formula">CT = CF + cv × Q</div>
+  <div class="formula">Ventas = Precio × Q vendida</div>
+  <div class="formula">ROP = Ventas − CT = (P − cv) × Q − CF</div>
+  <div class="formula">mc = P − cv &nbsp;&nbsp;(margen de contribución unitario)</div>
+  <div class="formula">MC = mc × Q vendida &nbsp;&nbsp;(margen de contribución total)</div>
+  <div class="formula">ROP = MC − CF</div>
+
+  <div class="section-label">Razones</div>
+  <div class="row">
+    <div class="card">
+      <div class="card-title">Razón de recupero (rr)</div>
+      <p class="item">Proporción del precio que cubre CV</p>
+      <div class="formula">rr = CV/V = cv/P</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Razón de contribución (rc)</div>
+      <p class="item">% del precio que queda como margen</p>
+      <div class="formula">rc = MC/V = mc/P</div>
+    </div>
+  </div>
+  <div class="formula">RO = rc × V − CF</div>
+</div>
+
+<!-- ── NIVELACIÓN ── -->
+<div class="section" id="s-nivelacion">
+  <div class="card">
+    <div class="card-title">Punto de nivelación</div>
+    <p style="font-size:13px; color:var(--text2); margin:0 0 8px">Cuando ROP = 0 → la empresa no gana ni pierde. Solo cubre CF y CV.</p>
+    <div style="display:flex; gap:12px; font-size:12px; margin-top:6px; flex-wrap:wrap">
+      <span style="color:var(--text3)">Zona pérdidas: V &lt; CT</span>
+      <span style="color:var(--text3)">·</span>
+      <span style="color:var(--text3)">Zona ganancias: V &gt; CT</span>
+    </div>
+  </div>
+
+  <div class="section-label">Fórmulas de nivelación</div>
+  <div class="row">
+    <div class="card">
+      <div class="card-title">Cantidad de nivelación</div>
+      <div class="formula">Q = CF / mc = CF / (P − cv)</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Ventas de nivelación</div>
+      <div class="formula">V = CF / rc</div>
+    </div>
+  </div>
+
+  <div class="section-label">Análisis de seguridad</div>
+  <div class="row">
+    <div class="card">
+      <div class="card-title">Ventas / cantidad de seguridad</div>
+      <p class="item">Máximo error posible en estimación de ventas</p>
+      <div class="formula">Vseg = Vest − Vniv</div>
+      <div class="formula">Qseg = Qest − Qniv</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Margen de seguridad</div>
+      <p class="item">Mayor margen = más tranquilidad</p>
+      <div class="formula">ms = Vseg / Vtotales</div>
+    </div>
+  </div>
+
+  <div class="section-label">Empresa multiproductora</div>
+  <div class="card">
+    <p class="item">Múltiples combinaciones de productos dan el mismo MC</p>
+    <p class="item"><span class="highlight">Solución:</span> tratar la empresa como monoproductora usando <strong>promedio ponderado</strong> de cada producto</p>
+    <div class="formula">Q niv = CF / (Ppp − Cvpp)</div>
+    <p class="item">Luego distribuir Qniv según el % de ventas de cada producto</p>
+  </div>
+
+  <div class="section-label">Estado de resultados</div>
+  <div class="formula">Margen = Ventas − CMV = (P×Q) − (CU×Q)</div>
+  <div class="formula">RO = Margen − C.Adm − C.Comerciales − D&amp;A</div>
+  <p style="font-size:12px; color:var(--text3); margin-top:6px">Costos sin consumir → Estado Patrimonial &nbsp;·&nbsp; Costos consumidos → Estado de Resultados</p>
+</div>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('s-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
