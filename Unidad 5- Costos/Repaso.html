@@ -1,1 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Modo Repaso — Unidad 5 Costos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #181818;
+    --surface2: #222222;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0ede6;
+    --text2: #888;
+    --accent: #c8f060;
+    --accent2: #60c8f0;
+    --wrong: #f06060;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .wrap { width: 100%; max-width: 680px; position: relative; z-index: 1; }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 3rem; }
+  .header .label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 6vw, 44px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+  .header h1 span { color: var(--accent); }
+  .header p { font-size: 14px; color: var(--text2); margin-top: 8px; }
+
+  /* Progress bar */
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    letter-spacing: .05em;
+  }
+  .progress-bar {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width .5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Question card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1rem;
+    animation: fadeUp .35s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .category {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 14px;
+  }
+
+  .question {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 1.75rem;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .18s ease;
+    background: var(--surface2);
+    font-size: 14px;
+    line-height: 1.45;
+    text-align: left;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: rgba(200,240,96,0.35);
+    background: rgba(200,240,96,0.05);
+    transform: translateX(4px);
+  }
+  .option .letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all .18s;
+  }
+  .option.correct {
+    border-color: var(--accent);
+    background: rgba(200,240,96,0.08);
+  }
+  .option.correct .letter {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f0f0f;
+  }
+  .option.wrong {
+    border-color: var(--wrong);
+    background: rgba(240,96,96,0.08);
+  }
+  .option.wrong .letter {
+    background: var(--wrong);
+    border-color: var(--wrong);
+    color: #0f0f0f;
+  }
+  .option:disabled { cursor: default; transform: none !important; }
+
+  /* Feedback */
+  .feedback {
+    margin-top: 1.25rem;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+    animation: fadeUp .25s ease both;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok {
+    background: rgba(200,240,96,0.07);
+    border: 1px solid rgba(200,240,96,0.2);
+    color: var(--accent);
+  }
+  .feedback.bad {
+    background: rgba(240,96,96,0.07);
+    border: 1px solid rgba(240,96,96,0.2);
+    color: #f09090;
+  }
+  .feedback strong { font-weight: 500; }
+
+  /* Next button */
+  .btn-next {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #0f0f0f;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: none;
+    transition: opacity .2s, transform .15s;
+  }
+  .btn-next:hover { opacity: .85; transform: translateY(-1px); }
+  .btn-next.show { display: block; animation: fadeUp .25s .1s ease both; }
+
+  /* Results screen */
+  .results {
+    display: none;
+    text-align: center;
+    animation: fadeUp .4s ease both;
+  }
+  .results.show { display: block; }
+
+  .score-ring {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .score-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .score-ring .score-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .score-ring .score-label {
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .results h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .results p { font-size: 14px; color: var(--text2); margin-bottom: 2rem; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .stat .n {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 2px;
+  }
+  .stat .n.green { color: var(--accent); }
+  .stat .n.red   { color: var(--wrong); }
+  .stat .n.blue  { color: var(--accent2); }
+  .stat .l { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .08em; font-family: 'Syne', sans-serif; }
+
+  .btn-restart {
+    padding: 15px 40px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #0f0f0f;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .btn-restart:hover { opacity: .85; }
+
+  /* Inicio screen */
+  #start-screen { text-align: center; }
+  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 2rem 0; }
+  .mode-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    transition: all .2s;
+    text-align: center;
+  }
+  .mode-card:hover { border-color: rgba(200,240,96,0.4); transform: translateY(-3px); }
+  .mode-card.selected { border-color: var(--accent); background: rgba(200,240,96,0.06); }
+  .mode-card .icon { font-size: 28px; margin-bottom: 10px; }
+  .mode-card .title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .mode-card .desc { font-size: 12px; color: var(--text2); line-height: 1.4; }
+
+  .btn-start {
+    padding: 16px 50px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #0f0f0f;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity .2s, transform .15s;
+  }
+  .btn-start:hover { opacity: .85; transform: translateY(-2px); }
+
+  @media(max-width:480px) {
+    .mode-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr 1fr; }
+    .card { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="label">Finanzas de Empresas · 2025</div>
+    <h1>Modo <span>Repaso</span></h1>
+    <p>Unidad 5 — Costos</p>
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="start-screen">
+    <div class="mode-grid">
+      <div class="mode-card selected" data-mode="10" onclick="selectMode(this)">
+        <div class="icon">⚡</div>
+        <div class="title">Rápido</div>
+        <div class="desc">10 preguntas aleatorias</div>
+      </div>
+      <div class="mode-card" data-mode="20" onclick="selectMode(this)">
+        <div class="icon">🎯</div>
+        <div class="title">Completo</div>
+        <div class="desc">20 preguntas aleatorias</div>
+      </div>
+      <div class="mode-card" data-mode="999" onclick="selectMode(this)">
+        <div class="icon">📚</div>
+        <div class="title">Todo</div>
+        <div class="desc">Todas las preguntas del banco</div>
+      </div>
+      <div class="mode-card" data-mode="err" onclick="selectMode(this)">
+        <div class="icon">🔁</div>
+        <div class="title">Errores</div>
+        <div class="desc">Solo las que fallaste antes</div>
+      </div>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">Empezar →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz-screen" style="display:none">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="q-counter">Pregunta 1 de 10</span>
+        <span id="q-score">✓ 0 &nbsp; ✗ 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="card" id="q-card">
+      <div class="category" id="q-category"></div>
+      <div class="question" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+      <div class="feedback" id="q-feedback"></div>
+    </div>
+
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Siguiente →</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results-screen">
+    <div class="score-ring">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="58" fill="none" stroke="#222" stroke-width="8"/>
+        <circle cx="70" cy="70" r="58" fill="none" stroke="#c8f060" stroke-width="8"
+          stroke-linecap="round" stroke-dasharray="364.4"
+          id="score-circle" stroke-dashoffset="364.4"/>
+      </svg>
+      <div class="score-text">
+        <div class="score-num" id="score-pct">0%</div>
+        <div class="score-label">score</div>
+      </div>
+    </div>
+    <h2 id="result-title">¡Buen trabajo!</h2>
+    <p id="result-msg">Seguí repasando para afianzar los conceptos.</p>
+    <div class="stats">
+      <div class="stat"><div class="n green" id="r-correct">0</div><div class="l">Correctas</div></div>
+      <div class="stat"><div class="n red"   id="r-wrong">0</div><div class="l">Incorrectas</div></div>
+      <div class="stat"><div class="n blue"  id="r-total">0</div><div class="l">Total</div></div>
+    </div>
+    <button class="btn-restart" onclick="restart()">Volver a empezar</button>
+  </div>
+
+</div>
+
+<script>
+const BANK = [
+  // CONCEPTO
+  {
+    cat: "Concepto de Costo",
+    q: "¿Cuál es la definición correcta de COSTO?",
+    opts: ["Cualquier desembolso de dinero que hace la empresa","Valor sacrificado para obtener bienes o servicios que generan beneficios futuros","Un gasto que no se puede recuperar","El precio de venta de un producto menos la ganancia"],
+    ans: 1,
+    exp: "El costo implica un sacrificio económico con expectativa de beneficio futuro. Si no genera beneficio, pasa a ser un gasto."
+  },
+  {
+    cat: "Concepto de Costo",
+    q: "Comprás remeras con la leyenda 'River campeón 2025' pero River no sale campeón. ¿Cómo se clasifica esa inversión?",
+    opts: ["Sigue siendo un costo, porque la inversión ya fue hecha","Pasa a ser un gasto, porque ya no tiene potencial de generar beneficios","Es un costo variable","Es un costo fijo"],
+    ans: 1,
+    exp: "Al perder la potencialidad de generar beneficio, deja de ser costo y se convierte en gasto."
+  },
+  {
+    cat: "Concepto de Costo",
+    q: "¿Cuál es la fórmula de Costos Totales?",
+    opts: ["CT = Ventas - Ganancia","CT = Costos del producto × Costos del período","CT = Costos del producto + Costos del período","CT = CF + CV - CIF"],
+    ans: 2,
+    exp: "CT = Costos del producto (variables) + Costos del período (fijos)."
+  },
+  {
+    cat: "Concepto de Costo",
+    q: "Los costos que todavía NO fueron consumidos se encuentran en:",
+    opts: ["Estado de Resultados","Estado de Situación Patrimonial","Estado de Flujo de Fondos","Ninguno de los anteriores"],
+    ans: 1,
+    exp: "Los costos sin consumir son activos y están en el Estado Patrimonial. Una vez consumidos, pasan al Estado de Resultados."
+  },
+  // TIPOS
+  {
+    cat: "Tipos de Costos",
+    q: "Un barman hace Fernet Y Gin Tonic. Su salario es un costo:",
+    opts: ["Directo, porque se puede observar","Indirecto, porque hay que repartirlo entre ambas bebidas","Fijo, porque es siempre el mismo","Semivariable, porque depende de cuánto vende"],
+    ans: 1,
+    exp: "Al producir múltiples productos, el salario no se puede asignar directo a uno solo → es un CI que debe distribuirse proporcionalmente."
+  },
+  {
+    cat: "Tipos de Costos",
+    q: "¿Qué característica tienen los costos fijos a largo plazo?",
+    opts: ["Se mantienen fijos para siempre","Se variabilizan","Se eliminan completamente","Se duplican"],
+    ans: 1,
+    exp: "A largo plazo, los costos fijos se variabilizan. Por ejemplo, una máquina que era un costo fijo puede convertirse en variable si se decide ampliar la capacidad."
+  },
+  {
+    cat: "Tipos de Costos",
+    q: "Un vendedor cobra $50.000 fijos + comisión por venta. Este costo es:",
+    opts: ["Fijo","Variable","Semivariable","Directo"],
+    ans: 2,
+    exp: "Es semivariable: tiene una componente fija (salario base) y una variable (comisión). En la práctica se separan y cada parte va a su grupo."
+  },
+  {
+    cat: "Tipos de Costos",
+    q: "Los costos de transporte y almacenamiento pertenecen a la función de:",
+    opts: ["Producción","Distribución","Administración","Financieros"],
+    ans: 1,
+    exp: "Los costos de distribución incluyen transporte, almacenamiento, publicidad y ventas."
+  },
+  {
+    cat: "Tipos de Costos",
+    q: "Ya pagaste la entrada para un recital. Ahora evaluás ir en auto, colectivo o avión. El costo de la entrada es:",
+    opts: ["Relevante, porque lo pagaste","Irrelevante (costo hundido), porque no cambia entre las alternativas","Variable, porque depende del medio de transporte","Directo, porque lo podés identificar"],
+    ans: 1,
+    exp: "El costo de la entrada es irrelevante (hundido) porque ya fue pagado y es igual en todas las alternativas. Solo importan los costos que difieren entre opciones."
+  },
+  {
+    cat: "Tipos de Costos",
+    q: "¿En qué se diferencian los costos variables en el corto y largo plazo?",
+    opts: ["En el corto plazo son crecientes; en el largo plazo son lineales","En el corto plazo son lineales; en el largo plazo pueden ser crecientes y luego decrecientes","Son iguales en ambos plazos","En el largo plazo siempre son decrecientes"],
+    ans: 1,
+    exp: "Corto plazo: lineales (más producción = más insumos en proporción directa). Largo plazo: primero crecientes y luego decrecientes por economías de escala y curva de aprendizaje."
+  },
+  // SISTEMAS
+  {
+    cat: "Sistemas de Costeo",
+    q: "¿Qué sistema de costeo es el más usado en las PyMEs argentinas?",
+    opts: ["Costeo variable","Costeo ABC","Costeo por absorción (tradicional)","Costeo por procesos"],
+    ans: 2,
+    exp: "El costeo por absorción o tradicional es usado por aproximadamente el 90% de las PyMEs."
+  },
+  {
+    cat: "Sistemas de Costeo",
+    q: "¿Cuál sistema es más fácil de implementar para la toma de decisiones?",
+    opts: ["Costeo por absorción","Costeo directo o variable","Costeo ABC","Costeo por procesos"],
+    ans: 1,
+    exp: "El costeo variable es más fácil para tomar decisiones porque separa claramente fijos y variables, facilitando el análisis del impacto de cada decisión."
+  },
+  {
+    cat: "Sistemas de Costeo",
+    q: "El costeo por absorción tiene dos métodos internos. ¿Cuáles son?",
+    opts: ["Por actividades y por procesos","Por órdenes de trabajo y por procesos","Por fijos y por variables","Por directos e indirectos"],
+    ans: 1,
+    exp: "Por procesos: para productos homogéneos en procesos continuos. Por órdenes de trabajo: para productos diferentes entre sí (artesanal)."
+  },
+  // CIF
+  {
+    cat: "Tasa CIF",
+    q: "¿Por qué se usa una tasa PRESUPUESTADA de CIF en lugar de los costos reales?",
+    opts: ["Porque los costos reales son siempre más altos","Porque muchos CIF (como la factura de luz) se conocen DESPUÉS de que el producto está terminado","Porque la ley lo exige","Porque los costos reales son difíciles de calcular"],
+    ans: 1,
+    exp: "La factura de luz, por ejemplo, llega después de que el producto ya fue producido y vendido. Por eso se presupuesta con una tasa para poder costear en tiempo real."
+  },
+  {
+    cat: "Tasa CIF",
+    q: "Si CIF reales > CIF aplicados, ¿qué ocurre?",
+    opts: ["Sobreaplicación de indirectos","Subaplicación de indirectos","La tasa estaba bien calculada","No ocurre nada relevante"],
+    ans: 1,
+    exp: "Subaplicación: gastamos más de lo que habíamos presupuestado. Sobreaplicación es el caso contrario (gastamos menos)."
+  },
+  {
+    cat: "Tasa CIF",
+    q: "Los CIF anuales presupuestados son $360.000 y las horas de MOD presupuestadas son 120.000. ¿Cuál es la tasa CIF?",
+    opts: ["$4 por hora MOD","$2 por hora MOD","$3 por hora MOD","$30 por hora MOD"],
+    ans: 2,
+    exp: "Tasa CIF = $360.000 / 120.000 hs = $3 por hora de MOD."
+  },
+  {
+    cat: "Tasa CIF",
+    q: "Con una tasa de $3/hora MOD y un uso real de 40.000 horas, el CIF aplicado es:",
+    opts: ["$13.333","$43.000","$120.000","$360.000"],
+    ans: 2,
+    exp: "CIF aplicado = Tasa × Uso real = $3 × 40.000 hs = $120.000."
+  },
+  // ABC
+  {
+    cat: "Costeo ABC",
+    q: "¿Cuál es la idea central del sistema ABC?",
+    opts: ["El producto consume recursos directamente","El producto consume actividades, y esas actividades demandan recursos","Los costos fijos son los más importantes","Los CIF siempre se distribuyen arbitrariamente"],
+    ans: 1,
+    exp: "ABC plantea que producto → actividades → recursos → costos. No es producto → recursos directamente."
+  },
+  {
+    cat: "Costeo ABC",
+    q: "En la asignación secundaria del ABC, ¿por dónde conviene empezar a distribuir los departamentos de servicio?",
+    opts: ["Por el que tiene menos empleados","Por el de mayor CIF","Por el que tiene más empleados","Por orden alfabético"],
+    ans: 1,
+    exp: "Según el profe, siempre conviene arrancar por el departamento de servicio con mayor CIF para que la distribución sea más precisa."
+  },
+  {
+    cat: "Costeo ABC",
+    q: "¿Cuándo NO conviene usar el sistema ABC?",
+    opts: ["Cuando hay muchos productos con distinto consumo de recursos","Cuando los CIF no dependen del volumen","Cuando se produce un solo producto (no habría costos indirectos reales)","Cuando los costos de medición son bajos"],
+    ans: 2,
+    exp: "Si solo hay un producto, todos los CI serían CD → ABC no agrega valor. Tampoco conviene cuando los CIF están muy relacionados con el volumen."
+  },
+  {
+    cat: "Costeo ABC",
+    q: "El comedor tiene 10 empleados y un costo de $1.000. Al distribuirlo, los empleados del comedor:",
+    opts: ["Se cuentan igual que todos","NO se cuentan, ya están incluidos en el costo del comedor","Se cuentan doble","Se distribuyen en partes iguales"],
+    ans: 1,
+    exp: "Los empleados del departamento que se disuelve no se cuentan porque ya están incluidos en ese costo de $1.000."
+  },
+  // COSTEO VARIABLE
+  {
+    cat: "Costeo Variable",
+    q: "¿Qué representa el margen de contribución unitario (mc)?",
+    opts: ["La ganancia neta por unidad","Lo que queda de cada unidad vendida para cubrir los costos fijos","El costo variable por unidad","El precio de venta menos los costos fijos"],
+    ans: 1,
+    exp: "mc = P - cv. Es lo que 'contribuye' cada unidad a cubrir los CF. Una vez cubiertos los CF, el mc restante es ganancia."
+  },
+  {
+    cat: "Costeo Variable",
+    q: "Un producto tiene precio $100, cv $60. ¿Cuál es el mc y la razón de contribución?",
+    opts: ["mc=$60, rc=60%","mc=$40, rc=40%","mc=$40, rc=60%","mc=$160, rc=160%"],
+    ans: 1,
+    exp: "mc = P - cv = 100 - 60 = $40. rc = mc/P = 40/100 = 40%."
+  },
+  {
+    cat: "Costeo Variable",
+    q: "La fórmula del Resultado Operativo en términos monetarios es:",
+    opts: ["RO = CV × V - CF","RO = rc × V - CF","RO = mc / Q - CF","RO = V - CF"],
+    ans: 1,
+    exp: "RO = rc × V - CF. La razón de contribución multiplica las ventas y le resta los costos fijos."
+  },
+  {
+    cat: "Costeo Variable",
+    q: "Si rr = 0,60, ¿cuál es la razón de contribución?",
+    opts: ["0,60","1,60","0,40","No se puede calcular"],
+    ans: 2,
+    exp: "rr + rc = 1. Si rr = 0,60 entonces rc = 1 - 0,60 = 0,40."
+  },
+  // NIVELACIÓN
+  {
+    cat: "Punto de Nivelación",
+    q: "¿Qué ocurre en el punto de nivelación?",
+    opts: ["La empresa maximiza sus ganancias","ROP = 0: la empresa no gana ni pierde","Las ventas son iguales a los costos fijos","El margen de contribución es cero"],
+    ans: 1,
+    exp: "En el punto de nivelación ROP = 0, lo que significa que MC = CF. La empresa cubre exactamente todos sus costos pero no genera ganancia."
+  },
+  {
+    cat: "Punto de Nivelación",
+    q: "Un producto tiene mc = $25 y CF = $50.000. ¿Cuántas unidades necesita vender para nivelar?",
+    opts: ["1.250 unidades","2.000 unidades","5.000 unidades","25.000 unidades"],
+    ans: 1,
+    exp: "Q_niv = CF / mc = $50.000 / $25 = 2.000 unidades."
+  },
+  {
+    cat: "Punto de Nivelación",
+    q: "Si rc = 0,40 y CF = $80.000, ¿cuáles son las ventas de nivelación?",
+    opts: ["$32.000","$200.000","$320.000","$120.000"],
+    ans: 1,
+    exp: "V_niv = CF / rc = $80.000 / 0,40 = $200.000."
+  },
+  {
+    cat: "Punto de Nivelación",
+    q: "Las ventas estimadas son $300.000 y las ventas de nivelación son $200.000. ¿Cuál es el margen de seguridad?",
+    opts: ["66,7%","33,3%","50%","150%"],
+    ans: 1,
+    exp: "Vseg = $300.000 - $200.000 = $100.000. Margen de seguridad = $100.000 / $300.000 = 33,3%."
+  },
+  {
+    cat: "Punto de Nivelación",
+    q: "En una empresa multiproductora, ¿cómo se calcula el punto de nivelación?",
+    opts: ["Sumando los puntos de nivelación de cada producto","Usando el promedio ponderado de precio y cv para tratar a la empresa como monoproductora","Calculando el mc más alto","Dividiendo los CF entre la cantidad de productos"],
+    ans: 1,
+    exp: "Se usa el promedio ponderado (Ppp y Cvpp) ponderado por el % de ventas de cada producto, tratando la empresa como monoproductora."
+  },
+  {
+    cat: "Punto de Nivelación",
+    q: "Si el margen de seguridad es muy alto, ¿qué significa para la empresa?",
+    opts: ["Está en zona de pérdidas","Tiene mucho colchón antes de entrar en pérdidas","Debe aumentar los costos fijos","El punto de nivelación está mal calculado"],
+    ans: 1,
+    exp: "Cuanto mayor sea el margen de seguridad, más puede caer las ventas antes de entrar en zona de pérdidas. Es un indicador de solidez."
+  }
+];
+
+let queue = [];
+let current = 0;
+let correct = 0;
+let wrong = 0;
+let answered = false;
+let mode = 10;
+let wrongIds = JSON.parse(localStorage.getItem('wrongIds') || '[]');
+
+function selectMode(el) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  mode = el.dataset.mode;
+}
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - .5);
+}
+
+function startQuiz() {
+  let pool;
+  if (mode === 'err') {
+    pool = BANK.filter((_, i) => wrongIds.includes(i));
+    if (pool.length === 0) {
+      alert('¡No tenés errores guardados todavía! Completá un repaso primero.');
+      return;
+    }
+    pool = pool.map((q, i) => ({ ...q, origIdx: wrongIds[i] }));
+  } else {
+    pool = shuffle(BANK.map((q, i) => ({ ...q, origIdx: i })));
+    if (mode !== '999') pool = pool.slice(0, parseInt(mode));
+  }
+  queue = pool;
+  current = 0; correct = 0; wrong = 0;
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = queue[current];
+  const total = queue.length;
+
+  document.getElementById('q-counter').textContent = `Pregunta ${current + 1} de ${total}`;
+  document.getElementById('q-score').textContent = `✓ ${correct}   ✗ ${wrong}`;
+  document.getElementById('progress-fill').style.width = `${(current / total) * 100}%`;
+  document.getElementById('q-category').textContent = q.cat;
+  document.getElementById('q-text').textContent = q.q;
+
+  const letters = ['A','B','C','D'];
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  const shuffledOpts = q.opts.map((o, i) => ({ text: o, orig: i }));
+  // keep order as-is for reproducibility
+  shuffledOpts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="letter">${letters[i]}</span><span>${o.text}</span>`;
+    btn.onclick = () => selectAnswer(btn, o.orig === q.ans, i, q);
+    opts.appendChild(btn);
+  });
+
+  const fb = document.getElementById('q-feedback');
+  fb.className = 'feedback';
+  fb.innerHTML = '';
+  document.getElementById('btn-next').className = 'btn-next';
+  document.getElementById('q-card').style.animation = 'none';
+  requestAnimationFrame(() => { document.getElementById('q-card').style.animation = ''; });
+}
+
+function selectAnswer(btn, isCorrect, idx, q) {
+  if (answered) return;
+  answered = true;
+
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o => o.disabled = true);
+
+  const letters = ['A','B','C','D'];
+  if (isCorrect) {
+    btn.classList.add('correct');
+    correct++;
+  } else {
+    btn.classList.add('wrong');
+    wrong++;
+    // mark correct
+    opts.forEach((o, i) => {
+      if (q.opts[i] === q.opts[q.ans]) o.classList.add('correct');
+    });
+    // save wrong
+    if (!wrongIds.includes(q.origIdx)) {
+      wrongIds.push(q.origIdx);
+      localStorage.setItem('wrongIds', JSON.stringify(wrongIds));
+    }
+  }
+
+  const fb = document.getElementById('q-feedback');
+  fb.className = `feedback show ${isCorrect ? 'ok' : 'bad'}`;
+  fb.innerHTML = `<strong>${isCorrect ? '✓ Correcto' : '✗ Incorrecto'}</strong> — ${q.exp}`;
+  document.getElementById('q-score').textContent = `✓ ${correct}   ✗ ${wrong}`;
+
+  const btnNext = document.getElementById('btn-next');
+  btnNext.className = 'btn-next show';
+  btnNext.textContent = current + 1 < queue.length ? 'Siguiente →' : 'Ver resultados →';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= queue.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  const res = document.getElementById('results-screen');
+  res.className = 'results show';
+
+  const total = queue.length;
+  const pct = Math.round((correct / total) * 100);
+
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  document.getElementById('r-total').textContent = total;
+
+  // animate ring
+  const circumference = 364.4;
+  const offset = circumference - (pct / 100) * circumference;
+  setTimeout(() => {
+    document.getElementById('score-circle').style.transition = 'stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)';
+    document.getElementById('score-circle').style.strokeDashoffset = offset;
+  }, 100);
+
+  let title, msg;
+  if (pct === 100) { title = '¡Perfecto! 🎉'; msg = 'Dominás todos los conceptos de la Unidad 5.'; }
+  else if (pct >= 80) { title = '¡Muy bien! 💪'; msg = 'Tenés un sólido manejo del tema. Repasá los errores.'; }
+  else if (pct >= 60) { title = 'Bien, pero podés más 📖'; msg = 'Algunos conceptos necesitan un repaso. ¡Volvé a intentarlo!'; }
+  else { title = 'Hay que repasar más 📚'; msg = 'No te preocupes, volvé a leer los apuntes y probá de nuevo.'; }
+
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-msg').textContent = msg;
+}
+
+function restart() {
+  document.getElementById('results-screen').className = 'results';
+  document.getElementById('start-screen').style.display = 'block';
+  document.getElementById('quiz-screen').style.display = 'none';
+  // reset score circle
+  document.getElementById('score-circle').style.transition = 'none';
+  document.getElementById('score-circle').style.strokeDashoffset = '364.4';
+}
+</script>
+</body>
+</html>
