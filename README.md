@@ -1,10 +1,20 @@
-# 📚 Mi Resumen de Finanzas - Ingeniería Industrial
+# 📚 Finanzas de Empresas — Ingeniería Industrial
 
-¡Bienvenido! Este es mi espacio personal donde paso en limpio los conceptos de la materia. 
+> Mendoza, Argentina · 2026
 
-## 📂 Unidades
-* [Unidad 5: Gestión de Costos]
-*(https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%205-%20Costos/)
+Bienvenido a mi espacio personal donde paso en limpio los conceptos de la materia. Cada unidad tiene un resumen en Markdown para leer dentro de GitHub y una página web interactiva.
 
 ---
-*Mendoza, Argentina - 2026*
+
+## 📂 Unidades
+
+### Unidad 5 · Costos
+
+| | Link |
+|---|---|
+| 📄 Resumen Markdown | [Ver resumen](./Unidad%205-%20Costos/Resumen.md) |
+| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%205-%20Costos/) |
+
+---
+
+*Más unidades próximamente...*
