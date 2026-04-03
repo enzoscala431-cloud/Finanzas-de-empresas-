@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destilería Tycoon - Unidad 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0f;
+    --surface: #131a1a;
+    --surface2: #1c2424;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8f0ee;
+    --accent: #40e0c0;
+    --wrong: #e05050;
+    --radius: 14px;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 1rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  h1 { font-family: 'Syne', sans-serif; color: var(--accent); margin-top: 0; }
+  .dinero-display {
+    font-size: 2.5rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: var(--text);
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--surface2);
+    border-radius: 10px;
+    transition: color 0.3s;
+  }
+  .pregunta { font-size: 1.1rem; line-height: 1.5; margin-bottom: 2rem; min-height: 80px; }
+  .opciones { display: flex; flex-direction: column; gap: 10px; }
+  .btn {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn:hover { border-color: var(--accent); background: rgba(64,224,192,0.1); transform: translateY(-2px); }
+  .feedback { margin-top: 15px; font-weight: bold; min-height: 24px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Destilería Tycoon 🥃</h1>
+  <p>Tomá decisiones aplicando el Valor del Dinero en el Tiempo para escalar tu producción de gin.</p>
+  
+  <div class="dinero-display" id="display-dinero">$5.000.000</div>
+  
+  <div class="pregunta" id="texto-pregunta">
+    Necesitás comprar un alambique de 500L. El Banco A te ofrece un préstamo a TNA 45% (capitalización mensual). El Banco B te ofrece TEA 52%. ¿A cuál le pedís la plata?
+  </div>
+  
+  <div class="opciones" id="caja-opciones">
+    <button class="btn" onclick="jugar(1, false)">Banco A (TNA 45%)</button>
+    <button class="btn" onclick="jugar(1, true)">Banco B (TEA 52%)</button>
+  </div>
+  
+  <div class="feedback" id="mensaje-feedback"></div>
+</div>
+
+<script>
+  let capital = 5000000;
+  
+  function actualizarDinero(cambio, color) {
+    capital += cambio;
+    const display = document.getElementById('display-dinero');
+    display.innerText = '$' + capital.toLocaleString('es-AR');
+    display.style.color = color;
+    setTimeout(() => display.style.color = 'var(--text)', 1000);
+  }
+
+  function jugar(paso, esCorrecto) {
+    const pregunta = document.getElementById('texto-pregunta');
+    const opciones = document.getElementById('caja-opciones');
+    const feedback = document.getElementById('mensaje-feedback');
+
+    if (paso === 1) {
+      if (esCorrecto) {
+        actualizarDinero(500000, 'var(--accent)');
+        feedback.innerHTML = '<span style="color:var(--accent)">¡Excelente!</span> La TNA del 45% capitalizada mensual es una TEA oculta del ~55.5%. Ahorraste costos.';
+      } else {
+        actualizarDinero(-500000, 'var(--wrong)');
+        feedback.innerHTML = '<span style="color:var(--wrong)">Error.</span> La TNA de 45% con capitalización mensual equivale a una TEA de ~55.5%. Pagaste de más.';
+      }
+      
+      pregunta.innerText = "Un inversor inyectará capital en 12 meses y vas a cancelar este préstamo anticipadamente. ¿Qué sistema de amortización debiste haber firmado?";
+      opciones.innerHTML = `
+        <button class="btn" onclick="jugar(2, false)">Sistema Francés</button>
+        <button class="btn" onclick="jugar(2, true)">Sistema Alemán</button>
+      `;
+    } 
+    else if (paso === 2) {
+      if (esCorrecto) {
+        actualizarDinero(800000, 'var(--accent)');
+        feedback.innerHTML = '<span style="color:var(--accent)">¡Bien de ingeniero!</span> El Alemán amortiza capital constante. Cancelar antes te ahorra más intereses.';
+      } else {
+        actualizarDinero(-800000, 'var(--wrong)');
+        feedback.innerHTML = '<span style="color:var(--wrong)">Mala idea.</span> En el Francés pagás casi puro interés al principio. Al cancelar, debías casi todo el capital.';
+      }
+      
+      pregunta.innerText = "Tenés liquidez extra por las ventas del vermouth. Podés invertirla a Interés Simple del 40% anual, o a un fondo de Interés Compuesto del 3% mensual. ¿Cuál elegís?";
+      opciones.innerHTML = `
+        <button class="btn" onclick="jugar(3, false)">Simple 40% Anual</button>
+        <button class="btn" onclick="jugar(3, true)">Compuesto 3% Mensual</button>
+      `;
+    }
+    else if (paso === 3) {
+      if (esCorrecto) {
+        actualizarDinero(1200000, 'var(--accent)');
+        feedback.innerHTML = '<span style="color:var(--accent)">¡Exacto!</span> El 3% compuesto mensual equivale a ~42.5% anual (TEA). Le ganaste al simple.';
+      } else {
+        actualizarDinero(-1000000, 'var(--wrong)');
+        feedback.innerHTML = '<span style="color:var(--wrong)">Error.</span> El interés simple no capitaliza. Dejaste plata sobre la mesa por el costo de oportunidad.';
+      }
+      
+      pregunta.innerHTML = "<strong>Simulación Terminada.</strong><br>Dependiendo de tu gestión del Valor del Dinero, fundiste la destilería o te convertiste en un Tycoon.";
+      opciones.innerHTML = `<button class="btn" style="border-color: var(--accent); color: var(--accent)" onclick="location.reload()">Jugar de nuevo 🔄</button>`;
+    }
+  }
+</script>
+</body>
+</html>
