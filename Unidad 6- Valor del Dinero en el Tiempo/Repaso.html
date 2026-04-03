@@ -1,1 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Modo Repaso — Unidad 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0f0f;
+    --surface: #131a1a;
+    --surface2: #1c2424;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8f0ee;
+    --text2: #7a9090;
+    --accent: #40e0c0;
+    --accent2: #e08040;
+    --wrong: #e05050;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+  .wrap { width: 100%; max-width: 680px; position: relative; z-index: 1; }
+  .header { text-align: center; margin-bottom: 3rem; }
+  .header .label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .header h1 { font-family: 'Syne', sans-serif; font-size: clamp(28px, 6vw, 44px); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; }
+  .header h1 span { color: var(--accent); }
+  .header p { font-size: 14px; color: var(--text2); margin-top: 8px; }
 
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 8px; font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: .05em; }
+  .progress-bar { height: 3px; background: var(--surface2); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 1rem; animation: fadeUp .35s ease both; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+
+  .category { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent2); margin-bottom: 14px; }
+  .question { font-size: 17px; font-weight: 500; line-height: 1.5; margin-bottom: 1.75rem; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all .18s ease; background: var(--surface2); font-size: 14px; line-height: 1.45; text-align: left; color: var(--text); font-family: 'DM Sans', sans-serif; }
+  .option:hover:not(:disabled) { border-color: rgba(64,224,192,0.35); background: rgba(64,224,192,0.05); transform: translateX(4px); }
+  .option .letter { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; flex-shrink: 0; transition: all .18s; }
+  .option.correct { border-color: var(--accent); background: rgba(64,224,192,0.08); }
+  .option.correct .letter { background: var(--accent); border-color: var(--accent); color: #0a0f0f; }
+  .option.wrong { border-color: var(--wrong); background: rgba(224,80,80,0.08); }
+  .option.wrong .letter { background: var(--wrong); border-color: var(--wrong); color: #0a0f0f; }
+  .option:disabled { cursor: default; transform: none !important; }
+
+  .feedback { margin-top: 1.25rem; padding: 14px 16px; border-radius: 10px; font-size: 13px; line-height: 1.6; display: none; animation: fadeUp .25s ease both; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: rgba(64,224,192,0.07); border: 1px solid rgba(64,224,192,0.2); color: var(--accent); }
+  .feedback.bad { background: rgba(224,80,80,0.07); border: 1px solid rgba(224,80,80,0.2); color: #f09090; }
+
+  .btn-next { width: 100%; margin-top: 1rem; padding: 15px; border-radius: 10px; border: none; background: var(--accent); color: #0a0f0f; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; display: none; transition: opacity .2s; }
+  .btn-next:hover { opacity: .85; }
+  .btn-next.show { display: block; animation: fadeUp .25s .1s ease both; }
+
+  .results { display: none; text-align: center; animation: fadeUp .4s ease both; }
+  .results.show { display: block; }
+  .score-ring { width: 140px; height: 140px; margin: 0 auto 1.5rem; position: relative; }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .score-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .score-ring .score-num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--accent); }
+  .score-ring .score-label { font-size: 11px; color: var(--text2); letter-spacing: .08em; text-transform: uppercase; font-family: 'Syne', sans-serif; }
+  .results h2 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .results p { font-size: 14px; color: var(--text2); margin-bottom: 2rem; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 2rem; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+  .stat .n { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 2px; }
+  .stat .n.green { color: var(--accent); } .stat .n.red { color: var(--wrong); } .stat .n.blue { color: var(--accent2); }
+  .stat .l { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .08em; font-family: 'Syne', sans-serif; }
+  .btn-restart { padding: 15px 40px; border-radius: 10px; border: none; background: var(--accent); color: #0a0f0f; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: opacity .2s; }
+  .btn-restart:hover { opacity: .85; }
+
+  #start-screen { text-align: center; }
+  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 2rem 0; }
+  .mode-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem 1rem; cursor: pointer; transition: all .2s; text-align: center; }
+  .mode-card:hover { border-color: rgba(64,224,192,0.4); transform: translateY(-3px); }
+  .mode-card.selected { border-color: var(--accent); background: rgba(64,224,192,0.06); }
+  .mode-card .icon { font-size: 28px; margin-bottom: 10px; }
+  .mode-card .title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .mode-card .desc { font-size: 12px; color: var(--text2); line-height: 1.4; }
+  .btn-start { padding: 16px 50px; border-radius: 10px; border: none; background: var(--accent); color: #0a0f0f; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: opacity .2s, transform .15s; }
+  .btn-start:hover { opacity: .85; transform: translateY(-2px); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="label">Finanzas de Empresas · 2025</div>
+    <h1>Modo <span>Repaso</span></h1>
+    <p>Unidad 6 — Valor del Dinero en el Tiempo</p>
+  </div>
+
+  <div id="start-screen">
+    <div class="mode-grid">
+      <div class="mode-card selected" data-mode="10" onclick="selectMode(this)">
+        <div class="icon">⚡</div>
+        <div class="title">Rápido</div>
+        <div class="desc">10 preguntas aleatorias</div>
+      </div>
+      <div class="mode-card" data-mode="20" onclick="selectMode(this)">
+        <div class="icon">🎯</div>
+        <div class="title">Completo</div>
+        <div class="desc">20 preguntas aleatorias</div>
+      </div>
+      <div class="mode-card" data-mode="999" onclick="selectMode(this)">
+        <div class="icon">📚</div>
+        <div class="title">Todo</div>
+        <div class="desc">Todas las preguntas</div>
+      </div>
+      <div class="mode-card" data-mode="err" onclick="selectMode(this)">
+        <div class="icon">🔁</div>
+        <div class="title">Errores</div>
+        <div class="desc">Solo las que fallaste</div>
+      </div>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">Empezar →</button>
+  </div>
+
+  <div id="quiz-screen" style="display:none">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="q-counter">Pregunta 1 de 10</span>
+        <span id="q-score">✓ 0 &nbsp; ✗ 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="card" id="q-card">
+      <div class="category" id="q-category"></div>
+      <div class="question" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+      <div class="feedback" id="q-feedback"></div>
+    </div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Siguiente →</button>
+  </div>
+
+  <div class="results" id="results-screen">
+    <div class="score-ring">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="58" fill="none" stroke="#1c2424" stroke-width="8"/>
+        <circle cx="70" cy="70" r="58" fill="none" stroke="#40e0c0" stroke-width="8" stroke-linecap="round" stroke-dasharray="364.4" id="score-circle" stroke-dashoffset="364.4"/>
+      </svg>
+      <div class="score-text">
+        <div class="score-num" id="score-pct">0%</div>
+        <div class="score-label">score</div>
+      </div>
+    </div>
+    <h2 id="result-title"></h2>
+    <p id="result-msg"></p>
+    <div class="stats">
+      <div class="stat"><div class="n green" id="r-correct">0</div><div class="l">Correctas</div></div>
+      <div class="stat"><div class="n red" id="r-wrong">0</div><div class="l">Incorrectas</div></div>
+      <div class="stat"><div class="n blue" id="r-total">0</div><div class="l">Total</div></div>
+    </div>
+    <button class="btn-restart" onclick="restart()">Volver a empezar</button>
+  </div>
+</div>
+
+<script>
+const BANK = [
+  // CONCEPTO
+  { cat:"Concepto", q:"¿Cuál es el principio fundamental del valor del dinero en el tiempo?", opts:["$1 en el futuro vale más que $1 hoy","$1 hoy vale más que $1 en el futuro","El dinero siempre vale lo mismo","Solo importa la cantidad, no el momento"], ans:1, exp:"$1 hoy vale más porque podés invertirlo y hacerlo crecer. Esperar tiene un costo de oportunidad." },
+  { cat:"Concepto", q:"¿Por qué el dinero pierde valor en el tiempo?", opts:["Por la inflación únicamente","Solo por el riesgo de no cobrar","Por el costo de oportunidad (podrías invertirlo) y el riesgo","Porque los bancos cobran comisiones"], ans:2, exp:"La tasa de descuento = costo de oportunidad + prima de riesgo. Ambos factores hacen que el dinero futuro valga menos hoy." },
+
+  // INTERÉS SIMPLE
+  { cat:"Interés Simple", q:"¿Sobre qué base se calculan los intereses en el sistema simple?", opts:["Sobre el capital + intereses acumulados","Siempre sobre el capital inicial","Sobre el valor futuro","Sobre el promedio entre capital e intereses"], ans:1, exp:"En interés simple, siempre se calcula sobre el capital inicial (Po), sin importar los intereses que se hayan acumulado." },
+  { cat:"Interés Simple", q:"¿Cuál es la fórmula del Valor Futuro con interés simple?", opts:["Vf = Po × (1 + i)^n","Vf = Po × [1 + i × n]","Vf = Po / [1 + i × n]","Vf = Po × i × n"], ans:1, exp:"Vf = Po × [1 + i × n]. El crecimiento es lineal porque siempre se calcula sobre el mismo capital." },
+  { cat:"Interés Simple", q:"Con interés simple al 10% anual, ¿cuánto vale en 3 años un capital de $1.000?", opts:["$1.331","$1.300","$1.100","$1.210"], ans:1, exp:"Vf = $1.000 × [1 + 0,10 × 3] = $1.000 × 1,30 = $1.300." },
+
+  // INTERÉS COMPUESTO
+  { cat:"Interés Compuesto", q:"¿Qué significa 'capitalizar' en el contexto del interés compuesto?", opts:["Pagar los intereses al vencimiento","Sumar los intereses al capital para que también generen intereses","Dividir el capital en cuotas","Calcular la tasa efectiva anual"], ans:1, exp:"Capitalizar = sumar los intereses al capital. A partir de ese momento, esos intereses también generan nuevos intereses → efecto exponencial." },
+  { cat:"Interés Compuesto", q:"Si pagás los intereses cada mes en un sistema compuesto, ¿pasa a ser interés simple?", opts:["Sí, si pagás los intereses es simple","No necesariamente — la fórmula puede seguir siendo compuesta","Sí, siempre que pagues a tiempo","Depende de la tasa"], ans:1, exp:"Pagar los intereses evita que se sumen al capital, pero la fórmula usada para calcularlos puede seguir siendo compuesta." },
+  { cat:"Interés Compuesto", q:"¿Cuál es la fórmula del Valor Futuro con interés compuesto?", opts:["Vf = Po × [1 + i × n]","Vf = Po × (1 + i/m)^(m×n)","Vf = Po / (1 + i)^n","Vf = Po × e^(i×n)"], ans:1, exp:"Vf = Po × (1 + i/m)^(m×n), donde m es el número de capitalizaciones por período." },
+  { cat:"Interés Compuesto", q:"¿Cuál sistema genera más intereses en el largo plazo?", opts:["Interés simple","Interés compuesto","Son exactamente iguales","Depende de la tasa"], ans:1, exp:"El interés compuesto crece exponencialmente porque los intereses generan más intereses. La diferencia se amplía cuanto más largo es el plazo." },
+
+  // TNA TEA CFT
+  { cat:"TNA · TEA · CFT", q:"¿Qué representa la TNA?", opts:["La tasa real que pagás en el año","Un valor de referencia que no representa la tasa real","El costo total incluyendo comisiones","La tasa diaria multiplicada por 365"], ans:1, exp:"La TNA es solo una referencia para el cálculo. No representa la tasa real porque no considera el efecto de la capitalización periódica." },
+  { cat:"TNA · TEA · CFT", q:"¿Cuál es la fórmula para convertir TNA a TEA?", opts:["TEA = TNA × m","TEA = (1 + TNA/m)^m − 1","TEA = TNA / m","TEA = (1 + TNA)^m − 1"], ans:1, exp:"TEA = (1 + TNA/m)^m − 1, donde m es el número de capitalizaciones por año." },
+  { cat:"TNA · TEA · CFT", q:"Una TNA del 12% con capitalización mensual equivale a una TEA de:", opts:["12,00%","12,36%","12,68%","11,39%"], ans:2, exp:"TEA = (1 + 0,12/12)^12 − 1 = (1,01)^12 − 1 = 12,68%." },
+  { cat:"TNA · TEA · CFT", q:"¿Qué incluye el CFT que no incluye la TEA?", opts:["El efecto de la capitalización","Comisiones, seguros y gastos administrativos","La tasa de inflación","El impuesto a las ganancias"], ans:1, exp:"CFT = TEA + comisiones + seguros + gastos. Es la tasa más completa y realista para comparar préstamos." },
+  { cat:"TNA · TEA · CFT", q:"Para comparar dos préstamos de distintos bancos, ¿qué tasa debés mirar?", opts:["TNA — porque es la que publicitan","TEA — porque es la tasa real","CFT — porque incluye todos los costos","La tasa mensual"], ans:2, exp:"El CFT incluye todo: TEA + comisiones + seguros + gastos. Es el único indicador que permite una comparación real entre préstamos." },
+
+  // VALOR PRESENTE
+  { cat:"Valor Presente", q:"¿Qué es el Valor Presente de un flujo futuro?", opts:["El valor nominal que vas a recibir","Cuánto vale HOY una cantidad que recibirás en el futuro","El valor nominal más los intereses acumulados","El valor máximo que puede tener el dinero"], ans:1, exp:"VP es cuánto vale hoy ese dinero futuro, descontado por la tasa de interés. Cuanto más lejos en el tiempo, menos vale hoy." },
+  { cat:"Valor Presente", q:"¿Qué es la perpetuidad?", opts:["Un préstamo a 30 años","Una corriente de pagos que dura para siempre (n → ∞)","Una anualidad con pagos crecientes","Un bono sin tasa de interés"], ans:1, exp:"La perpetuidad es como una anualidad infinita. VP = C / (i − g). Se usa para proyectos de muy largo plazo." },
+  { cat:"Valor Presente", q:"Te prometen $500 por año durante 4 años, tasa 10%. La fórmula de anualidad da exactamente el mismo resultado que:", opts:["Sumar $500 × 4","Calcular VP de cada pago individualmente y sumarlos","Multiplicar $500 por la tasa","Dividir $500 por la tasa"], ans:1, exp:"La fórmula de anualidad es un atajo matemático que da exactamente el mismo resultado que calcular VP = C/(1+i) + C/(1+i)² + ... + C/(1+i)^n." },
+
+  // AMORTIZACIÓN
+  { cat:"Amortización", q:"¿Qué compone cada cuota de un préstamo?", opts:["Solo intereses hasta el final","Amortización (capital) + Interés","Capital fijo + comisiones","Interés compuesto únicamente"], ans:1, exp:"Cuota = Amortización + Interés. La amortización devuelve capital (Estado Patrimonial) y el interés es el costo del dinero (Estado de Resultados, deducible de impuestos)." },
+  { cat:"Amortización", q:"En el sistema francés, ¿qué es constante?", opts:["La amortización","El interés","La cuota total","El saldo de la deuda"], ans:2, exp:"En el sistema francés la cuota es constante. El interés decrece (porque baja el saldo) y la amortización aumenta para compensar." },
+  { cat:"Amortización", q:"En el sistema alemán, ¿qué es constante?", opts:["La cuota total","El interés","La amortización","El saldo final de cada período"], ans:2, exp:"En el alemán la amortización es constante (= VA/n). Como el interés decrece, la cuota total también va bajando." },
+  { cat:"Amortización", q:"¿Cuál sistema conviene si pensás cancelar el préstamo antes de tiempo?", opts:["Francés — porque la cuota es constante","Alemán — porque amortizás capital más rápido al inicio","Americano — porque pagás poco al principio","Todos son equivalentes para cancelación anticipada"], ans:1, exp:"En el alemán amortizás capital en forma constante desde el principio. Si cancelás antes, ya devolviste más capital y ahorrás más intereses futuros." },
+  { cat:"Amortización", q:"En el sistema americano, ¿cuándo se paga el capital?", opts:["En cuotas iguales desde el inicio","En la primera cuota","Todo junto al final del período","En la mitad del plazo"], ans:3, exp:"En el americano solo pagás intereses durante todo el período. El capital se paga TODO JUNTO al final. Es el menos usado." },
+  { cat:"Amortización", q:"A la mitad del plazo de un préstamo alemán, ¿cuánto debés?", opts:["Más de la mitad","Menos de la mitad","Exactamente la mitad","Depende de la tasa"], ans:2, exp:"En el alemán la amortización es constante, entonces a mitad del plazo debés exactamente la mitad. En el francés debés un poco más de la mitad." },
+  { cat:"Amortización", q:"Los intereses de un préstamo van al Estado de Resultados porque:", opts:["Son un activo de la empresa","Son deducibles del impuesto a las ganancias y representan un costo","Son parte del patrimonio neto","La ley lo exige para todos los préstamos"], ans:1, exp:"Los intereses se restan de las utilidades ANTES de calcular el impuesto a las ganancias → reducen la base imponible → escudo fiscal." },
+
+  // MESES DE GRACIA
+  { cat:"Meses de Gracia", q:"¿Qué es un mes de gracia en un préstamo?", opts:["Un mes donde no se cobran intereses","Un período inicial donde no se paga la cuota completa","Un mes extra que te dan para pagar sin multa","Una reducción en la tasa de interés"], ans:1, exp:"Los meses de gracia son un período inicial donde el deudor no paga la cuota completa. Puede ser parcial (solo intereses) o total (no paga nada)." },
+  { cat:"Meses de Gracia", q:"En la gracia PARCIAL, ¿qué pasa con el saldo de la deuda?", opts:["Aumenta porque los intereses se capitalizan","Disminuye porque pagás algo","Se mantiene igual","Disminuye a la mitad"], ans:2, exp:"En gracia parcial pagás los intereses pero no amortizás capital → el saldo se mantiene igual. En gracia total el saldo AUMENTA porque los intereses se capitalizan." },
+  { cat:"Meses de Gracia", q:"¿Cuál tipo de gracia termina siendo más costosa para el deudor?", opts:["Gracia parcial","Gracia total","Ambas cuestan lo mismo","Depende de la tasa"], ans:1, exp:"La gracia total es más costosa porque los intereses no pagados se capitalizan → aumentan la deuda → la cuota posterior es más alta." },
+  { cat:"Meses de Gracia", q:"Con gracia total, el nuevo saldo al terminar los meses de gracia se calcula como:", opts:["Saldo original − intereses","Saldo original + intereses simples","Saldo original × (1 + i)^meses","Saldo original / (1 + i)^meses"], ans:2, exp:"Nuevo saldo = Saldo original × (1 + i)^meses_de_gracia. Los intereses se capitalizan sobre el saldo completo." },
+];
+
+let queue=[], current=0, correct=0, wrong=0, answered=false, mode=10;
+let wrongIds = JSON.parse(localStorage.getItem('wrongIdsU6')||'[]');
+
+function selectMode(el) {
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected'); mode=el.dataset.mode;
+}
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+
+function startQuiz(){
+  let pool;
+  if(mode==='err'){
+    pool=BANK.filter((_,i)=>wrongIds.includes(i));
+    if(!pool.length){ alert('¡No tenés errores guardados! Completá un repaso primero.'); return; }
+  } else {
+    pool=shuffle(BANK.map((q,i)=>({...q,origIdx:i})));
+    if(mode!=='999') pool=pool.slice(0,parseInt(mode));
+  }
+  queue=pool; current=0; correct=0; wrong=0;
+  document.getElementById('start-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered=false;
+  const q=queue[current], total=queue.length;
+  document.getElementById('q-counter').textContent=`Pregunta ${current+1} de ${total}`;
+  document.getElementById('q-score').textContent=`✓ ${correct}   ✗ ${wrong}`;
+  document.getElementById('progress-fill').style.width=`${(current/total)*100}%`;
+  document.getElementById('q-category').textContent=q.cat;
+  document.getElementById('q-text').textContent=q.q;
+  const opts=document.getElementById('q-options');
+  opts.innerHTML='';
+  const letters=['A','B','C','D'];
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option';
+    btn.innerHTML=`<span class="letter">${letters[i]}</span><span>${o}</span>`;
+    btn.onclick=()=>selectAnswer(btn,i===q.ans,q);
+    opts.appendChild(btn);
+  });
+  document.getElementById('q-feedback').className='feedback';
+  document.getElementById('btn-next').className='btn-next';
+  document.getElementById('q-card').style.animation='none';
+  requestAnimationFrame(()=>{ document.getElementById('q-card').style.animation=''; });
+}
+
+function selectAnswer(btn,isCorrect,q){
+  if(answered) return; answered=true;
+  document.querySelectorAll('.option').forEach(o=>o.disabled=true);
+  if(isCorrect){ btn.classList.add('correct'); correct++; }
+  else {
+    btn.classList.add('wrong'); wrong++;
+    document.querySelectorAll('.option').forEach((o,i)=>{ if(i===q.ans) o.classList.add('correct'); });
+    if(!wrongIds.includes(q.origIdx)){ wrongIds.push(q.origIdx); localStorage.setItem('wrongIdsU6',JSON.stringify(wrongIds)); }
+  }
+  const fb=document.getElementById('q-feedback');
+  fb.className=`feedback show ${isCorrect?'ok':'bad'}`;
+  fb.innerHTML=`<strong>${isCorrect?'✓ Correcto':'✗ Incorrecto'}</strong> — ${q.exp}`;
+  document.getElementById('q-score').textContent=`✓ ${correct}   ✗ ${wrong}`;
+  const bn=document.getElementById('btn-next');
+  bn.className='btn-next show';
+  bn.textContent=current+1<queue.length?'Siguiente →':'Ver resultados →';
+}
+
+function nextQuestion(){ current++; current>=queue.length?showResults():renderQuestion(); }
+
+function showResults(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('results-screen').className='results show';
+  const total=queue.length, pct=Math.round(correct/total*100);
+  document.getElementById('score-pct').textContent=pct+'%';
+  document.getElementById('r-correct').textContent=correct;
+  document.getElementById('r-wrong').textContent=wrong;
+  document.getElementById('r-total').textContent=total;
+  setTimeout(()=>{
+    const c=document.getElementById('score-circle');
+    c.style.transition='stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)';
+    c.style.strokeDashoffset=364.4-(pct/100)*364.4;
+  },100);
+  const titles=[
+    [100,'¡Perfecto! 🎉','Dominás toda la Unidad 6. Sos un crack del valor del dinero.'],
+    [80,'¡Muy bien! 💪','Sólido dominio del tema. Repasá los errores y quedás listo.'],
+    [60,'Bien, pero podés más 📖','Algunos conceptos necesitan refuerzo. ¡Volvé a intentarlo!'],
+    [0,'Hay que repasar 📚','No te preocupes, volvé a los apuntes y probá de nuevo.'],
+  ];
+  const [,t,m]=titles.find(([min])=>pct>=min);
+  document.getElementById('result-title').textContent=t;
+  document.getElementById('result-msg').textContent=m;
+}
+
+function restart(){
+  document.getElementById('results-screen').className='results';
+  document.getElementById('start-screen').style.display='block';
+  document.getElementById('quiz-screen').style.display='none';
+  const c=document.getElementById('score-circle');
+  c.style.transition='none'; c.style.strokeDashoffset='364.4';
+}
+</script>
+</body>
+</html>
