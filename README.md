@@ -12,9 +12,9 @@ Bienvenido a mi espacio personal donde paso en limpio los conceptos de la materi
 
 | | Enlace |
 |---|---|
-| 📄 Resumen Markdown | [Ver resumen](./Unidad%201%20introducción-%20Valor%20del%20.../Resumen.md) |
-| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%201%20introducci%C3%B3n-%20Valor%20del%20.../) |
-| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%201%20introducci%C3%B3n-%20Valor%20del%20.../Repaso.html) |
+| 📄 Resumen Markdown | [Ver resumen](./Unidad%201%20introduccion-%20Valor%20del%20Dinero%20en%20el%20Tiempo/Resumen.md) |
+| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%201%20introduccion-%20Valor%20del%20Dinero%20en%20el%20Tiempo/) |
+| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%201%20introduccion-%20Valor%20del%20Dinero%20en%20el%20Tiempo/Repaso.html) |
 
 ---
 
@@ -22,9 +22,9 @@ Bienvenido a mi espacio personal donde paso en limpio los conceptos de la materi
 
 | | Enlace |
 |---|---|
-| 📄 Resumen Markdown | [Ver resumen](./Unidad%202%20-%20Estados%20financieros/Resumen.md) |
-| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%202%20-%20Estados%20financieros/) |
-| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%202%20-%20Estados%20financieros/Repaso.html) |
+| 📄 Resumen Markdown | [Ver resumen](./Unidad%202%20-Estados%20financieros/Resumen.md) |
+| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%202%20-Estados%20financieros/) |
+| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%202%20-Estados%20financieros/Repaso.html) |
 
 ---
 
