@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego · Unidad II Estados Financieros</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f14; --bg2: #16181f; --bg3: #1e2029;
+    --border: rgba(255,255,255,.08); --border2: rgba(255,255,255,.15);
+    --text: #eceef5; --muted: #8a8fa8; --dim: #4a4f66;
+    --green: #22c55e; --green-bg: rgba(34,197,94,.12); --green-b: rgba(34,197,94,.3);
+    --red: #ef4444; --red-bg: rgba(239,68,68,.12); --red-b: rgba(239,68,68,.3);
+    --blue: #60a5fa; --blue-bg: rgba(96,165,250,.12);
+    --amber: #f59e0b; --amber-bg: rgba(245,158,11,.12);
+    --purple: #a78bfa; --purple-bg: rgba(167,139,250,.12);
+    --font: 'Outfit', sans-serif; --mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  /* SCREENS */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+
+  /* HOME SCREEN */
+  .home-box { max-width: 480px; width: 100%; text-align: center; }
+  .logo { font-size: 48px; margin-bottom: 20px; }
+  .home-title { font-size: 32px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 8px; }
+  .home-title span { color: var(--blue); }
+  .home-sub { color: var(--muted); margin-bottom: 32px; font-size: 16px; }
+  .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .mode-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 16px; cursor: pointer;
+    transition: all .15s; text-align: left;
+  }
+  .mode-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .mode-card.selected { border-color: var(--blue); background: var(--blue-bg); }
+  .mode-icon { font-size: 28px; margin-bottom: 10px; }
+  .mode-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .mode-desc { font-size: 12px; color: var(--muted); }
+  .count-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 28px; flex-wrap: wrap; }
+  .count-btn {
+    padding: 8px 20px; border-radius: 20px; border: 1px solid var(--border2);
+    background: var(--bg2); color: var(--muted); font-family: var(--font);
+    font-size: 13px; cursor: pointer; transition: all .15s;
+  }
+  .count-btn:hover, .count-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .start-btn {
+    width: 100%; padding: 16px; border-radius: 14px; border: none;
+    background: var(--text); color: var(--bg); font-family: var(--font);
+    font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity .15s;
+  }
+  .start-btn:hover { opacity: .88; }
+
+  /* GAME SCREEN */
+  .game-wrap { max-width: 640px; width: 100%; }
+  .game-top { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .progress-track { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; }
+  .progress-fill { height: 100%; border-radius: 3px; background: var(--blue); transition: width .4s; }
+  .score-badge {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600;
+    white-space: nowrap;
+  }
+  .timer-badge {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600;
+    min-width: 60px; text-align: center;
+  }
+  .timer-badge.low { border-color: var(--red-b); color: var(--red); }
+  .quit-btn { background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: var(--font); font-size: 12px; padding: 6px 10px; cursor: pointer; }
+  .quit-btn:hover { border-color: var(--border2); color: var(--text); }
+
+  .q-num { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 10px; }
+  .q-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; }
+  .q-text { font-size: 19px; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+  .q-hint { font-size: 13px; color: var(--muted); margin-bottom: 24px; font-family: var(--mono); background: var(--bg3); padding: 10px 14px; border-radius: 8px; }
+
+  .options { display: grid; gap: 10px; margin-bottom: 20px; }
+  .opt {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 18px; cursor: pointer;
+    font-size: 14px; font-weight: 500; transition: all .15s;
+    display: flex; align-items: center; gap: 12px;
+    text-align: left;
+  }
+  .opt:hover:not(.disabled) { border-color: var(--border2); background: var(--bg3); }
+  .opt .opt-letter { width: 28px; height: 28px; border-radius: 8px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; transition: all .15s; }
+  .opt.correct { border-color: var(--green-b); background: var(--green-bg); }
+  .opt.correct .opt-letter { background: var(--green); color: #000; }
+  .opt.wrong { border-color: var(--red-b); background: var(--red-bg); }
+  .opt.wrong .opt-letter { background: var(--red); color: #fff; }
+  .opt.disabled { cursor: default; }
+
+  /* FUENTE/USO DRAG GAME */
+  .drag-list { display: grid; gap: 8px; }
+  .drag-item {
+    background: var(--bg2); border: 1.5px dashed var(--border2);
+    border-radius: 10px; padding: 12px 16px; cursor: grab;
+    font-size: 13.5px; font-weight: 500; transition: all .15s;
+    display: flex; align-items: center; gap: 10px; user-select: none;
+  }
+  .drag-item:hover { border-color: var(--blue); background: var(--blue-bg); }
+  .drag-item.dragging { opacity: .4; }
+  .drop-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .drop-zone {
+    border: 1.5px dashed var(--border2); border-radius: 12px; padding: 14px;
+    min-height: 120px; transition: all .15s;
+  }
+  .drop-zone.over { border-color: var(--blue); background: var(--blue-bg); }
+  .drop-zone-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+  .drop-zone.fuente .drop-zone-label { color: var(--green); }
+  .drop-zone.uso .drop-zone-label { color: var(--red); }
+  .dropped-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 12.5px; margin-bottom: 6px; cursor: pointer; }
+  .check-drag-btn {
+    width: 100%; padding: 13px; margin-top: 14px; border-radius: 12px; border: none;
+    background: var(--blue); color: #000; font-family: var(--font); font-size: 14px;
+    font-weight: 700; cursor: pointer; transition: opacity .15s;
+  }
+  .check-drag-btn:hover { opacity: .88; }
+
+  /* FEEDBACK */
+  .feedback {
+    display: none; padding: 14px 18px; border-radius: 12px; margin-bottom: 16px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .feedback.show { display: block; animation: slideIn .2s ease; }
+  .feedback.ok { background: var(--green-bg); border: 1px solid var(--green-b); }
+  .feedback.bad { background: var(--red-bg); border: 1px solid var(--red-b); }
+  .feedback strong { color: var(--text); }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+  .next-btn {
+    width: 100%; padding: 14px; border-radius: 12px; border: none;
+    background: var(--text); color: var(--bg); font-family: var(--font);
+    font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .15s; display: none;
+  }
+  .next-btn.show { display: block; }
+  .next-btn:hover { opacity: .88; }
+
+  /* RESULTS SCREEN */
+  .results-box { max-width: 520px; width: 100%; text-align: center; }
+  .result-emoji { font-size: 64px; margin-bottom: 16px; }
+  .result-title { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+  .result-sub { color: var(--muted); margin-bottom: 28px; }
+  .score-big { font-size: 56px; font-weight: 800; margin-bottom: 6px; }
+  .score-big span { font-size: 24px; color: var(--muted); font-weight: 400; }
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .stat-val { font-size: 22px; font-weight: 700; }
+  .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .result-btn {
+    width: 100%; padding: 14px; border-radius: 12px; border: none; margin-bottom: 10px;
+    font-family: var(--font); font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .15s;
+  }
+  .result-btn.primary { background: var(--text); color: var(--bg); }
+  .result-btn.secondary { background: var(--bg2); color: var(--text); border: 1px solid var(--border2); }
+  .result-btn:hover { opacity: .88; }
+
+  .wrong-list { text-align: left; margin-bottom: 24px; }
+  .wrong-item { background: var(--bg2); border: 1px solid var(--red-b); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; font-size: 13px; }
+  .wrong-q { color: var(--muted); margin-bottom: 4px; }
+  .wrong-correct { color: var(--green); font-weight: 500; }
+
+  @media (max-width: 500px) {
+    .mode-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .drop-zones { grid-template-columns: 1fr; }
+    .q-text { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="home-box">
+    <div class="logo">🎮</div>
+    <h1 class="home-title">Repaso <span>Unidad II</span></h1>
+    <p class="home-sub">Estados Financieros · Ratios · Flujo de Efectivo</p>
+
+    <div class="mode-grid">
+      <div class="mode-card selected" onclick="selectMode('mc', this)">
+        <div class="mode-icon">🔤</div>
+        <div class="mode-name">Opción múltiple</div>
+        <div class="mode-desc">Elegí la respuesta correcta</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('truefalse', this)">
+        <div class="mode-icon">⚖️</div>
+        <div class="mode-name">Verdadero / Falso</div>
+        <div class="mode-desc">¿Es correcto o no?</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('fuentes', this)">
+        <div class="mode-icon">🗂️</div>
+        <div class="mode-name">Fuentes y Usos</div>
+        <div class="mode-desc">Clasificá las cuentas</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('mixed', this)">
+        <div class="mode-icon">🎲</div>
+        <div class="mode-name">Modo mixto</div>
+        <div class="mode-desc">Todos los tipos mezclados</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Cantidad de preguntas</div>
+    <div class="count-row">
+      <button class="count-btn active" onclick="selectCount(10, this)">10</button>
+      <button class="count-btn" onclick="selectCount(20, this)">20</button>
+      <button class="count-btn" onclick="selectCount(30, this)">30</button>
+      <button class="count-btn" onclick="selectCount(999, this)">Todas</button>
+    </div>
+
+    <button class="start-btn" onclick="startGame()">Empezar ▶</button>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-wrap">
+    <div class="game-top">
+      <button class="quit-btn" onclick="goHome()">← Salir</button>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="score-badge" id="score-badge">0 pts</div>
+      <div class="timer-badge" id="timer-badge">30s</div>
+    </div>
+    <div id="question-area"></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div class="results-box">
+    <div class="result-emoji" id="res-emoji">🏆</div>
+    <h2 class="result-title" id="res-title">¡Excelente!</h2>
+    <p class="result-sub" id="res-sub">Terminaste el repaso</p>
+    <div class="score-big" id="res-score">0 <span>pts</span></div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val" id="s-correct" style="color:var(--green)">0</div><div class="stat-lbl">Correctas</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-wrong" style="color:var(--red)">0</div><div class="stat-lbl">Incorrectas</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-pct">0%</div><div class="stat-lbl">Precisión</div></div>
+    </div>
+    <div class="wrong-list" id="wrong-list"></div>
+    <button class="result-btn primary" onclick="startGame()">Jugar de nuevo</button>
+    <button class="result-btn secondary" onclick="goHome()">Cambiar modo</button>
+  </div>
+</div>
+
+<script>
+// ── BANCO DE PREGUNTAS ──
+const ALL_QUESTIONS = [
+  // OPCIÓN MÚLTIPLE
+  {type:'mc', topic:'ER', tag:'🟢 Estado de Resultados',
+   q:'¿Qué mide el EBIT (Resultado Operativo)?',
+   opts:['El resultado que generan los activos independientemente de cómo se financió la empresa','El resultado final después de impuestos','La utilidad bruta antes de todos los costos','El resultado antes de depreciaciones únicamente'],
+   ans:0, exp:'El EBIT (Earnings Before Interest and Taxes) representa lo que generan los activos sin importar si la empresa se financió con deuda o capital propio. Es uno de los más importantes para análisis.'},
+
+  {type:'mc', topic:'ER', tag:'🟢 Estado de Resultados',
+   q:'Las depreciaciones y amortizaciones en el Estado de Resultados...',
+   opts:['No implican salida real de dinero, son ajustes contables','Implican una salida real de efectivo cada período','Son iguales a los gastos de producción','Solo aplican a activos intangibles'],
+   ans:0, exp:'Las D&A son cuentas contables que reflejan la pérdida de valor de activos (fijos para dep., intangibles para amort.). No hay movimiento real de dinero. Por eso, en el flujo de efectivo, se SUMAN de vuelta (son fuente de fondos).'},
+
+  {type:'mc', topic:'ER', tag:'🟢 Estado de Resultados',
+   q:'¿Qué criterio usa el Estado de Resultados para registrar ingresos?',
+   opts:['Criterio del devengado (cuando ocurre, no cuando entra el dinero)','Criterio percibido (cuando efectivamente entra el dinero)','Criterio de caja (solo movimientos bancarios)','Criterio de liquidez (cuando el activo se convierte en efectivo)'],
+   ans:0, exp:'El ER usa el criterio del devengado: registra ingresos y egresos cuando ocurren económicamente, aunque el dinero no haya entrado o salido todavía.'},
+
+  {type:'mc', topic:'ESP', tag:'🔵 Situación Patrimonial',
+   q:'¿Cuál es la ecuación fundamental del Estado de Situación Patrimonial?',
+   opts:['Activo = Pasivo + Patrimonio Neto','Activo = Ventas - Costos','Patrimonio Neto = Pasivo - Activo','Activo Corriente = Pasivo Corriente'],
+   ans:0, exp:'La ecuación básica es: Activo = Pasivo + PN. Equivalentemente: PN = Activo - Pasivo. El activo muestra en qué se usó el dinero; el pasivo y PN muestran cómo se financió.'},
+
+  {type:'mc', topic:'ESP', tag:'🔵 Situación Patrimonial',
+   q:'¿Qué son los Activos Corrientes?',
+   opts:['Activos que se convierten en efectivo en menos de 12 meses','Activos que duran más de un año','Activos intangibles de la empresa','Solo el dinero en caja y bancos'],
+   ans:0, exp:'Los Activos Corrientes (o de CP) son aquellos que se espera se conviertan en efectivo en un plazo de hasta 12 meses: caja, bancos, cuentas por cobrar, inventarios.'},
+
+  {type:'mc', topic:'ESP', tag:'🔵 Situación Patrimonial',
+   q:'¿Por qué el Patrimonio Neto aparece al final del ESP?',
+   opts:['Porque es el de menor exigibilidad (los socios cobran al último)','Porque es el más importante','Porque es el más fácil de calcular','Por convención internacional sin lógica financiera'],
+   ans:0, exp:'El orden del pasivo es de mayor a menor exigibilidad. El PN es el menos exigible: los socios reciben lo que queda después de pagar a todos los acreedores.'},
+
+  {type:'mc', topic:'Ratios', tag:'📐 Ratios',
+   q:'Si el Ratio de Liquidez Corriente es 0,90, ¿qué significa?',
+   opts:['La empresa no tiene suficiente liquidez (genera 90 centavos por cada peso de deuda)','La empresa tiene buena liquidez (90%)','La empresa tiene exceso de liquidez','El ratio es óptimo según los parámetros teóricos'],
+   ans:0, exp:'⚠️ Siempre leer en fracciones, no como porcentaje. Si R = 0,90 → por cada $1 de deuda a enfrentar, la empresa generaría solo $0,90 → NO tiene suficiente liquidez.'},
+
+  {type:'mc', topic:'Ratios', tag:'📐 Ratios',
+   q:'¿Por qué el Ratio de Liquidez Corriente no debe superar 2?',
+   opts:['Porque tener exceso de liquidez implica dinero ocioso que no genera rentabilidad','Porque la ley lo prohíbe','Porque generaría más deuda','Porque los proveedores no aceptan ratios mayores'],
+   ans:0, exp:'Buscamos el equilibrio entre rentabilidad y riesgo. Si tengo R > 2, tengo mucho efectivo que podría estar invertido generando retorno. Dinero parado pierde valor.'},
+
+  {type:'mc', topic:'Ratios', tag:'📐 Ratios',
+   q:'¿Qué mide el ROE (Return on Equity)?',
+   opts:['Cuán rentable es la empresa para sus accionistas','El rendimiento total sobre todos los activos','El costo promedio del capital','La relación entre ventas y activos'],
+   ans:0, exp:'ROE = Resultado Final / PN × 100. Mide la rentabilidad para los accionistas. Se puede descomponer como ROA × Palanca Financiera (efecto DuPont).'},
+
+  {type:'mc', topic:'Ratios', tag:'📐 Ratios',
+   q:'¿Cuándo conviene que una empresa se endeude?',
+   opts:['Cuando el costo de la deuda es menor que la rentabilidad generada Y puede pagarlo con su flujo','Siempre que tenga activos suficientes para garantizar','Nunca, la deuda siempre es perjudicial','Cuando el ROE es negativo'],
+   ans:0, exp:'Endeudarse es bueno si: 1) costo de la deuda < rentabilidad generada por esos fondos y 2) la empresa puede pagar la deuda con su flujo de ingresos.'},
+
+  {type:'mc', topic:'EFE', tag:'💸 Flujo de Efectivo',
+   q:'¿En qué tipo de flujo clasificás la compra de una maquinaria?',
+   opts:['Flujo de inversión','Flujo operativo','Flujo de financiamiento','Flujo de capital'],
+   ans:0, exp:'Las compras y ventas de activos fijos son flujos de INVERSIÓN. Comprar = salida de efectivo (uso). Vender = entrada de efectivo (fuente).'},
+
+  {type:'mc', topic:'EFE', tag:'💸 Flujo de Efectivo',
+   q:'¿Qué son los "equivalentes de efectivo" en el Flujo de Efectivo?',
+   opts:['Inversiones que se convierten en efectivo en menos de 90 días','Todo el activo corriente','Las cuentas por cobrar de clientes','Solo los depósitos bancarios'],
+   ans:0, exp:'Los equivalentes de efectivo son instrumentos muy líquidos: plazos fijos cortos, bonos o letras a corto plazo, que se vuelven efectivo en menos de 90 días.'},
+
+  {type:'mc', topic:'EFE', tag:'💸 Flujo de Efectivo',
+   q:'Si las Cuentas por Cobrar disminuyen, ¿es fuente o uso?',
+   opts:['FUENTE: la empresa cobró lo que le debían, liberando fondos','USO: la empresa invirtió más en créditos','Ni fuente ni uso: no afecta el efectivo','Depende del saldo inicial'],
+   ans:0, exp:'Si un Activo disminuye → la empresa liberó fondos que puede usar para otro destino → es FUENTE. Cobró lo que le debían.'},
+
+  {type:'mc', topic:'EFE', tag:'💸 Flujo de Efectivo',
+   q:'El pago de dividendos en efectivo clasifica como...',
+   opts:['USO de fondos en los flujos de financiamiento','FUENTE de fondos operativos','USO en los flujos de inversión','No afecta el estado de flujo'],
+   ans:0, exp:'Pagar dividendos es devolver dinero a los accionistas → es una SALIDA de fondos (USO), y pertenece al flujo de FINANCIAMIENTO.'},
+
+  {type:'mc', topic:'EVA', tag:'📊 Análisis avanzado',
+   q:'Si el ROIC es 10% y el WACC es 12%, la empresa...',
+   opts:['Está destruyendo valor, aunque tenga ganancias','Está creando valor para los accionistas','Tiene el desempeño óptimo','Tiene exceso de rentabilidad'],
+   ans:0, exp:'EVA = CI × (ROIC − WACC). Si ROIC < WACC → EVA negativo → la empresa DESTRUYE VALOR. Aunque haya ganancias, el capital rinde menos de lo que cuesta financiarlo.'},
+
+  {type:'mc', topic:'Analisis', tag:'📊 Análisis de Estados',
+   q:'¿Cuál es la diferencia entre análisis estático y dinámico?',
+   opts:['Estático: un solo ESP (foto). Dinámico: dos o más ESP comparados (película)','Estático: solo activos. Dinámico: activos y pasivos','Estático: sin ratios. Dinámico: con ratios','No hay diferencia, son sinónimos'],
+   ans:0, exp:'Análisis estático = analizo un solo estado patrimonial (como una foto). Dinámico = comparo 2 o más estados en el tiempo (la película). Se hace de a pares: año actual vs. año anterior o año base.'},
+
+  {type:'mc', topic:'Ratios', tag:'📐 Ratios',
+   q:'¿Qué indica la rotación en el ROA?',
+   opts:['Cuántas veces los activos totales se convierten en ventas','El porcentaje de ganancia sobre ventas','El nivel de endeudamiento','La velocidad de cobro a clientes'],
+   ans:0, exp:'Rotación = Ventas / Total de Activos. Indica cuántas veces los activos se "convirtieron" en ventas durante el año. Rotar menos de 1 vez es bajo; más de 1,5 ya es alta rotación.'},
+
+  // VERDADERO / FALSO
+  {type:'tf', topic:'ESP', tag:'🔵 Situación Patrimonial',
+   q:'El Patrimonio Neto es siempre positivo.',
+   ans:false, exp:'Falso. El PN puede ser negativo si el Pasivo supera al Activo. Eso significa que la empresa está técnicamente quebrada (activo < pasivo). Sucede en empresas con pérdidas acumuladas.'},
+
+  {type:'tf', topic:'Ratios', tag:'📐 Ratios',
+   q:'Un Ratio de Endeudamiento de 0,55 es saludable.',
+   ans:true, exp:'Verdadero. El indicador es ≤ 0,60. Un ratio de 0,55 está dentro del límite aceptable, indicando que el 55% de las fuentes son deuda (45% es PN).'},
+
+  {type:'tf', topic:'ER', tag:'🟢 Estado de Resultados',
+   q:'Las depreciaciones implican una salida real de dinero de la empresa.',
+   ans:false, exp:'Falso. Las depreciaciones son un AJUSTE CONTABLE, no una salida real de efectivo. Por eso, en el Flujo de Efectivo se las suma de vuelta a la utilidad neta (son fuente de fondos).'},
+
+  {type:'tf', topic:'EFE', tag:'💸 Flujo de Efectivo',
+   q:'Si un pasivo aumenta, es una fuente de fondos para la empresa.',
+   ans:true, exp:'Verdadero. Si el pasivo aumenta → la empresa dispone de más fondos (ej: el banco le dio más crédito, o los proveedores aumentaron el financiamiento) → FUENTE.'},
+
+  {type:'tf', topic:'Ratios', tag:'📐 Ratios',
+   q:'La liquidez ácida excluye el inventario porque puede ser robado.',
+   ans:false, exp:'Falso. Se excluye el inventario porque PUEDE QUE NO SE VENDA, no por riesgo de robo. La liquidez ácida es más conservadora: solo cuenta lo que con certeza se convertirá en efectivo.'},
+
+  {type:'tf', topic:'EFE', tag:'💸 Flujo de Efectivo',
+   q:'El Estado de Flujo de Efectivo usa el criterio del devengado.',
+   ans:false, exp:'Falso. El EFE usa el criterio PERCIBIDO: registra cuándo efectivamente entra o sale el dinero. El ER usa el criterio del devengado.'},
+
+  {type:'tf', topic:'Ratios', tag:'📐 Ratios',
+   q:'El ROE siempre es mayor o igual al ROA.',
+   ans:true, exp:'Verdadero (cuando hay deuda). ROE = ROA × Palanca Financiera. La palanca = Activo/PN ≥ 1 siempre (siempre que Pasivo ≥ 0). Si hay deuda, PF > 1 → ROE > ROA.'},
+
+  {type:'tf', topic:'EVA', tag:'📊 Análisis avanzado',
+   q:'Una empresa puede tener ganancias y al mismo tiempo destruir valor (EVA negativo).',
+   ans:true, exp:'Verdadero. Si ROIC < WACC, aunque la empresa tenga ganancias contables, está rindiendo menos de lo que cuesta financiarse → destruye valor económico.'},
+
+  {type:'tf', topic:'Analisis', tag:'📊 Análisis de Estados',
+   q:'En el análisis vertical del ER, cada cuenta se divide por el Total de Activos.',
+   ans:false, exp:'Falso. En el análisis vertical del ER, cada cuenta se divide por las VENTAS (no por activos). Las ventas son el 100% de referencia en el ER, ya que es el único ingreso.'},
+];
+
+// PREGUNTAS DE FUENTES Y USOS (modo especial)
+const FUENTE_USO_SETS = [
+  {
+    items: [
+      {label: 'Utilidad neta positiva', correct: 'fuente'},
+      {label: 'Aumento en inventarios', correct: 'uso'},
+      {label: 'Depreciación del ejercicio', correct: 'fuente'},
+      {label: 'Pago de dividendos', correct: 'uso'},
+      {label: 'Cuentas por cobrar que disminuyen', correct: 'fuente'},
+      {label: 'Compra de nueva maquinaria', correct: 'uso'},
+      {label: 'Aumento en cuentas por pagar', correct: 'fuente'},
+      {label: 'Cancelación de deuda LP', correct: 'uso'},
+    ]
+  },
+  {
+    items: [
+      {label: 'Venta de activos fijos', correct: 'fuente'},
+      {label: 'Aumento en cuentas por cobrar', correct: 'uso'},
+      {label: 'Nueva línea de crédito bancario', correct: 'fuente'},
+      {label: 'Inversión en otra empresa', correct: 'uso'},
+      {label: 'Disminución de inventarios', correct: 'fuente'},
+      {label: 'Pérdida neta del período', correct: 'uso'},
+      {label: 'Deuda de LP que aumenta', correct: 'fuente'},
+      {label: 'Compra de terrenos', correct: 'uso'},
+    ]
+  }
+];
+
+// ── STATE ──
+let mode = 'mc';
+let questionCount = 10;
+let questions = [];
+let current = 0;
+let score = 0;
+let correct = 0;
+let wrong = 0;
+let wrongItems = [];
+let timer = null;
+let timeLeft = 30;
+let answered = false;
+
+function selectMode(m, el) {
+  mode = m;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectCount(n, el) {
+  questionCount = n;
+  document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function buildQuestions() {
+  let pool = [];
+  if (mode === 'fuentes') {
+    // Build fuente/uso questions from sets
+    return FUENTE_USO_SETS.map((s, i) => ({type:'fuentes', set:i, setData: s}));
+  }
+  if (mode === 'mc')        pool = ALL_QUESTIONS.filter(q => q.type === 'mc');
+  else if (mode === 'truefalse') pool = ALL_QUESTIONS.filter(q => q.type === 'tf');
+  else pool = [...ALL_QUESTIONS];
+
+  // shuffle
+  pool = pool.sort(() => Math.random() - 0.5);
+  return pool.slice(0, Math.min(questionCount, pool.length));
+}
+
+function startGame() {
+  questions = buildQuestions();
+  current = 0; score = 0; correct = 0; wrong = 0; wrongItems = [];
+  showScreen('screen-game');
+  showQuestion();
+}
+
+function showQuestion() {
+  if (current >= questions.length) { showResults(); return; }
+  answered = false;
+  const q = questions[current];
+  const pct = (current / questions.length) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('score-badge').textContent = score + ' pts';
+
+  const area = document.getElementById('question-area');
+
+  if (q.type === 'mc') renderMC(q, area);
+  else if (q.type === 'tf') renderTF(q, area);
+  else if (q.type === 'fuentes') renderFuentes(q, area);
+
+  startTimer(q.type === 'fuentes' ? 90 : 30);
+}
+
+function renderMC(q, area) {
+  const letters = ['A','B','C','D'];
+  area.innerHTML = `
+    <div class="q-num">Pregunta ${current+1} de ${questions.length}</div>
+    <div class="q-tag" style="background:rgba(96,165,250,.15);color:var(--blue);">${q.tag}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options">
+      ${q.opts.map((o,i) => `
+        <div class="opt" onclick="answerMC(${i}, ${q.ans}, '${escQ(q.exp)}')">
+          <div class="opt-letter">${letters[i]}</div>
+          <span>${o}</span>
+        </div>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="nb" onclick="nextQ()">Siguiente →</button>
+  `;
+}
+
+function renderTF(q, area) {
+  area.innerHTML = `
+    <div class="q-num">Pregunta ${current+1} de ${questions.length}</div>
+    <div class="q-tag" style="background:rgba(167,139,250,.15);color:var(--purple);">${q.tag}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options" style="grid-template-columns:1fr 1fr;">
+      <div class="opt" onclick="answerTF(true, ${q.ans}, '${escQ(q.exp)}')">
+        <div class="opt-letter" style="background:var(--green-bg);color:var(--green);">✓</div>
+        <span>Verdadero</span>
+      </div>
+      <div class="opt" onclick="answerTF(false, ${q.ans}, '${escQ(q.exp)}')">
+        <div class="opt-letter" style="background:var(--red-bg);color:var(--red);">✗</div>
+        <span>Falso</span>
+      </div>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="nb" onclick="nextQ()">Siguiente →</button>
+  `;
+}
+
+function renderFuentes(q, area) {
+  const items = [...q.setData.items].sort(() => Math.random() - 0.5);
+  area.innerHTML = `
+    <div class="q-num">Ejercicio ${current+1} de ${questions.length}</div>
+    <div class="q-tag" style="background:rgba(245,158,11,.15);color:var(--amber);">💸 Fuentes y Usos</div>
+    <div class="q-text">Arrastrá (o hacé clic) para clasificar cada ítem como Fuente o Uso de fondos</div>
+    <div class="drag-list" id="drag-pool">
+      ${items.map((item,i) => `
+        <div class="drag-item" id="di${i}" data-idx="${i}" data-correct="${item.correct}" onclick="clickItem(${i})" draggable="true" ondragstart="dragStart(event,${i})" ondragend="dragEnd(event)">
+          <span>📄</span> ${item.label}
+        </div>`).join('')}
+    </div>
+    <div class="drop-zones">
+      <div class="drop-zone fuente" id="zone-fuente" ondragover="dragOver(event)" ondrop="dropItem(event,'fuente')" ondragleave="dragLeave(event)" onclick="clickZone('fuente')">
+        <div class="drop-zone-label">✅ FUENTE</div>
+        <div id="dropped-fuente"></div>
+      </div>
+      <div class="drop-zone uso" id="zone-uso" ondragover="dragOver(event)" ondrop="dropItem(event,'uso')" ondragleave="dragLeave(event)" onclick="clickZone('uso')">
+        <div class="drop-zone-label">❌ USO</div>
+        <div id="dropped-uso"></div>
+      </div>
+    </div>
+    <button class="check-drag-btn" onclick="checkFuentes()">Verificar clasificación ✓</button>
+    <div class="feedback" id="fb" style="margin-top:12px;"></div>
+    <button class="next-btn" id="nb" onclick="nextQ()">Siguiente →</button>
+  `;
+  window._dragItems = items;
+  window._selectedItem = null;
+}
+
+function escQ(s) { return s.replace(/'/g,"&apos;").replace(/"/g,'&quot;'); }
+
+let dragSrc = null;
+function dragStart(e, idx) { dragSrc = idx; e.target.classList.add('dragging'); }
+function dragEnd(e) { e.target.classList.remove('dragging'); }
+function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('over'); }
+function dragLeave(e) { e.currentTarget.classList.remove('over'); }
+function dropItem(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  if (dragSrc === null) return;
+  moveToZone(dragSrc, zone);
+  dragSrc = null;
+}
+
+let selectedItem = null;
+function clickItem(idx) {
+  const el = document.getElementById('di'+idx);
+  if (!el) return;
+  if (selectedItem === idx) { selectedItem = null; el.style.border = ''; return; }
+  if (selectedItem !== null) {
+    const prev = document.getElementById('di'+selectedItem);
+    if (prev) prev.style.border = '';
+  }
+  selectedItem = idx;
+  el.style.border = '1.5px solid var(--blue)';
+}
+function clickZone(zone) {
+  if (selectedItem === null) return;
+  moveToZone(selectedItem, zone);
+  selectedItem = null;
+}
+function moveToZone(idx, zone) {
+  const poolEl = document.getElementById('di'+idx);
+  if (!poolEl) return;
+  const item = window._dragItems[idx];
+  poolEl.remove();
+  const zoneEl = document.getElementById('dropped-'+zone);
+  const div = document.createElement('div');
+  div.className = 'dropped-item';
+  div.dataset.idx = idx;
+  div.dataset.zone = zone;
+  div.onclick = () => returnToPool(idx, zone, item.label, item.correct);
+  div.innerHTML = `<span style="color:${zone==='fuente'?'var(--green)':'var(--red)'}">↩</span> ${item.label}`;
+  zoneEl.appendChild(div);
+}
+function returnToPool(idx, zone, label, correct) {
+  const zoneEl = document.getElementById('dropped-'+zone);
+  const dropped = zoneEl.querySelector(`[data-idx="${idx}"]`);
+  if (dropped) dropped.remove();
+  const pool = document.getElementById('drag-pool');
+  if (!pool) return;
+  const div = document.createElement('div');
+  div.className = 'drag-item';
+  div.id = 'di'+idx;
+  div.dataset.idx = idx;
+  div.dataset.correct = correct;
+  div.draggable = true;
+  div.onclick = () => clickItem(idx);
+  div.ondragstart = (e) => dragStart(e, idx);
+  div.ondragend = (e) => dragEnd(e);
+  div.innerHTML = `<span>📄</span> ${label}`;
+  pool.appendChild(div);
+}
+
+function checkFuentes() {
+  const items = window._dragItems;
+  let allPlaced = true;
+  items.forEach((item, i) => {
+    if (document.getElementById('di'+i)) allPlaced = false;
+  });
+  if (!allPlaced) {
+    showFeedback(false, 'Clasificá todos los ítems antes de verificar.');
+    return;
+  }
+  let ok = 0; let total = items.length;
+  const wrongs = [];
+  document.querySelectorAll('.dropped-item').forEach(el => {
+    const idx = parseInt(el.dataset.idx);
+    const zone = el.dataset.zone;
+    const item = items[idx];
+    if (zone === item.correct) {
+      el.style.background = 'var(--green-bg)'; el.style.border = '1px solid var(--green-b)'; ok++;
+    } else {
+      el.style.background = 'var(--red-bg)'; el.style.border = '1px solid var(--red-b)';
+      wrongs.push(`"${item.label}" es ${item.correct.toUpperCase()}`);
+    }
+  });
+  if (ok === total) {
+    score += 20; correct++;
+    showFeedback(true, `¡Perfecto! Clasificaste los ${total} ítems correctamente. +20 pts`);
+  } else {
+    wrong++;
+    showFeedback(false, `${ok}/${total} correctos. Errores: ${wrongs.join(' · ')}`);
+    wrongItems.push({q:'Fuentes y Usos (set)', correct: 'Ver tabla de fuentes y usos'});
+  }
+  stopTimer();
+  document.querySelector('.check-drag-btn').disabled = true;
+  document.querySelectorAll('.dropped-item').forEach(el => el.onclick = null);
+  document.getElementById('nb').classList.add('show');
+}
+
+function answerMC(chosen, correct_idx, exp) {
+  if (answered) return;
+  answered = true; stopTimer();
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[correct_idx].classList.add('correct');
+  if (chosen !== correct_idx) {
+    opts[chosen].classList.add('wrong');
+    wrong++;
+    wrongItems.push({q: document.querySelector('.q-text').textContent, correct: document.querySelectorAll('.opt')[correct_idx].querySelector('span').textContent});
+    showFeedback(false, exp);
+  } else {
+    score += 10; correct++;
+    showFeedback(true, exp);
+  }
+  document.getElementById('nb').classList.add('show');
+}
+
+function answerTF(chosen, correct_ans, exp) {
+  if (answered) return;
+  answered = true; stopTimer();
+  document.querySelectorAll('.opt').forEach(o => o.classList.add('disabled'));
+  if (chosen === correct_ans) {
+    score += 10; correct++;
+    showFeedback(true, exp);
+    document.querySelectorAll('.opt')[chosen ? 0 : 1].classList.add('correct');
+  } else {
+    wrong++;
+    wrongItems.push({q: document.querySelector('.q-text').textContent, correct: correct_ans ? 'Verdadero' : 'Falso'});
+    showFeedback(false, exp);
+    document.querySelectorAll('.opt')[chosen ? 0 : 1].classList.add('wrong');
+    document.querySelectorAll('.opt')[correct_ans ? 0 : 1].classList.add('correct');
+  }
+  document.getElementById('nb').classList.add('show');
+}
+
+function showFeedback(ok, msg) {
+  const fb = document.getElementById('fb');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+  fb.innerHTML = (ok ? '✅ <strong>Correcto.</strong> ' : '❌ <strong>Incorrecto.</strong> ') + msg;
+}
+
+function nextQ() { current++; showQuestion(); }
+
+function startTimer(secs) {
+  timeLeft = secs;
+  const el = document.getElementById('timer-badge');
+  el.textContent = timeLeft + 's';
+  el.classList.remove('low');
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    el.textContent = timeLeft + 's';
+    if (timeLeft <= 8) el.classList.add('low');
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      if (!answered) {
+        answered = true;
+        const q = questions[current];
+        if (q.type !== 'fuentes') {
+          wrong++;
+          wrongItems.push({q: document.querySelector('.q-text').textContent, correct: '(tiempo agotado)'});
+          showFeedback(false, '⏰ Se acabó el tiempo. ' + q.exp);
+          document.querySelectorAll('.opt').forEach(o => o.classList.add('disabled'));
+          if (q.type === 'mc') document.querySelectorAll('.opt')[q.ans].classList.add('correct');
+          else document.querySelectorAll('.opt')[q.ans ? 0 : 1].classList.add('correct');
+          document.getElementById('nb').classList.add('show');
+        }
+      }
+    }
+  }, 1000);
+}
+
+function stopTimer() { clearInterval(timer); }
+
+function showResults() {
+  stopTimer();
+  const total = correct + wrong;
+  const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const emojis = ['😅','🙁','😐','😊','🌟','🏆'];
+  const ei = Math.min(Math.floor(pct / 20), 5);
+  const titles = ['Seguí practicando','Casi, casi','Bien encaminado','¡Buen trabajo!','¡Muy bien!','¡Excelente!'];
+
+  document.getElementById('res-emoji').textContent = emojis[ei];
+  document.getElementById('res-title').textContent = titles[ei];
+  document.getElementById('res-sub').textContent = `Completaste ${total} pregunta${total!==1?'s':''}`;
+  document.getElementById('res-score').innerHTML = score + ' <span>pts</span>';
+  document.getElementById('s-correct').textContent = correct;
+  document.getElementById('s-wrong').textContent = wrong;
+  document.getElementById('s-pct').textContent = pct + '%';
+
+  const wl = document.getElementById('wrong-list');
+  if (wrongItems.length > 0) {
+    wl.innerHTML = '<div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">Para repasar:</div>' +
+      wrongItems.slice(0,5).map(w => `
+        <div class="wrong-item">
+          <div class="wrong-q">${w.q.slice(0,80)}${w.q.length>80?'...':''}</div>
+          <div class="wrong-correct">✓ ${w.correct.slice(0,80)}${w.correct.length>80?'...':''}</div>
+        </div>`).join('');
+  } else { wl.innerHTML = ''; }
+
+  showScreen('screen-results');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() { stopTimer(); showScreen('screen-home'); }
+</script>
+</body>
+</html>
