@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Unidad III — Administración Financiera de Corto Plazo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f2f7f5;--bg2:#e4ede9;--bg3:#d4e3dd;
+  --ink:#0d1f1a;--ink2:#3a5a50;--ink3:#7a9a90;
+  --green:#0a6644;--green-bg:#d4f0e4;
+  --red:#8b2020;--red-bg:#fde8e8;
+  --blue:#1a4a8b;--blue-bg:#e0eafa;
+  --gold:#7a5a0a;--gold-bg:#faf0d0;
+  --border:rgba(13,31,26,0.1);--r:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cabinet Grotesk',sans-serif;background:var(--bg);color:var(--ink);padding-bottom:5rem;}
+
+.masthead{background:var(--green);color:white;padding:2rem 2rem 1.5rem;display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:end;}
+.masthead .eye{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.4rem;}
+.masthead h1{font-size:clamp(22px,4vw,38px);font-weight:800;line-height:1.05;}
+.masthead h1 em{font-style:italic;color:#80ffc0;}
+.masthead .meta{font-size:11px;color:rgba(255,255,255,.5);text-align:right;line-height:1.8;}
+
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 1.5rem;position:sticky;top:0;z-index:99;}
+.nav button{font-family:'Fira Code',monospace;font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:12px 14px;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all .2s;}
+.nav button:hover{color:var(--ink);}
+.nav button.active{color:var(--green);border-bottom-color:var(--green);font-weight:700;}
+
+main{max-width:880px;margin:0 auto;padding:2rem 1.5rem;}
+.section{display:none;animation:up .3s ease;}
+.section.active{display:block;}
+@keyframes up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.sec-title{font-size:clamp(18px,3vw,26px);font-weight:800;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:2px solid var(--green);}
+.sec-title em{font-style:italic;color:var(--green);}
+
+.card{background:white;border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.card-label{font-family:'Fira Code',monospace;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:.5rem;}
+.card h3{font-size:17px;font-weight:700;margin-bottom:.5rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr;}}
+
+p.body{font-size:14px;line-height:1.75;color:var(--ink2);margin-bottom:.75rem;}
+ul.list{font-size:14px;line-height:1.75;color:var(--ink2);padding-left:1.25rem;margin-bottom:.75rem;}
+ul.list li{margin-bottom:.3rem;}
+
+.formula{background:var(--bg2);border-left:3px solid var(--green);padding:.6rem 1rem;font-family:'Fira Code',monospace;font-size:13px;color:var(--ink);margin:.75rem 0;border-radius:0 var(--r) var(--r) 0;}
+
+.badge{display:inline-block;font-family:'Fira Code',monospace;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;margin:2px;}
+.b-green{background:var(--green-bg);color:var(--green);}
+.b-red{background:var(--red-bg);color:var(--red);}
+.b-blue{background:var(--blue-bg);color:var(--blue);}
+.b-gold{background:var(--gold-bg);color:var(--gold);}
+
+.note{background:var(--gold-bg);border:1px solid #d4b87a;border-radius:var(--r);padding:.75rem 1rem;font-size:13px;color:var(--gold);margin:.75rem 0;}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0;}
+.tbl th{background:var(--bg2);font-family:'Fira Code',monospace;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;text-align:left;border:1px solid var(--border);}
+.tbl td{padding:7px 10px;border:1px solid var(--border);color:var(--ink2);vertical-align:top;}
+.tbl tr:nth-child(even) td{background:var(--bg);}
+.tbl .ok{color:var(--green);font-weight:700;}
+.tbl .bad{color:var(--red);}
+
+/* CICLO VISUAL */
+.ciclo-wrap{display:flex;align-items:center;gap:0;margin:1rem 0;overflow-x:auto;}
+.ciclo-step{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.75rem .9rem;text-align:center;min-width:100px;flex-shrink:0;}
+.ciclo-step .day{font-family:'Fira Code',monospace;font-size:20px;font-weight:700;color:var(--green);}
+.ciclo-step .lbl{font-size:11px;color:var(--ink3);margin-top:3px;line-height:1.3;}
+.ciclo-arrow{font-size:18px;color:var(--ink3);padding:0 4px;flex-shrink:0;}
+
+/* CALCULADORAS */
+.calc-wrap{background:white;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem;}
+.calc-head{background:var(--ink);color:white;padding:.75rem 1.25rem;font-family:'Fira Code',monospace;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.calc-head .dot{width:7px;height:7px;border-radius:50%;background:#80ffc0;}
+.calc-body{padding:1.25rem 1.5rem;}
+.fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1rem;}
+@media(max-width:560px){.fields{grid-template-columns:1fr 1fr;}}
+.field label{display:block;font-family:'Fira Code',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;}
+.field input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);font-family:'Fira Code',monospace;font-size:13px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .2s;}
+.field input:focus{border-color:var(--green);}
+.btn-calc{padding:10px 24px;border:none;background:var(--green);color:white;font-family:'Fira Code',monospace;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:var(--r);transition:opacity .2s;}
+.btn-calc:hover{opacity:.85;}
+.result-box{display:none;margin-top:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;animation:up .25s ease;}
+.result-box.show{display:block;}
+.result-box .r-label{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px;}
+.result-box .r-value{font-size:26px;font-weight:800;color:var(--green);}
+.result-box .r-detail{font-family:'Fira Code',monospace;font-size:11px;color:var(--ink2);margin-top:6px;line-height:1.8;}
+
+/* POLICY TOGGLE */
+.policy-toggle{display:flex;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1rem;}
+.policy-btn{flex:1;padding:10px;border:none;background:transparent;font-family:'Fira Code',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;color:var(--ink3);}
+.policy-btn.active-agg{background:var(--red-bg);color:var(--red);}
+.policy-btn.active-con{background:var(--green-bg);color:var(--green);}
+.policy-content{display:none;animation:up .25s ease;}
+.policy-content.show{display:block;}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div>
+    <div class="eye">Finanzas de Empresas · 2025</div>
+    <h1>Admin. Financiera de<br><em>Corto Plazo</em></h1>
+  </div>
+  <div class="meta">Unidad III<br>Con calculadoras interactivas</div>
+</div>
+
+<nav class="nav">
+  <button class="active" onclick="show('ct',this)">Capital de Trabajo</button>
+  <button onclick="show('ciclos',this)">Ciclos</button>
+  <button onclick="show('recursos',this)">Recursos Invertidos</button>
+  <button onclick="show('politicas',this)">Políticas</button>
+  <button onclick="show('nof',this)">NOF y Crecimiento</button>
+  <button onclick="show('cxc',this)">CxC y Crédito</button>
+  <button onclick="show('calcs',this)">🧮 Calculadoras</button>
+</nav>
+
+<main>
+
+<!-- CAPITAL DE TRABAJO -->
+<div class="section active" id="s-ct">
+  <div class="sec-title">Capital de <em>Trabajo</em></div>
+  <div class="card">
+    <p class="body">El <strong>Capital de Trabajo (CT)</strong> es el dinero que necesita la empresa para mantenerse en marcha: salarios, compras, servicios, proveedores. Es el indicador de liquidez de corto plazo.</p>
+    <div class="formula">CT = AC − PC = Activos Corrientes − Pasivos Corrientes</div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-label">Activos Corrientes</div>
+      <ul class="list">
+        <li><strong>Caja y banco</strong> — dinero inmediato</li>
+        <li><strong>Valores negociables</strong> — inversiones muy líquidas</li>
+        <li><strong>Cuentas por cobrar</strong> — lo que deben los clientes</li>
+        <li><strong>Inventarios</strong> — MP, en proceso, terminados</li>
+      </ul>
+      <span class="badge b-green">Se convierten en $ en menos de 1 año</span>
+    </div>
+    <div class="card">
+      <div class="card-label">Pasivos Corrientes</div>
+      <ul class="list">
+        <li><strong>Cuentas por pagar</strong> — a proveedores</li>
+        <li><strong>Deudas acumuladas</strong> — sueldos, impuestos</li>
+        <li><strong>Préstamos bancarios CP</strong></li>
+      </ul>
+      <span class="badge b-red">A pagar en menos de 1 año</span>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card" style="border-left:4px solid var(--green)">
+      <div class="card-label" style="color:var(--green)">CT Positivo (AC > PC)</div>
+      <p class="body">✅ Puede pagar deudas de CP sin problemas. Posición financiera sana.</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--red)">
+      <div class="card-label" style="color:var(--red)">CT Negativo (AC < PC)</div>
+      <p class="body">⚠️ Puede tener problemas de liquidez. Solo sobreviven supermercados y aseguradoras.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Riesgo vs. Rentabilidad</div>
+    <table class="tbl">
+      <tr><th>Situación</th><th>Rentabilidad</th><th>Riesgo</th></tr>
+      <tr><td>↑ Razón AC/Activo total</td><td class="bad">↓ Baja</td><td class="ok">↓ Baja</td></tr>
+      <tr><td>↓ Razón AC/Activo total</td><td class="ok">↑ Sube</td><td class="bad">↑ Sube</td></tr>
+      <tr><td>↑ Razón PC/Activo total</td><td class="ok">↑ Sube</td><td class="bad">↑ Sube</td></tr>
+      <tr><td>↓ Razón PC/Activo total</td><td class="bad">↓ Baja</td><td class="ok">↓ Baja</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- CICLOS -->
+<div class="section" id="s-ciclos">
+  <div class="sec-title">Ciclo Operativo y <em>Ciclo de Efectivo</em></div>
+  <div class="card">
+    <div class="card-label">Ciclo Operativo</div>
+    <p class="body">Tiempo desde la <strong>compra de materias primas</strong> hasta que se <strong>cobra la venta</strong> al cliente.</p>
+    <div class="formula">Ciclo Operativo = Días de Inventario + Días de Cuentas por Cobrar</div>
+    <div class="ciclo-wrap">
+      <div class="ciclo-step"><div class="day">0</div><div class="lbl">Compra MP</div></div>
+      <div class="ciclo-arrow">→</div>
+      <div class="ciclo-step" style="background:var(--blue-bg)"><div class="day" style="color:var(--blue)">+40</div><div class="lbl">Días inventario</div></div>
+      <div class="ciclo-arrow">→</div>
+      <div class="ciclo-step"><div class="day">40</div><div class="lbl">Venta</div></div>
+      <div class="ciclo-arrow">→</div>
+      <div class="ciclo-step" style="background:var(--gold-bg)"><div class="day" style="color:var(--gold)">+60</div><div class="lbl">Días cobro</div></div>
+      <div class="ciclo-arrow">→</div>
+      <div class="ciclo-step" style="background:var(--green-bg)"><div class="day" style="color:var(--green)">100</div><div class="lbl">Cobro a cliente</div></div>
+    </div>
+    <div class="formula">CO = 40 + 60 = 100 días</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Ciclo de Efectivo</div>
+    <p class="body">Cuántos días la empresa debe <strong>financiar su operación</strong>. Es desde que paga a proveedores hasta que cobra a clientes.</p>
+    <div class="formula">Ciclo de Efectivo = CO − PPP (Plazo Promedio de Pago)</div>
+    <div class="ciclo-wrap">
+      <div class="ciclo-step"><div class="day">0</div><div class="lbl">Compra MP</div></div>
+      <div class="ciclo-arrow">→</div>
+      <div class="ciclo-step" style="background:var(--green-bg)"><div class="day" style="color:var(--green)">+30</div><div class="lbl">PPP proveedores</div></div>
+      <div class="ciclo-arrow">→</div>
+      <div class="ciclo-step" style="background:var(--red-bg)"><div class="day" style="color:var(--red)">30</div><div class="lbl">Pago prov.</div></div>
+      <div class="ciclo-arrow">→</div>
+      <div class="ciclo-step" style="background:var(--gold-bg)"><div class="day" style="color:var(--gold)">+70</div><div class="lbl">Ciclo efectivo</div></div>
+      <div class="ciclo-arrow">→</div>
+      <div class="ciclo-step" style="background:var(--green-bg)"><div class="day" style="color:var(--green)">100</div><div class="lbl">Cobro cliente</div></div>
+    </div>
+    <div class="formula">CE = 100 − 30 = 70 días a financiar</div>
+    <div class="note"><strong>Regla:</strong> mientras más corto sea el ciclo de efectivo, mejor. Los proveedores nos "financian" parte del ciclo.</div>
+  </div>
+</div>
+
+<!-- RECURSOS INVERTIDOS -->
+<div class="section" id="s-recursos">
+  <div class="sec-title">Recursos <em>Invertidos</em></div>
+  <div class="card">
+    <p class="body">Capital que la empresa necesita tener <strong>inmovilizado</strong> en su operación diaria para poder funcionar.</p>
+    <div class="formula">Recursos Invertidos = Inventario + CxC − CxP</div>
+  </div>
+  <div class="g3">
+    <div class="card">
+      <div class="card-label">Inventario</div>
+      <div class="formula" style="font-size:12px">CMV × (Días inv / 360)</div>
+      <p style="font-size:12px;color:var(--ink3)">Capital inmovilizado en stock</p>
+    </div>
+    <div class="card">
+      <div class="card-label">Cuentas por Cobrar</div>
+      <div class="formula" style="font-size:12px">Ventas × (Días cobro / 360)</div>
+      <p style="font-size:12px;color:var(--ink3)">Dinero "atrapado" en ventas no cobradas</p>
+    </div>
+    <div class="card">
+      <div class="card-label">Cuentas por Pagar</div>
+      <div class="formula" style="font-size:12px">Compras × (Días pago / 360)</div>
+      <p style="font-size:12px;color:var(--ink3)">Financiamiento "gratis" de proveedores</p>
+    </div>
+  </div>
+  <div class="note"><strong>Clave:</strong> reducir el plazo de cobro o aumentar el plazo de pago a proveedores <strong>libera recursos</strong> y mejora la liquidez.</div>
+</div>
+
+<!-- POLÍTICAS -->
+<div class="section" id="s-politicas">
+  <div class="sec-title">Políticas de <em>Administración</em></div>
+  <p class="body">Elegí una política para ver sus características:</p>
+  <div class="policy-toggle">
+    <button class="policy-btn active-agg" onclick="showPolicy('agg',this)">⚡ Agresiva</button>
+    <button class="policy-btn" onclick="showPolicy('con',this)">🛡️ Conservadora</button>
+  </div>
+  <div class="policy-content show" id="p-agg">
+    <div class="card" style="border-top:3px solid var(--red)">
+      <div class="card-label" style="color:var(--red)">Política Agresiva</div>
+      <p class="body">Maximiza la <strong>rentabilidad</strong> usando financiamiento de corto plazo. Reduce inventarios y activos al mínimo.</p>
+      <div class="g2">
+        <ul class="list">
+          <li>Inventarios y caja: <span class="badge b-red">Bajo</span></li>
+          <li>Cuentas por cobrar: <span class="badge b-red">Alto (da más plazos)</span></li>
+          <li>Deuda bancaria CP: <span class="badge b-red">Alto</span></li>
+          <li>Rentabilidad: <span class="badge b-green">Alta ↑</span></li>
+          <li>Riesgo: <span class="badge b-red">Alto ↑</span></li>
+        </ul>
+        <div>
+          <p class="body"><strong>Riesgos:</strong></p>
+          <ul class="list">
+            <li>Operativo: quiebre de stock → el cliente conoce la competencia</li>
+            <li>Financiero: si sube la tasa, no conseguís financiación al mismo costo</li>
+          </ul>
+        </div>
+      </div>
+      <div class="formula">↑ RENTABILIDAD &nbsp;&nbsp; ↑ RIESGO</div>
+    </div>
+  </div>
+  <div class="policy-content" id="p-con">
+    <div class="card" style="border-top:3px solid var(--green)">
+      <div class="card-label" style="color:var(--green)">Política Conservadora</div>
+      <p class="body">Busca <strong>estabilidad y menor riesgo</strong>. Financia todo el CT con fondos de largo plazo.</p>
+      <div class="g2">
+        <ul class="list">
+          <li>Inventarios y caja: <span class="badge b-green">Alto</span></li>
+          <li>Cuentas por cobrar: <span class="badge b-green">Bajo (cobra rápido)</span></li>
+          <li>Deuda bancaria CP: <span class="badge b-green">Bajo</span></li>
+          <li>Rentabilidad: <span class="badge b-red">Baja ↓</span></li>
+          <li>Riesgo: <span class="badge b-green">Bajo ↓</span></li>
+        </ul>
+        <div>
+          <p class="body"><strong>Resultado:</strong></p>
+          <ul class="list">
+            <li>Tenés más fondos de los que necesitás en momentos de baja actividad</li>
+            <li>La tasa ya está definida, no cambia</li>
+            <li>Asegurás liquidez pero tenés exceso de dinero no utilizado</li>
+          </ul>
+        </div>
+      </div>
+      <div class="formula">↓ RENTABILIDAD &nbsp;&nbsp; ↓ RIESGO</div>
+    </div>
+  </div>
+</div>
+
+<!-- NOF -->
+<div class="section" id="s-nof">
+  <div class="sec-title">NOF y <em>Crecimiento Sostenible</em></div>
+  <div class="card">
+    <div class="card-label">Necesidades Operativas de Fondo (NOF)</div>
+    <p class="body">Capital que la empresa necesita para operar, más allá de lo que financian espontáneamente los proveedores.</p>
+    <div class="formula">NOF = Activos Corrientes − Fuentes Espontáneas (proveedores y CxP)</div>
+    <p class="body">Las <strong>fuentes espontáneas</strong> son pasivos que crecen solos cuando la empresa opera (proveedores, cuentas por pagar). Nos "ayudan" a financiar sin pedir préstamos.</p>
+    <div class="note"><strong>A medida que crecen las ventas → crecen las NOF.</strong> Si no tenés el financiamiento estructurado, vas a tener problemas de liquidez.</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Crecimiento Sostenible</div>
+    <p class="body">¿Cuánto puede crecer la empresa usando <strong>solo su rentabilidad</strong>, sin endeudarse?</p>
+    <div class="formula">Relación NOF/Ventas = NOF / Ventas × 100</div>
+    <div class="formula">ΔVentas sostenibles = Rentabilidad / Relación NOF/Ventas</div>
+    <div class="formula">% crecimiento sostenible = (BN/Ventas) / (NOF/Ventas)</div>
+    <p class="body">Si el crecimiento proyectado supera este % → hay que buscar <strong>financiamiento externo</strong>.</p>
+    <div class="formula">Necesidades de fondos externos = NOF proyectado − Rentabilidad</div>
+  </div>
+</div>
+
+<!-- CxC y CRÉDITO -->
+<div class="section" id="s-cxc">
+  <div class="sec-title">Crédito y <em>Cuentas por Cobrar</em></div>
+  <div class="card">
+    <p class="body"><strong>Objetivo:</strong> cobrar lo antes posible sin afectar las ventas por presionar demasiado a los clientes.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Las 5 C del Crédito</div>
+    <table class="tbl">
+      <tr><th>C</th><th>Qué evalúa</th></tr>
+      <tr><td><strong>Carácter</strong></td><td>Historial de cumplimiento de obligaciones anteriores</td></tr>
+      <tr><td><strong>Capacidad</strong></td><td>Si tiene medios reales para devolver (flujo de efectivo)</td></tr>
+      <tr><td><strong>Capital</strong></td><td>Patrimonio vs. deudas — ¿tiene activos que respalden?</td></tr>
+      <tr><td><strong>Colateral</strong></td><td>Garantías que ofrece (bienes, maquinaria, vehículos)</td></tr>
+      <tr><td><strong>Condiciones</strong></td><td>Contexto económico y del sector que puede afectar el pago</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-label">¿Conviene relajar las normas de crédito?</div>
+    <p class="body">Dar más plazos de pago puede aumentar las ventas, pero también aumenta el capital inmovilizado y la incobrabilidad.</p>
+    <div class="formula">Utilidad neta = Ganancia por ↑ventas − Costo inversión CxC − Costo incobrables</div>
+    <p class="body">Si la utilidad neta es <span class="badge b-green">positiva</span> → conviene. Si es <span class="badge b-red">negativa</span> → no conviene.</p>
+  </div>
+</div>
+
+<!-- CALCULADORAS -->
+<div class="section" id="s-calcs">
+  <div class="sec-title">🧮 <em>Calculadoras</em></div>
+
+  <!-- Calc 1: Ciclos -->
+  <div class="calc-wrap">
+    <div class="calc-head"><div class="dot"></div>Ciclo Operativo y Ciclo de Efectivo</div>
+    <div class="calc-body">
+      <div class="fields">
+        <div class="field"><label>Días de inventario</label><input type="number" id="c1-inv" value="40" min="0"/></div>
+        <div class="field"><label>Días de cobro (CxC)</label><input type="number" id="c1-cxc" value="60" min="0"/></div>
+        <div class="field"><label>Días de pago (PPP)</label><input type="number" id="c1-ppp" value="30" min="0"/></div>
+      </div>
+      <button class="btn-calc" onclick="calcCiclos()">Calcular →</button>
+      <div class="result-box" id="c1-res">
+        <div class="r-label">Ciclo Operativo</div>
+        <div class="r-value" id="c1-co">—</div>
+        <div class="r-detail" id="c1-det"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calc 2: Recursos Invertidos -->
+  <div class="calc-wrap">
+    <div class="calc-head"><div class="dot"></div>Recursos Invertidos</div>
+    <div class="calc-body">
+      <div class="fields">
+        <div class="field"><label>CMV anual ($)</label><input type="number" id="c2-cmv" value="6500000"/></div>
+        <div class="field"><label>Días de inventario</label><input type="number" id="c2-inv" value="60"/></div>
+        <div class="field"><label>Ventas anuales ($)</label><input type="number" id="c2-v" value="10000000"/></div>
+        <div class="field"><label>Días de cobro</label><input type="number" id="c2-cob" value="45"/></div>
+        <div class="field"><label>Compras anuales ($)</label><input type="number" id="c2-comp" value="3900000"/></div>
+        <div class="field"><label>Días de pago</label><input type="number" id="c2-pag" value="30"/></div>
+      </div>
+      <button class="btn-calc" onclick="calcRecursos()">Calcular →</button>
+      <div class="result-box" id="c2-res">
+        <div class="r-label">Recursos Invertidos</div>
+        <div class="r-value" id="c2-ri">—</div>
+        <div class="r-detail" id="c2-det"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calc 3: Política de Crédito -->
+  <div class="calc-wrap">
+    <div class="calc-head"><div class="dot"></div>¿Conviene cambiar la política de crédito?</div>
+    <div class="calc-body">
+      <div class="fields">
+        <div class="field"><label>Ventas actuales (u)</label><input type="number" id="c3-qa" value="60000"/></div>
+        <div class="field"><label>Precio ($)</label><input type="number" id="c3-p" value="10"/></div>
+        <div class="field"><label>Costo variable ($)</label><input type="number" id="c3-cv" value="6"/></div>
+        <div class="field"><label>↑ ventas (%)</label><input type="number" id="c3-dv" value="5" step="0.1"/></div>
+        <div class="field"><label>Días cobro actual</label><input type="number" id="c3-da" value="30"/></div>
+        <div class="field"><label>Días cobro nuevo</label><input type="number" id="c3-dn" value="45"/></div>
+        <div class="field"><label>% incobrable actual</label><input type="number" id="c3-ia" value="1" step="0.1"/></div>
+        <div class="field"><label>% incobrable nuevo</label><input type="number" id="c3-in" value="2" step="0.1"/></div>
+        <div class="field"><label>Tasa oportunidad (%)</label><input type="number" id="c3-to" value="15" step="0.1"/></div>
+      </div>
+      <button class="btn-calc" onclick="calcCredito()">Analizar →</button>
+      <div class="result-box" id="c3-res">
+        <div class="r-label">Utilidad neta del cambio</div>
+        <div class="r-value" id="c3-ut">—</div>
+        <div class="r-detail" id="c3-det"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calc 4: Crecimiento Sostenible -->
+  <div class="calc-wrap">
+    <div class="calc-head"><div class="dot"></div>Crecimiento Sostenible</div>
+    <div class="calc-body">
+      <div class="fields">
+        <div class="field"><label>Ventas actuales ($)</label><input type="number" id="c4-v" value="23643"/></div>
+        <div class="field"><label>Crec. proyectado (%)</label><input type="number" id="c4-g" value="30" step="0.1"/></div>
+        <div class="field"><label>NOF/Ventas (%)</label><input type="number" id="c4-nof" value="25" step="0.1"/></div>
+        <div class="field"><label>Rentabilidad/Ventas (%)</label><input type="number" id="c4-r" value="3" step="0.1"/></div>
+      </div>
+      <button class="btn-calc" onclick="calcNOF()">Calcular →</button>
+      <div class="result-box" id="c4-res">
+        <div class="r-label">Crecimiento sostenible</div>
+        <div class="r-value" id="c4-cs">—</div>
+        <div class="r-detail" id="c4-det"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function show(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showPolicy(p,btn){
+  document.querySelectorAll('.policy-content').forEach(c=>c.classList.remove('show'));
+  document.querySelectorAll('.policy-btn').forEach(b=>{ b.classList.remove('active-agg','active-con'); });
+  document.getElementById('p-'+p).classList.add('show');
+  btn.classList.add(p==='agg'?'active-agg':'active-con');
+}
+
+function fmt(n){return '$'+Math.round(n).toLocaleString('es-AR');}
+
+function calcCiclos(){
+  const inv=+document.getElementById('c1-inv').value;
+  const cxc=+document.getElementById('c1-cxc').value;
+  const ppp=+document.getElementById('c1-ppp').value;
+  const co=inv+cxc, ce=co-ppp;
+  document.getElementById('c1-res').className='result-box show';
+  document.getElementById('c1-co').textContent=co+' días';
+  document.getElementById('c1-det').textContent=
+    `CO = ${inv} + ${cxc} = ${co} días\nCE = ${co} − ${ppp} = ${ce} días a financiar\n\n${ce>0?`La empresa debe financiar ${ce} días de operación.`:'¡CE negativo! Los proveedores financian todo el ciclo.'}`;
+}
+
+function calcRecursos(){
+  const cmv=+document.getElementById('c2-cmv').value;
+  const inv=+document.getElementById('c2-inv').value;
+  const v=+document.getElementById('c2-v').value;
+  const cob=+document.getElementById('c2-cob').value;
+  const comp=+document.getElementById('c2-comp').value;
+  const pag=+document.getElementById('c2-pag').value;
+  const iStock=cmv*inv/360, cxc=v*cob/360, cxp=comp*pag/360;
+  const ri=iStock+cxc-cxp;
+  document.getElementById('c2-res').className='result-box show';
+  document.getElementById('c2-ri').textContent=fmt(ri);
+  document.getElementById('c2-det').textContent=
+    `Inventario: ${fmt(iStock)}\nCxC: ${fmt(cxc)}\nCxP: ${fmt(cxp)}\n\nRI = ${fmt(iStock)} + ${fmt(cxc)} − ${fmt(cxp)} = ${fmt(ri)}`;
+}
+
+function calcCredito(){
+  const qa=+document.getElementById('c3-qa').value;
+  const p=+document.getElementById('c3-p').value;
+  const cv=+document.getElementById('c3-cv').value;
+  const dv=+document.getElementById('c3-dv').value/100;
+  const da=+document.getElementById('c3-da').value;
+  const dn=+document.getElementById('c3-dn').value;
+  const ia=+document.getElementById('c3-ia').value/100;
+  const inc=+document.getElementById('c3-in').value/100;
+  const to=+document.getElementById('c3-to').value/100;
+  const qn=qa*(1+dv);
+  const ganancia=(qn-qa)*(p-cv);
+  const cxcA=cv*qa*da/360, cxcN=cv*qn*dn/360;
+  const invAd=cxcN-cxcA;
+  const costoCxC=invAd*to;
+  const incobA=ia*p*qa, incobN=inc*p*qn;
+  const costIncob=incobN-incobA;
+  const util=ganancia-costoCxC-costIncob;
+  document.getElementById('c3-res').className='result-box show';
+  document.getElementById('c3-ut').textContent=fmt(util);
+  document.getElementById('c3-ut').style.color=util>=0?'var(--green)':'var(--red)';
+  document.getElementById('c3-det').textContent=
+    `Ganancia por ↑ventas: ${fmt(ganancia)}\nInversión adicional CxC: ${fmt(invAd)}\nCosto de oportunidad: ${fmt(costoCxC)}\nCosto marginal incobrables: ${fmt(costIncob)}\n\n${util>=0?'✓ CONVIENE aplicar la nueva política':'✗ NO conviene — el costo supera la ganancia'}`;
+}
+
+function calcNOF(){
+  const v=+document.getElementById('c4-v').value;
+  const g=+document.getElementById('c4-g').value/100;
+  const nofPct=+document.getElementById('c4-nof').value/100;
+  const rPct=+document.getElementById('c4-r').value/100;
+  const vProy=v*(1+g);
+  const nofProy=vProy*nofPct;
+  const rent=vProy*rPct;
+  const fondExt=nofProy-rent;
+  const crecSost=rPct/nofPct*100;
+  document.getElementById('c4-res').className='result-box show';
+  document.getElementById('c4-cs').textContent=crecSost.toFixed(1)+'%';
+  document.getElementById('c4-det').textContent=
+    `Ventas proyectadas: ${fmt(vProy)}\nNOF proyectado: ${fmt(nofProy)}\nRentabilidad: ${fmt(rent)}\nNecesidad de fondos externos: ${fmt(fondExt)}\n\nCrecimiento sostenible: ${crecSost.toFixed(1)}%\nCrecimiento proyectado: ${(g*100).toFixed(1)}%\n\n${g*100>crecSost?`⚠️ Necesitás ${fmt(fondExt)} de financiamiento externo`:'✓ Podés financiar el crecimiento con rentabilidad propia'}`;
+}
+</script>
+</body>
+</html>
