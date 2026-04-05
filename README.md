@@ -8,23 +8,34 @@ Bienvenido a mi espacio personal donde paso en limpio los conceptos de la materi
 
 ## 📂 Unidades
 
-### Unidad 5 · Costos
+### Unidad I · Introducción — Valor del Dinero en el Tiempo
 
-| | Link |
+| | Enlace |
+|---|---|
+| 📄 Resumen Markdown | [Ver resumen](./Unidad%201%20introducción-%20Valor%20del%20.../Resumen.md) |
+| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%201%20introducci%C3%B3n-%20Valor%20del%20.../) |
+| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%201%20introducci%C3%B3n-%20Valor%20del%20.../Repaso.html) |
+
+---
+
+### Unidad II · Estados Financieros
+
+| | Enlace |
+|---|---|
+| 📄 Resumen Markdown | [Ver resumen](./Unidad%202%20-%20Estados%20financieros/Resumen.md) |
+| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%202%20-%20Estados%20financieros/) |
+| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%202%20-%20Estados%20financieros/Repaso.html) |
+
+---
+
+### Unidad V · Costos
+
+| | Enlace |
 |---|---|
 | 📄 Resumen Markdown | [Ver resumen](./Unidad%205-%20Costos/Resumen.md) |
 | 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%205-%20Costos/) |
-| 🌐 Repaso web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%205-%20Costos/Repaso.html) |
+| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%205-%20Costos/Repaso.html) |
 
 ---
 
-### Unidad 6 - Valor del Dinero en el Tiempo
-
-| | Link |
-|---|---|
-| 📄 Resumen Markdown | [Ver resumen](./Unidad%206-%20Valor%20del%20Dinero%20en%20el%20Tiempo/Resumen.md) |
-| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%206-%20Valor%20del%20Dinero%20en%20el%20Tiempo/index%20U6.html) |
-| 🌐 Repaso web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%206-%20Valor%20del%20Dinero%20en%20el%20Tiempo/Repaso.html) |
-
----
 *Más unidades próximamente...*
