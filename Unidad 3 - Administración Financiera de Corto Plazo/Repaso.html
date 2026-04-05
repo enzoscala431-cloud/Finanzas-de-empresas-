@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Repaso U3 — Corto Plazo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Fira+Code:wght@400;500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#080e0c;--s1:#101810;--s2:#182018;--border:rgba(255,255,255,0.07);
+  --text:#dff0e8;--text2:#6a9a80;--text3:#3a5a48;
+  --green:#40d080;--red:#f06050;--gold:#f0c040;--blue:#40a0f0;--r:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 5rem;display:flex;flex-direction:column;align-items:center;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(64,208,128,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(64,160,240,.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
+.wrap{width:100%;max-width:700px;position:relative;z-index:1;}
+
+.hdr{text-align:center;margin-bottom:2.5rem;}
+.hdr .kicker{font-family:'Fira Code',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+.hdr h1{font-family:'Syne',sans-serif;font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.1;}
+.hdr h1 span{color:var(--green);}
+.hdr p{font-size:13px;color:var(--text2);margin-top:6px;}
+
+/* SCREENS */
+.screen{display:none;}
+.screen.active{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* MENU */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:1.5rem 0;}
+.mode-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem 1rem;cursor:pointer;text-align:center;transition:all .2s;color:var(--text);}
+.mode-card:hover{border-color:rgba(64,208,128,.4);transform:translateY(-3px);}
+.mode-card .icon{font-size:30px;margin-bottom:10px;}
+.mode-card .title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;}
+.mode-card .desc{font-size:12px;color:var(--text2);line-height:1.4;}
+.btn-primary{width:100%;padding:14px;border:none;border-radius:var(--r);background:var(--green);color:#080e0c;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
+.btn-primary:hover{opacity:.85;}
+
+/* SCOREBAR */
+.scorebar{display:flex;justify-content:space-between;align-items:center;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:.65rem 1.25rem;margin-bottom:1.25rem;font-family:'Fira Code',monospace;font-size:12px;}
+.scorebar .sc span{color:var(--green);}
+.progress-bar{height:2px;background:var(--s2);border-radius:999px;overflow:hidden;margin-bottom:1.25rem;}
+.progress-fill{height:100%;background:var(--green);border-radius:999px;transition:width .5s;}
+
+/* FORMULA GAME CARD */
+.game-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;margin-bottom:1rem;animation:fadeIn .3s ease;}
+.game-cat{font-family:'Fira Code',monospace;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.game-q{font-size:16px;font-weight:500;line-height:1.55;margin-bottom:.75rem;}
+
+/* Formula display */
+.formula-display{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:.85rem 1.2rem;font-family:'Fira Code',monospace;font-size:14px;color:var(--text);margin-bottom:1.25rem;text-align:center;line-height:1.8;}
+.formula-display .blank{display:inline-block;min-width:120px;border-bottom:2px solid var(--green);color:var(--green);text-align:center;padding:0 8px;font-weight:500;transition:all .3s;}
+.formula-display .blank.filled-ok{color:var(--green);border-color:var(--green);}
+.formula-display .blank.filled-bad{color:var(--red);border-color:var(--red);}
+
+/* Options */
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
+@media(max-width:480px){.options{grid-template-columns:1fr;}}
+.opt{padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-family:'Fira Code',monospace;font-size:13px;cursor:pointer;background:var(--s2);color:var(--text);transition:all .18s;text-align:center;}
+.opt:hover:not(:disabled){border-color:rgba(64,208,128,.4);background:rgba(64,208,128,.05);}
+.opt.correct{border-color:var(--green);background:rgba(64,208,128,.1);color:var(--green);}
+.opt.wrong{border-color:var(--red);background:rgba(240,96,80,.1);color:var(--red);}
+.opt:disabled{cursor:default;}
+
+.feedback{display:none;margin-top:.75rem;padding:.75rem 1rem;border-radius:10px;font-size:13px;line-height:1.6;animation:fadeIn .2s ease;}
+.feedback.show{display:block;}
+.feedback.ok{background:rgba(64,208,128,.07);border:1px solid rgba(64,208,128,.2);color:var(--green);}
+.feedback.bad{background:rgba(240,96,80,.07);border:1px solid rgba(240,96,80,.2);color:#f09888;}
+
+.btn-next{width:100%;margin-top:.75rem;padding:12px;border:none;border-radius:10px;background:var(--green);color:#080e0c;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:none;transition:opacity .2s;}
+.btn-next.show{display:block;}
+.btn-next:hover{opacity:.85;}
+
+/* RESULTS */
+#screen-results{text-align:center;}
+.res-ring{width:130px;height:130px;margin:0 auto 1.5rem;position:relative;}
+.res-ring svg{transform:rotate(-90deg);}
+.res-ring .rt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.res-ring .rn{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--green);}
+.res-ring .rl{font-size:10px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;font-family:'Fira Code',monospace;}
+#screen-results h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;}
+#screen-results p{font-size:13px;color:var(--text2);margin-bottom:1.5rem;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem;}
+.res-stat{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:.85rem;}
+.res-stat .n{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:2px;}
+.res-stat .l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;font-family:'Fira Code',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div class="kicker">Finanzas de Empresas · 2025</div>
+    <h1>Modo <span>Repaso</span></h1>
+    <p>Unidad III — Administración Financiera de Corto Plazo</p>
+  </div>
+
+  <!-- MENU -->
+  <div class="screen active" id="screen-menu">
+    <div class="mode-grid">
+      <div class="mode-card" onclick="startMode('formula')">
+        <div class="icon">🧩</div>
+        <div class="title">Completar fórmulas</div>
+        <div class="desc">Elegí el término que falta en cada fórmula o ecuación</div>
+      </div>
+      <div class="mode-card" onclick="startMode('situacional')">
+        <div class="icon">📊</div>
+        <div class="title">Situaciones reales</div>
+        <div class="desc">¿Qué pasa si...? Analizá el impacto de cada decisión</div>
+      </div>
+      <div class="mode-card" onclick="startMode('mixto')">
+        <div class="icon">🎯</div>
+        <div class="title">Mixto completo</div>
+        <div class="desc">Mezcla de todos los tipos de preguntas</div>
+      </div>
+      <div class="mode-card" onclick="startMode('err')">
+        <div class="icon">🔁</div>
+        <div class="title">Mis errores</div>
+        <div class="desc">Solo las preguntas que fallaste antes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div class="screen" id="screen-game">
+    <div class="scorebar">
+      <span id="g-counter" style="color:var(--text2)">1 / 10</span>
+      <span class="sc">✓ <span id="g-correct">0</span> &nbsp; ✗ <span id="g-wrong">0</span></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="g-prog" style="width:0%"></div></div>
+    <div class="game-card" id="g-card">
+      <div class="game-cat" id="g-cat"></div>
+      <div class="game-q" id="g-q"></div>
+      <div class="formula-display" id="g-formula" style="display:none"></div>
+      <div class="options" id="g-opts"></div>
+      <div class="feedback" id="g-fb"></div>
+    </div>
+    <button class="btn-next" id="g-next" onclick="nextQ()">Siguiente →</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screen-results">
+    <div class="res-ring">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle cx="65" cy="65" r="54" fill="none" stroke="#182018" stroke-width="8"/>
+        <circle cx="65" cy="65" r="54" fill="none" stroke="#40d080" stroke-width="8" stroke-linecap="round"
+          stroke-dasharray="339.3" id="res-circle" stroke-dashoffset="339.3"/>
+      </svg>
+      <div class="rt"><div class="rn" id="res-pct">0%</div><div class="rl">score</div></div>
+    </div>
+    <h2 id="res-title"></h2>
+    <p id="res-msg"></p>
+    <div class="res-stats">
+      <div class="res-stat"><div class="n" style="color:var(--green)" id="res-c">0</div><div class="l">Correctas</div></div>
+      <div class="res-stat"><div class="n" style="color:var(--red)" id="res-w">0</div><div class="l">Incorrectas</div></div>
+      <div class="res-stat"><div class="n" style="color:var(--blue)" id="res-t">0</div><div class="l">Total</div></div>
+    </div>
+    <button class="btn-primary" onclick="goMenu()">Volver al menú</button>
+  </div>
+</div>
+
+<script>
+// ===== BANCO DE PREGUNTAS =====
+const FORMULA_QS = [
+  { cat:"Capital de Trabajo", type:"formula",
+    q:"Completá la fórmula del Capital de Trabajo:",
+    formula:"CT = ___ − Pasivos Corrientes",
+    blank:"Activos Corrientes",
+    opts:["Activos Corrientes","Ventas Anuales","Activos Fijos","Patrimonio Neto"],
+    exp:"CT = AC − PC. El CT mide la diferencia entre los activos de corto plazo y las deudas de corto plazo." },
+
+  { cat:"Capital de Trabajo", type:"formula",
+    q:"Si aumentan las Cuentas por Cobrar, ¿qué pasa con el Capital de Trabajo?",
+    formula:"↑ CxC → ↑ AC → CT = ↑ AC − PC → CT ___",
+    blank:"↑ Aumenta",
+    opts:["↑ Aumenta","↓ Disminuye","No cambia","Desaparece"],
+    exp:"CxC es parte del Activo Corriente. Si sube CxC, sube AC, y por lo tanto sube CT. Pero ojo: más CT no siempre es mejor, puede implicar capital inmovilizado." },
+
+  { cat:"Ciclo Operativo", type:"formula",
+    q:"Completá la fórmula del Ciclo Operativo:",
+    formula:"CO = Días de Inventario + ___",
+    blank:"Días de CxC",
+    opts:["Días de CxC","Días de pago","Ciclo de efectivo","Plazo de proveedores"],
+    exp:"CO = Días de Inventario + Días de Cuentas por Cobrar. Es el tiempo desde que comprás MP hasta que cobrás la venta." },
+
+  { cat:"Ciclo de Efectivo", type:"formula",
+    q:"Completá la fórmula del Ciclo de Efectivo:",
+    formula:"CE = CO − ___",
+    blank:"PPP",
+    opts:["PPP","CxC","NOF","CT"],
+    exp:"CE = CO − PPP (Plazo Promedio de Pago). Los proveedores nos financian parte del ciclo, por eso restamos el tiempo que tardamos en pagarles." },
+
+  { cat:"Recursos Invertidos", type:"formula",
+    q:"¿Cómo se calculan los Recursos Invertidos?",
+    formula:"RI = Inventario + CxC − ___",
+    blank:"Cuentas por Pagar",
+    opts:["Cuentas por Pagar","Cuentas por Cobrar","Capital propio","Ventas"],
+    exp:"RI = Inv + CxC − CxP. Las CxP son financiamiento 'gratis' de proveedores que reducen lo que necesitamos inmovilizar." },
+
+  { cat:"Recursos Invertidos", type:"formula",
+    q:"¿Cómo se calcula el Inventario inmovilizado?",
+    formula:"Inventario = CMV × (Días inv / ___)",
+    blank:"360",
+    opts:["360","365","100","12"],
+    exp:"Se usa 360 días para simplificar (12 meses × 30 días). Es la convención financiera estándar." },
+
+  { cat:"NOF", type:"formula",
+    q:"Completá la fórmula de las Necesidades Operativas de Fondo:",
+    formula:"NOF = Activos Corrientes − ___",
+    blank:"Fuentes Espontáneas",
+    opts:["Fuentes Espontáneas","Pasivos Corrientes","Activos Fijos","Capital de Trabajo"],
+    exp:"NOF = AC − Fuentes Espontáneas (proveedores, CxP). Las fuentes espontáneas surgen solas al operar, sin pedir préstamos." },
+
+  { cat:"Crecimiento Sostenible", type:"formula",
+    q:"¿Cómo se calcula el % de crecimiento sostenible?",
+    formula:"% crec. sost. = (BN/Ventas) / ___",
+    blank:"(NOF/Ventas)",
+    opts:["(NOF/Ventas)","(CF/Ventas)","(CT/Ventas)","(Deuda/Ventas)"],
+    exp:"% crecimiento sostenible = (Rentabilidad/Ventas) / (NOF/Ventas). Cuánto podés crecer usando solo tu propia rentabilidad." },
+
+  { cat:"Crédito", type:"formula",
+    q:"Para analizar un cambio en la política de crédito, la utilidad neta es:",
+    formula:"UN = Ganancia por ↑ventas − Costo CxC − ___",
+    blank:"Costo Incobrables",
+    opts:["Costo Incobrables","Costo Fijo","Depreciación","Impuesto"],
+    exp:"UN = Ganancia adicional − Costo de oportunidad de inversión en CxC − Costo marginal de incobrables. Si UN > 0 conviene el cambio." },
+
+  { cat:"Flotantes", type:"formula",
+    q:"Completá la fórmula de los Fondos Netos en Tránsito:",
+    formula:"FNT = Cheques depositados no acreditados − ___",
+    blank:"Cheques emitidos no cobrados",
+    opts:["Cheques emitidos no cobrados","Cuentas por cobrar","Saldo bancario","Ventas del día"],
+    exp:"FNT = Cheques depositados no acreditados − Cheques emitidos no cobrados. Sirve para saber si el 'flotante' juega a favor o en contra." },
+];
+
+const SITUACIONAL_QS = [
+  { cat:"Capital de Trabajo", type:"situacional",
+    q:"Un vendedor ofrece a los clientes plazos de 60 días en vez de 30. ¿Qué pasa con el CT?",
+    opts:["CT aumenta porque sube CxC (activo corriente)","CT disminuye porque se pierde liquidez","CT no cambia, es una decisión comercial","CT disminuye porque sube el pasivo"],
+    ans:0, exp:"↑ CxC → ↑ AC → ↑ CT. Aunque el CT sube, esto puede inmovilizar liquidez: la empresa tiene más activos 'en papel' pero menos efectivo disponible." },
+
+  { cat:"Política Agresiva", type:"situacional",
+    q:"Una empresa elige política agresiva de CT. ¿Qué combinación es correcta?",
+    opts:["Alta rentabilidad + alto riesgo","Baja rentabilidad + bajo riesgo","Alta rentabilidad + bajo riesgo","Baja rentabilidad + alto riesgo"],
+    ans:0, exp:"La política agresiva maximiza rentabilidad (menos capital inmovilizado, deuda CP más barata) pero asume más riesgo (quiebre de stock, riesgo de tasa)." },
+
+  { cat:"Política Conservadora", type:"situacional",
+    q:"Una empresa financia todo su CT con deuda de largo plazo. ¿Qué consecuencia tiene?",
+    opts:["Mayor rentabilidad y menor riesgo","Menor rentabilidad y menor riesgo","Mayor rentabilidad y mayor riesgo","Menor rentabilidad y mayor riesgo"],
+    ans:1, exp:"Política conservadora: ↓ rentabilidad (deuda LP más cara, exceso de fondos no utilizados) pero ↓ riesgo (liquidez asegurada, tasa fija)." },
+
+  { cat:"Ciclo de Efectivo", type:"situacional",
+    q:"Si la empresa logra extender el plazo de pago a proveedores de 30 a 45 días, ¿qué pasa con el Ciclo de Efectivo?",
+    opts:["Disminuye — necesita financiar menos días","Aumenta — necesita financiar más días","No cambia — el ciclo operativo es el mismo","Depende de las ventas"],
+    ans:0, exp:"CE = CO − PPP. Si PPP sube de 30 a 45, el CE baja 15 días. Los proveedores financian más tiempo, reduciendo la necesidad de financiamiento propio." },
+
+  { cat:"Crecimiento Sostenible", type:"situacional",
+    q:"Una empresa proyecta crecer 30% pero su crecimiento sostenible es 12%. ¿Qué necesita?",
+    opts:["Financiamiento externo (deuda o acciones)","Reducir sus ventas","Aumentar los costos fijos","No necesita nada, puede crecer igual"],
+    ans:0, exp:"Si el crecimiento proyectado > crecimiento sostenible, la empresa necesita fondos externos (préstamos, nuevos socios) para financiar la diferencia en NOF." },
+
+  { cat:"Recursos Invertidos", type:"situacional",
+    q:"Si la empresa reduce el plazo de cobro de 45 a 35 días, ¿qué pasa con los recursos invertidos?",
+    opts:["Disminuyen — se liberan fondos antes inmovilizados","Aumentan — hay más cuentas por cobrar","No cambian","Depende del nivel de ventas"],
+    ans:0, exp:"Cobrar antes libera capital que antes estaba 'atrapado' en CxC. Menos días de cobro = menores recursos invertidos = mejor liquidez." },
+
+  { cat:"5 C del Crédito", type:"situacional",
+    q:"Un cliente ofrece su maquinaria como respaldo en caso de no pagar. ¿A qué 'C del crédito' corresponde?",
+    opts:["Colateral","Capacidad","Capital","Condiciones"],
+    ans:0, exp:"Colateral = garantías que ofrece el solicitante. Son activos físicos (maquinaria, vehículos, inmuebles) que se pueden ejecutar si no paga." },
+
+  { cat:"NOF", type:"situacional",
+    q:"¿Cuáles son las 'fuentes espontáneas' que reducen las NOF?",
+    opts:["Proveedores y cuentas por pagar","Préstamos bancarios y bonos","Acciones emitidas","Utilidades retenidas"],
+    ans:0, exp:"Las fuentes espontáneas son los pasivos que crecen solos cuando la empresa opera: proveedores y CxP. Surgen automáticamente sin necesitar un préstamo." },
+
+  { cat:"Inventarios", type:"situacional",
+    q:"Producción acumula inventario 'por las dudas'. ¿Cuál es la consecuencia financiera directa?",
+    opts:["Sube el Activo Corriente y por lo tanto el CT","Baja la liquidez de la empresa","Sube el Pasivo Corriente","No tiene impacto financiero"],
+    ans:0, exp:"↑ Inventario → ↑ AC → ↑ CT. Pero tener demasiado stock genera costos ocultos: espacio, obsolescencia y capital inmovilizado que no genera rendimiento." },
+
+  { cat:"Crédito", type:"situacional",
+    q:"Una empresa cambia su política de cobro de 30 a 45 días y la utilidad neta del análisis da negativa. ¿Qué debe hacer?",
+    opts:["No aplicar el cambio — los costos superan los beneficios","Aplicarlo igual porque suben las ventas","Aplicarlo y luego ver qué pasa","Siempre conviene dar más plazo"],
+    ans:0, exp:"Si la utilidad neta del cambio = Ganancia por ↑ventas − Costo CxC − Costo incobrables < 0, el cambio no conviene. Los costos (incobrabilidad + capital inmovilizado) superan la ganancia." },
+];
+
+// ===== STATE =====
+let queue=[], current=0, correct=0, wrong=0, answered=false;
+let wrongIds=JSON.parse(localStorage.getItem('wrongU3')||'[]');
+const ALL_QS=[...FORMULA_QS,...SITUACIONAL_QS].map((q,i)=>({...q,origIdx:i}));
+
+function goMenu(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-menu').classList.add('active');
+}
+
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+
+function startMode(m){
+  let pool;
+  if(m==='formula') pool=shuffle(FORMULA_QS.map((q,i)=>({...q,origIdx:i})));
+  else if(m==='situacional') pool=shuffle(SITUACIONAL_QS.map((q,i)=>({...q,origIdx:i+FORMULA_QS.length})));
+  else if(m==='mixto') pool=shuffle(ALL_QS);
+  else {
+    pool=ALL_QS.filter((_,i)=>wrongIds.includes(i));
+    if(!pool.length){alert('¡No tenés errores guardados! Completá un repaso primero.');return;}
+  }
+  queue=pool; current=0; correct=0; wrong=0;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-game').classList.add('active');
+  renderQ();
+}
+
+function renderQ(){
+  answered=false;
+  const q=queue[current], total=queue.length;
+  document.getElementById('g-counter').textContent=`${current+1} / ${total}`;
+  document.getElementById('g-correct').textContent=correct;
+  document.getElementById('g-wrong').textContent=wrong;
+  document.getElementById('g-prog').style.width=`${(current/total)*100}%`;
+  document.getElementById('g-cat').textContent=q.cat;
+  document.getElementById('g-q').textContent=q.q;
+
+  const fEl=document.getElementById('g-formula');
+  if(q.formula){
+    fEl.style.display='block';
+    fEl.innerHTML=q.formula.replace('___',`<span class="blank" id="blank-slot">___</span>`);
+  } else {
+    fEl.style.display='none';
+  }
+
+  const opts=document.getElementById('g-opts');
+  opts.innerHTML='';
+  const shuffledOpts=shuffle(q.opts.map((o,i)=>({text:o,isCorrect:o===q.blank||(q.ans!==undefined&&i===q.ans)})));
+  shuffledOpts.forEach(o=>{
+    const btn=document.createElement('button');
+    btn.className='opt';
+    btn.textContent=o.text;
+    btn.onclick=()=>selectAns(btn,o.isCorrect,o.text,q);
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('g-fb').className='feedback';
+  document.getElementById('g-next').className='btn-next';
+  document.getElementById('g-card').style.animation='none';
+  requestAnimationFrame(()=>{document.getElementById('g-card').style.animation='';});
+}
+
+function selectAns(btn,isCorrect,text,q){
+  if(answered) return; answered=true;
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+
+  // Fill blank
+  const blank=document.getElementById('blank-slot');
+  if(blank){
+    blank.textContent=text;
+    blank.className=`blank ${isCorrect?'filled-ok':'filled-bad'}`;
+  }
+
+  if(isCorrect){
+    btn.classList.add('correct'); correct++;
+  } else {
+    btn.classList.add('wrong'); wrong++;
+    document.querySelectorAll('.opt').forEach(b=>{
+      const correctText=q.blank||(q.opts[q.ans]);
+      if(b.textContent===correctText) b.classList.add('correct');
+    });
+    if(!wrongIds.includes(q.origIdx)){
+      wrongIds.push(q.origIdx);
+      localStorage.setItem('wrongU3',JSON.stringify(wrongIds));
+    }
+  }
+
+  document.getElementById('g-correct').textContent=correct;
+  document.getElementById('g-wrong').textContent=wrong;
+  const fb=document.getElementById('g-fb');
+  fb.className=`feedback show ${isCorrect?'ok':'bad'}`;
+  fb.innerHTML=`<strong>${isCorrect?'✓ Correcto':'✗ Incorrecto'}</strong> — ${q.exp}`;
+  const nb=document.getElementById('g-next');
+  nb.className='btn-next show';
+  nb.textContent=current+1<queue.length?'Siguiente →':'Ver resultados →';
+}
+
+function nextQ(){
+  current++;
+  if(current>=queue.length) showResults();
+  else renderQ();
+}
+
+function showResults(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-results').classList.add('active');
+  const total=queue.length, pct=Math.round(correct/total*100);
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-c').textContent=correct;
+  document.getElementById('res-w').textContent=wrong;
+  document.getElementById('res-t').textContent=total;
+  setTimeout(()=>{
+    const c=document.getElementById('res-circle');
+    c.style.transition='stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)';
+    c.style.strokeDashoffset=339.3-(pct/100)*339.3;
+  },100);
+  const t=pct===100?['¡Perfecto! 🎉','Dominás todo el corto plazo.']:
+           pct>=80?['¡Muy bien! 💪','Sólido. Repasá los errores.']:
+           pct>=60?['Bien, podés más 📖','Algunos conceptos flojos.']:
+           ['Seguí repasando 📚','Volvé a los apuntes y probá de nuevo.'];
+  document.getElementById('res-title').textContent=t[0];
+  document.getElementById('res-msg').textContent=t[1];
+}
+</script>
+</body>
+</html>
