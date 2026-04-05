@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad II · Estados Financieros</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f7f4;
+    --bg2: #ffffff;
+    --bg3: #f0ede8;
+    --border: #e2ddd8;
+    --border2: #ccc8c2;
+    --text: #1a1916;
+    --muted: #6b6860;
+    --dim: #a09d98;
+
+    --er: #1d6c4a;      --er-bg: #e8f5ee;     --er-b: #b8dfca;
+    --esp: #1a5ba8;     --esp-bg: #e8f1fb;    --esp-b: #b5d0f2;
+    --efe: #7c3aed;     --efe-bg: #f0ebff;    --efe-b: #c4b0f5;
+    --rat: #b45309;     --rat-bg: #fef3e2;    --rat-b: #f5d08a;
+
+    --font: 'Outfit', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.65; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(248,247,244,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex; align-items: center; gap: 4px;
+    height: 52px; overflow-x: auto;
+  }
+  .nav-logo { font-weight: 700; font-size: 14px; color: var(--text); margin-right: 20px; white-space: nowrap; flex-shrink: 0; }
+  .nav-logo span { opacity: .45; font-weight: 400; }
+  .nav-btn {
+    padding: 6px 14px; border-radius: 8px; border: none; background: transparent;
+    color: var(--muted); font-family: var(--font); font-size: 13px; font-weight: 500;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all .15s;
+  }
+  .nav-btn:hover { background: var(--bg3); color: var(--text); }
+  .nav-btn.active { background: var(--text); color: var(--bg); }
+
+  /* HERO */
+  .hero {
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 56px 32px 48px; text-align: center;
+    background-image: radial-gradient(circle at 20% 50%, rgba(29,108,74,.06) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 50%, rgba(26,91,168,.06) 0%, transparent 50%);
+  }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--bg3); border: 1px solid var(--border2); color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 700; letter-spacing: -.02em; margin-bottom: 10px; }
+  .hero h1 em { font-style: normal; color: var(--er); }
+  .hero p { color: var(--muted); font-size: 16px; max-width: 520px; margin: 0 auto 32px; }
+  .hero-pills { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .pill { padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; border: 1px solid; cursor: pointer; transition: all .15s; }
+  .pill:hover { opacity: .8; transform: translateY(-1px); }
+  .pill-er  { background: var(--er-bg);  color: var(--er);  border-color: var(--er-b); }
+  .pill-esp { background: var(--esp-bg); color: var(--esp); border-color: var(--esp-b); }
+  .pill-efe { background: var(--efe-bg); color: var(--efe); border-color: var(--efe-b); }
+  .pill-rat { background: var(--rat-bg); color: var(--rat); border-color: var(--rat-b); }
+
+  /* MAIN */
+  main { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* SECTION */
+  section { margin-bottom: 60px; scroll-margin-top: 60px; }
+  .sec-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .sec-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .sec-meta { flex: 1; }
+  .sec-num { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
+  .sec-title { font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
+
+  .sec-er  .sec-icon { background: var(--er-bg);  color: var(--er); }
+  .sec-er  .sec-num  { color: var(--er); }
+  .sec-esp .sec-icon { background: var(--esp-bg); color: var(--esp); }
+  .sec-esp .sec-num  { color: var(--esp); }
+  .sec-efe .sec-icon { background: var(--efe-bg); color: var(--efe); }
+  .sec-efe .sec-num  { color: var(--efe); }
+  .sec-rat .sec-icon { background: var(--rat-bg); color: var(--rat); }
+  .sec-rat .sec-num  { color: var(--rat); }
+
+  /* CARDS */
+  .cards { display: grid; gap: 12px; }
+  .cards-2 { grid-template-columns: 1fr 1fr; }
+  .cards-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px;
+    cursor: pointer; transition: all .15s;
+    position: relative; overflow: hidden;
+  }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: 0; transition: opacity .15s; }
+  .card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+  .card:hover::before, .card.open::before { opacity: 1; }
+  .card.open { border-color: var(--border2); }
+
+  .card-er::before  { background: var(--er); }
+  .card-esp::before { background: var(--esp); }
+  .card-efe::before { background: var(--efe); }
+  .card-rat::before { background: var(--rat); }
+
+  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .card-icon-sm { font-size: 22px; margin-bottom: 10px; }
+  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+  .card-sub { font-size: 12px; color: var(--muted); }
+  .card-chevron { color: var(--dim); font-size: 14px; transition: transform .2s; flex-shrink: 0; margin-top: 2px; }
+  .card.open .card-chevron { transform: rotate(180deg); }
+
+  .card-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+  .card.open .card-body { display: block; }
+  .card-body strong { color: var(--text); font-weight: 500; }
+  .card-body ul { padding-left: 18px; margin: 8px 0; }
+  .card-body ul li { margin-bottom: 4px; }
+  .card-body .formula { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: var(--mono); font-size: 12px; margin: 10px 0; color: var(--text); line-height: 1.8; }
+
+  /* ESTRUCTURE BUILDER */
+  .struct-box {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .struct-header {
+    padding: 14px 20px; font-weight: 600; font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .struct-row {
+    padding: 10px 20px; font-size: 13px; display: flex;
+    align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border); transition: background .15s; cursor: pointer;
+  }
+  .struct-row:hover { background: var(--bg3); }
+  .struct-row:last-child { border-bottom: none; }
+  .struct-row.sub { padding-left: 40px; color: var(--muted); font-size: 12.5px; }
+  .struct-row.total { background: var(--bg3); font-weight: 600; }
+  .struct-row .badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
+  .badge-green { background: var(--er-bg); color: var(--er); }
+  .badge-blue  { background: var(--esp-bg); color: var(--esp); }
+  .badge-red   { background: #ffeaea; color: #b91c1c; }
+  .badge-gray  { background: var(--bg3); color: var(--muted); }
+
+  .tooltip-box {
+    display: none;
+    background: var(--text); color: var(--bg); font-size: 12px;
+    padding: 8px 12px; border-radius: 8px; margin: 0 20px 8px;
+    line-height: 1.6; animation: fadeIn .15s ease;
+  }
+  .tooltip-box.show { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+
+  /* FLUJO DIAGRAM */
+  .flujo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .flujo-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .flujo-head { padding: 12px 16px; font-size: 13px; font-weight: 600; }
+  .flujo-item { padding: 8px 16px; font-size: 12px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .fuente { color: var(--er); font-weight: 500; }
+  .uso    { color: #b91c1c; font-weight: 500; }
+
+  /* RATIOS TABLE */
+  .ratios-grid { display: grid; gap: 10px; }
+  .ratio-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
+    cursor: pointer; transition: all .15s;
+  }
+  .ratio-card:hover { border-color: var(--border2); background: var(--bg3); }
+  .ratio-card.open { border-color: var(--rat-b); }
+  .ratio-head { display: flex; align-items: center; gap: 12px; }
+  .ratio-num { width: 28px; height: 28px; border-radius: 8px; background: var(--rat-bg); color: var(--rat); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ratio-name { font-size: 14px; font-weight: 600; flex: 1; }
+  .ratio-formula { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .ratio-indicator { font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 8px; }
+  .ratio-detail { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .ratio-card.open .ratio-detail { display: block; }
+  .ratio-detail strong { color: var(--text); font-weight: 500; }
+
+  /* CALCULATOR */
+  .calc-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+  .calc-title { font-size: 15px; font-weight: 600; margin-bottom: 18px; }
+  .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .calc-field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+  .calc-field input {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--border2); border-radius: 8px;
+    background: var(--bg3); font-family: var(--font); font-size: 14px; color: var(--text);
+    transition: border-color .15s;
+  }
+  .calc-field input:focus { outline: none; border-color: var(--rat); }
+  .calc-btn {
+    width: 100%; padding: 11px; border-radius: 10px; border: none;
+    background: var(--text); color: var(--bg); font-family: var(--font);
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity .15s;
+    margin-bottom: 16px;
+  }
+  .calc-btn:hover { opacity: .88; }
+  .calc-results { display: none; }
+  .calc-results.show { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .result-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .result-label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 5px; }
+  .result-val { font-size: 20px; font-weight: 700; }
+  .result-val.ok    { color: var(--er); }
+  .result-val.warn  { color: var(--rat); }
+  .result-val.bad   { color: #b91c1c; }
+  .result-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .cards-2, .cards-3, .flujo-grid, .calc-grid { grid-template-columns: 1fr; }
+    .hero { padding: 40px 20px 36px; }
+    main { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Finanzas de Empresas <span>· UNCUYO</span></div>
+  <button class="nav-btn active" onclick="scrollTo('intro')">Intro</button>
+  <button class="nav-btn" onclick="scrollTo('er')">Estado de Resultados</button>
+  <button class="nav-btn" onclick="scrollTo('esp')">Situación Patrimonial</button>
+  <button class="nav-btn" onclick="scrollTo('efe')">Flujo de Efectivo</button>
+  <button class="nav-btn" onclick="scrollTo('ratios')">Ratios</button>
+  <button class="nav-btn" onclick="scrollTo('calc')">Calculadora</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">📊 Unidad II</div>
+  <h1>Estados <em>Financieros</em></h1>
+  <p>El lenguaje financiero de las empresas — aprendé a leer los 4 estados, analizar ratios y calcularlos en tiempo real.</p>
+  <div class="hero-pills">
+    <div class="pill pill-er" onclick="scrollTo('er')">Estado de Resultados</div>
+    <div class="pill pill-esp" onclick="scrollTo('esp')">Situación Patrimonial</div>
+    <div class="pill pill-efe" onclick="scrollTo('efe')">Flujo de Efectivo</div>
+    <div class="pill pill-rat" onclick="scrollTo('ratios')">Ratios y Análisis</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- INTRO -->
+  <section id="intro">
+    <div class="sec-header sec-er">
+      <div class="sec-icon">📋</div>
+      <div class="sec-meta">
+        <div class="sec-num sec-er" style="color:var(--muted);">Introducción</div>
+        <div class="sec-title">¿Qué son los Estados Financieros?</div>
+      </div>
+    </div>
+    <div class="cards cards-2">
+      <div class="card card-er" onclick="toggleCard(this)">
+        <div class="card-icon-sm">📖</div>
+        <div class="card-title">Definición</div>
+        <div class="card-sub">¿Qué son y para qué sirven?</div>
+        <div class="card-chevron">▼</div>
+        <div class="card-body">
+          Informes que utilizan las instituciones para mostrar su <strong>situación económica y financiera</strong>, junto con los cambios experimentados en una fecha o período.<br><br>
+          Su función: <strong>facilitar decisiones</strong> de administradores y terceros que interactúan con la empresa.<br><br>
+          Estudiar una serie de estados financieros de distintos momentos permite seguir la <strong>evolución de la empresa</strong> y analizar su rentabilidad y situación financiera.
+        </div>
+      </div>
+      <div class="card card-er" onclick="toggleCard(this)">
+        <div class="card-icon-sm">4️⃣</div>
+        <div class="card-title">Los 4 estados principales</div>
+        <div class="card-sub">Hacé clic para ver cada uno</div>
+        <div class="card-chevron">▼</div>
+        <div class="card-body">
+          <ul>
+            <li><strong>Estado de Situación Patrimonial</strong> (Balance General)</li>
+            <li><strong>Estado de Resultados</strong> (Pérdidas y Ganancias)</li>
+            <li><strong>Estado de Evolución del Patrimonio Neto</strong></li>
+            <li><strong>Estado de Flujo de Efectivo</strong> (Origen y Aplicación de Fondos)</li>
+          </ul>
+          <br>De los 4, los que más se trabajan en la materia son el <strong>ESP y el ER</strong>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESTADO DE RESULTADOS -->
+  <section id="er">
+    <div class="sec-header sec-er">
+      <div class="sec-icon">📈</div>
+      <div class="sec-meta">
+        <div class="sec-num">Estado 1</div>
+        <div class="sec-title">Estado de Resultados</div>
+      </div>
+    </div>
+
+    <p style="color:var(--muted);margin-bottom:20px;font-size:14px;">Informa ventas y costos durante un período. Se elabora por el <strong style="color:var(--text);">criterio del devengado</strong>: se consideran ingresos/egresos cuando ocurren, independientemente del movimiento de efectivo.</p>
+
+    <!-- Estructura interactiva -->
+    <div class="struct-box" style="margin-bottom:20px;">
+      <div class="struct-header" style="background:var(--er-bg);color:var(--er);">
+        <span>📊</span> Estructura del Estado de Resultados — hacé clic en cada línea
+      </div>
+      <div class="struct-row" onclick="showTip('t1')">
+        <span>Ventas netas</span>
+        <span class="badge badge-green">Ingreso</span>
+      </div>
+      <div class="tooltip-box" id="t1">Precio × Cantidad vendida. Es la única cuenta de ingreso del ER; todo lo demás son egresos.</div>
+      <div class="struct-row sub" onclick="showTip('t2')">
+        <span>− Costo de Mercadería Vendida (CMV)</span>
+        <span class="badge badge-red">Egreso</span>
+      </div>
+      <div class="tooltip-box" id="t2">Costo unitario × Cantidad vendida. Lo que le costó producir o comprar lo que se vendió.</div>
+      <div class="struct-row total" onclick="showTip('t3')">
+        <span>= UTILIDAD BRUTA</span>
+        <span class="badge badge-green">Resultado</span>
+      </div>
+      <div class="tooltip-box" id="t3">Ventas − CMV. Mide el resultado de la actividad productiva pura, sin considerar costos de estructura.</div>
+      <div class="struct-row sub" onclick="showTip('t4')">
+        <span>− Costos Comerciales (CC)</span>
+        <span class="badge badge-red">Egreso</span>
+      </div>
+      <div class="tooltip-box" id="t4">Comisiones de venta, publicidad, distribución. Son costos que varían con las ventas.</div>
+      <div class="struct-row sub" onclick="showTip('t5')">
+        <span>− Costos Administrativos (CADM)</span>
+        <span class="badge badge-red">Egreso</span>
+      </div>
+      <div class="tooltip-box" id="t5">Salarios administrativos, alquiler, servicios. Son costos del período, no del producto.</div>
+      <div class="struct-row sub" onclick="showTip('t6')">
+        <span>− Depreciaciones y Amortizaciones (D&amp;A)</span>
+        <span class="badge badge-gray">Contable</span>
+      </div>
+      <div class="tooltip-box" id="t6">⚠️ NO son salida real de dinero. Son ajustes contables. Depreciaciones = activos fijos (maquinarias). Amortizaciones = intangibles (patentes). Para el flujo de efectivo, se SUMAN de vuelta (son fuente de fondos).</div>
+      <div class="struct-row total" onclick="showTip('t7')">
+        <span>= EBIT (Resultado Operativo)</span>
+        <span class="badge badge-green">⭐ Clave</span>
+      </div>
+      <div class="tooltip-box" id="t7">Earnings Before Interest and Taxes. Resultado que generan los activos independientemente de cómo se financió la empresa. Es uno de los más importantes para análisis.</div>
+      <div class="struct-row sub" onclick="showTip('t8')">
+        <span>− Intereses (gastos financieros)</span>
+        <span class="badge badge-red">Egreso</span>
+      </div>
+      <div class="tooltip-box" id="t8">Costo de la deuda. Acá se "cobra" el efecto del apalancamiento financiero.</div>
+      <div class="struct-row sub" onclick="showTip('t9')">
+        <span>− Impuesto a las ganancias</span>
+        <span class="badge badge-red">Egreso</span>
+      </div>
+      <div class="tooltip-box" id="t9">La alícuota T se aplica sobre el resultado antes de impuestos. En el ROIC se usa (1-T) para calcular lo que queda después de impuestos.</div>
+      <div class="struct-row total" onclick="showTip('t10')">
+        <span>= RESULTADO FINAL (Utilidad Neta)</span>
+        <span class="badge badge-green">Final</span>
+      </div>
+      <div class="tooltip-box" id="t10">Si es positivo → se destina a dividendos (accionistas) y reservas (legales o voluntarias). Si es negativo → la empresa tuvo pérdidas.</div>
+    </div>
+
+    <div class="cards cards-2">
+      <div class="card card-er" onclick="toggleCard(this)">
+        <div class="card-icon-sm">📌</div>
+        <div class="card-title">Criterio del devengado</div>
+        <div class="card-sub">¿Cuándo se registran los ingresos?</div>
+        <div class="card-chevron">▼</div>
+        <div class="card-body">
+          El ER se hace por el criterio del <strong>devengado</strong>: los ingresos y egresos se registran <strong>cuando ocurren</strong>, no cuando entra o sale el dinero.<br><br>
+          Ejemplo: si en junio hago una venta a 90 días, el ingreso se registra en junio en el ER, aunque el dinero llegue en septiembre.<br><br>
+          Esto es diferente al Estado de Flujo de Efectivo, que registra cuando efectivamente entra o sale el dinero (<strong>criterio percibido</strong>).
+        </div>
+      </div>
+      <div class="card card-er" onclick="toggleCard(this)">
+        <div class="card-icon-sm">⚡</div>
+        <div class="card-title">Resultados extraordinarios</div>
+        <div class="card-sub">Operaciones no habituales</div>
+        <div class="card-chevron">▼</div>
+        <div class="card-body">
+          Provienen de actividades u operaciones no habituales:<br><br>
+          <ul>
+            <li>Venta de activos fijos</li>
+            <li>Ingresos por servicios no operativos</li>
+            <li>Comisiones ganadas</li>
+            <li>Alquileres ganados</li>
+            <li>Indemnizaciones</li>
+          </ul>
+          No forman parte del resultado operativo (EBIT) normal de la empresa.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESP -->
+  <section id="esp">
+    <div class="sec-header sec-esp">
+      <div class="sec-icon">🏛️</div>
+      <div class="sec-meta">
+        <div class="sec-num">Estado 2</div>
+        <div class="sec-title">Estado de Situación Patrimonial</div>
+      </div>
+    </div>
+
+    <p style="color:var(--muted);margin-bottom:20px;font-size:14px;">Muestra la situación financiera en <strong style="color:var(--text);">una fecha determinada</strong>. A la izquierda: cómo se usó el dinero (activos). A la derecha: cómo se financió (pasivos + PN).</p>
+
+    <div class="struct-box" style="margin-bottom:20px;">
+      <div class="struct-header" style="background:var(--esp-bg);color:var(--esp);">
+        <span>⚖️</span> Ecuación fundamental: <strong style="margin-left:8px;">ACTIVO = PASIVO + PATRIMONIO NETO</strong>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;">
+        <div>
+          <div class="struct-row total"><span>ACTIVOS CORRIENTES</span><span class="badge badge-blue">Liquidez ≤ 12m</span></div>
+          <div class="struct-row sub" onclick="showTip('esp1')"><span>Caja y Bancos</span><span>💧 más líquido</span></div>
+          <div class="tooltip-box" id="esp1">El más líquido de todos. Va primero en América Latina (orden de mayor a menor liquidez).</div>
+          <div class="struct-row sub" onclick="showTip('esp2')"><span>Cuentas por Cobrar</span><span></span></div>
+          <div class="tooltip-box" id="esp2">Ventas realizadas pero aún no cobradas. Si aumenta → uso de fondos. Si disminuye → fuente.</div>
+          <div class="struct-row sub" onclick="showTip('esp3')"><span>Inventarios</span><span></span></div>
+          <div class="tooltip-box" id="esp3">Stock de productos. Ojo: el ratio de liquidez ácida lo excluye porque puede que no se venda.</div>
+          <div class="struct-row total"><span>ACTIVOS NO CORRIENTES</span><span class="badge badge-blue">Liquidez &gt;12m</span></div>
+          <div class="struct-row sub" onclick="showTip('esp4')"><span>Bienes de uso</span><span></span></div>
+          <div class="tooltip-box" id="esp4">Maquinarias, vehículos, edificios. Se deprecian con el tiempo (D&A). Se muestran netos de depreciación acumulada.</div>
+          <div class="struct-row sub"><span>Activos intangibles</span><span></span></div>
+        </div>
+        <div style="border-left:1px solid var(--border);">
+          <div class="struct-row total"><span>PASIVOS CORRIENTES</span><span class="badge badge-red">Vence ≤ 12m</span></div>
+          <div class="struct-row sub" onclick="showTip('esp5')"><span>Proveedores / CxP</span><span></span></div>
+          <div class="tooltip-box" id="esp5">Deuda con proveedores. Si aumenta → fuente (me "financian"). Si disminuye → uso (pagué deuda).</div>
+          <div class="struct-row sub"><span>Deudas bancarias CP</span><span></span></div>
+          <div class="struct-row total"><span>PASIVOS NO CORRIENTES</span><span class="badge badge-gray">Vence &gt;12m</span></div>
+          <div class="struct-row sub" onclick="showTip('esp6')"><span>Deuda a largo plazo</span><span></span></div>
+          <div class="tooltip-box" id="esp6">Mejor que la deuda de corto plazo. Más tiempo para devolver el dinero → menor riesgo de liquidez.</div>
+          <div class="struct-row total" onclick="showTip('esp7')"><span>PATRIMONIO NETO</span><span class="badge badge-green">de los socios</span></div>
+          <div class="tooltip-box" id="esp7">PN = Activo − Pasivo. Capital aportado + utilidades retenidas. Debe ser ≥ 40% de las fuentes. Es el de menor exigibilidad → va al final.</div>
+          <div class="struct-row sub"><span>Capital social</span><span></span></div>
+          <div class="struct-row sub"><span>Reservas + Ganancias retenidas</span><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards cards-3">
+      <div class="card card-esp" onclick="toggleCard(this)">
+        <div class="card-icon-sm">📐</div>
+        <div class="card-title">Criterios de ordenamiento</div>
+        <div class="card-chevron">▼</div>
+        <div class="card-body">
+          <strong>Activos:</strong> de mayor a menor liquidez (Am. Latina). El más líquido es caja.<br><br>
+          <strong>Pasivos:</strong> de mayor a menor exigibilidad. Primero el corriente (vence antes).<br><br>
+          <strong>PN:</strong> último, por ser el menos exigible (los socios cobran al final).
+        </div>
+      </div>
+      <div class="card card-esp" onclick="toggleCard(this)">
+        <div class="card-icon-sm">⚠️</div>
+        <div class="card-title">Regla del 60%</div>
+        <div class="card-chevron">▼</div>
+        <div class="card-body">
+          El <strong>total de deuda NO debe superar el 60%</strong> de las fuentes de financiamiento.<br><br>
+          → El PN debe ser ≥ 40%<br><br>
+          Si hay más deuda, ante una caída del valor de los activos, los acreedores pueden no poder cobrar. Una empresa muy endeudada es como "un fumador empedernido con un solo pulmón en invierno".
+        </div>
+      </div>
+      <div class="card card-esp" onclick="toggleCard(this)">
+        <div class="card-icon-sm">✅</div>
+        <div class="card-title">Regla del AC &gt; PC</div>
+        <div class="card-chevron">▼</div>
+        <div class="card-body">
+          El <strong>Activo Corriente debe ser mayor que el Pasivo Corriente</strong> para poder pagar deudas a corto plazo.<br><br>
+          Excepciones: supermercados (cobran al contado, pagan financiado) o compañías de seguro (cobran mensual, pagan eventualmente).
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLUJO DE EFECTIVO -->
+  <section id="efe">
+    <div class="sec-header sec-efe">
+      <div class="sec-icon">💸</div>
+      <div class="sec-meta">
+        <div class="sec-num">Estado 3</div>
+        <div class="sec-title">Estado de Flujo de Efectivo</div>
+      </div>
+    </div>
+
+    <p style="color:var(--muted);margin-bottom:20px;font-size:14px;">Muestra, en forma dinámica, las <strong style="color:var(--text);">entradas y salidas de efectivo</strong> en un período. A diferencia del ER, usa el <strong style="color:var(--text);">criterio percibido</strong> (cuándo entra/sale el dinero).</p>
+
+    <!-- Fuentes y Usos -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;">
+      <div style="font-weight:600;margin-bottom:14px;font-size:14px;">🔑 Identificar Fuentes y Usos — Regla clave</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;">
+        <div style="background:var(--er-bg);border:1px solid var(--er-b);border-radius:10px;padding:14px;">
+          <div style="color:var(--er);font-weight:600;margin-bottom:8px;">✅ FUENTES (entradas de efectivo)</div>
+          <ul style="padding-left:16px;color:var(--muted);line-height:1.8;">
+            <li>Resultado positivo (ganancia)</li>
+            <li>Depreciaciones / Amortizaciones</li>
+            <li>Activo que <strong style="color:var(--text);">disminuye</strong></li>
+            <li>Pasivo que <strong style="color:var(--text);">aumenta</strong></li>
+          </ul>
+        </div>
+        <div style="background:#ffeaea;border:1px solid #fccaca;border-radius:10px;padding:14px;">
+          <div style="color:#b91c1c;font-weight:600;margin-bottom:8px;">❌ USOS (salidas de efectivo)</div>
+          <ul style="padding-left:16px;color:var(--muted);line-height:1.8;">
+            <li>Resultado negativo (pérdida)</li>
+            <li>Pago de dividendos</li>
+            <li>Activo que <strong style="color:var(--text);">aumenta</strong></li>
+            <li>Pasivo que <strong style="color:var(--text);">disminuye</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 flujos -->
+    <div class="flujo-grid">
+      <div class="flujo-card">
+        <div class="flujo-head" style="background:var(--er-bg);color:var(--er);">⚙️ Flujos Operativos</div>
+        <div class="flujo-item"><span>Utilidad neta</span><span class="fuente">FUENTE</span></div>
+        <div class="flujo-item"><span>+ Depreciaciones</span><span class="fuente">FUENTE</span></div>
+        <div class="flujo-item"><span>Aumento en CxC</span><span class="uso">USO</span></div>
+        <div class="flujo-item"><span>Disminución en CxC</span><span class="fuente">FUENTE</span></div>
+        <div class="flujo-item"><span>Aumento en inventario</span><span class="uso">USO</span></div>
+        <div class="flujo-item"><span>Aumento en CxP</span><span class="fuente">FUENTE</span></div>
+      </div>
+      <div class="flujo-card">
+        <div class="flujo-head" style="background:var(--esp-bg);color:var(--esp);">🏗️ Flujos de Inversión</div>
+        <div class="flujo-item"><span>Compra de maquinaria</span><span class="uso">USO</span></div>
+        <div class="flujo-item"><span>Venta de activos fijos</span><span class="fuente">FUENTE</span></div>
+        <div class="flujo-item"><span>Compra de terrenos</span><span class="uso">USO</span></div>
+        <div class="flujo-item"><span>Inversiones en otras empresas</span><span class="uso">USO</span></div>
+        <div class="flujo-item"><span>Desinversión</span><span class="fuente">FUENTE</span></div>
+      </div>
+      <div class="flujo-card">
+        <div class="flujo-head" style="background:var(--efe-bg);color:var(--efe);">💰 Flujos de Financiamiento</div>
+        <div class="flujo-item"><span>Contraer deuda LP</span><span class="fuente">FUENTE</span></div>
+        <div class="flujo-item"><span>Pago de deuda</span><span class="uso">USO</span></div>
+        <div class="flujo-item"><span>Venta de acciones</span><span class="fuente">FUENTE</span></div>
+        <div class="flujo-item"><span>Pago de dividendos</span><span class="uso">USO</span></div>
+        <div class="flujo-item"><span>Recompra de acciones</span><span class="uso">USO</span></div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:14px;font-size:13.5px;color:var(--muted);">
+      <strong style="color:var(--text);">Saldo final de caja</strong> = Saldo inicial + Flujo operativo + Flujo de inversión + Flujo de financiamiento
+    </div>
+  </section>
+
+  <!-- RATIOS -->
+  <section id="ratios">
+    <div class="sec-header sec-rat">
+      <div class="sec-icon">📐</div>
+      <div class="sec-meta">
+        <div class="sec-num">Análisis</div>
+        <div class="sec-title">Ratios e Índices Financieros</div>
+      </div>
+    </div>
+
+    <p style="color:var(--muted);margin-bottom:8px;font-size:14px;">Son relaciones entre dos variables con lógica financiera. Nos dicen si la empresa está "sana" o tiene problemas. Hacé clic para ver el detalle de cada uno.</p>
+
+    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+      <span style="font-size:12px;padding:4px 10px;background:var(--esp-bg);color:var(--esp);border-radius:20px;font-weight:500;">6 ratios del ESP</span>
+      <span style="font-size:12px;padding:4px 10px;background:var(--rat-bg);color:var(--rat);border-radius:20px;font-weight:500;">4 ratios del ER</span>
+    </div>
+
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Ratios del Estado Patrimonial</div>
+    <div class="ratios-grid" style="margin-bottom:28px;">
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num">1</div>
+          <div><div class="ratio-name">Endeudamiento</div><div class="ratio-formula">Pasivo Total / (Pasivo + PN)</div></div>
+          <div class="ratio-indicator badge badge-blue">≤ 0,60</div>
+        </div>
+        <div class="ratio-detail">
+          Mide qué proporción de las fuentes de financiamiento son deuda.<br><br>
+          <strong>Lectura:</strong> por cada $1 que tiene la empresa, cuántos centavos son deuda.<br>
+          <strong>Si supera 0,60 →</strong> empresa "descapitalizada". Los acreedores tienen mayor riesgo de no cobrar si los activos pierden valor.<br><br>
+          <em>Ejemplo: R = 0,64 → de cada peso, debo 64 centavos</em>
+        </div>
+      </div>
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num">2</div>
+          <div><div class="ratio-name">Calidad de deuda</div><div class="ratio-formula">Pasivo Corriente / Pasivo Total</div></div>
+          <div class="ratio-indicator badge badge-blue">→ 0 mejor</div>
+        </div>
+        <div class="ratio-detail">
+          Mide qué proporción de la deuda total es a corto plazo.<br><br>
+          <strong>Mejor caso: 0</strong> (toda la deuda es LP → más tiempo para devolver)<br>
+          <strong>Peor caso: 1</strong> (toda la deuda es CP → hay que pagar todo pronto)<br><br>
+          <em>Ejemplo: R = 0,63 → por cada $1 de deuda, 63 centavos son de corto plazo</em>
+        </div>
+      </div>
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num">3</div>
+          <div><div class="ratio-name">Liquidez corriente</div><div class="ratio-formula">Activo Corriente / Pasivo Corriente</div></div>
+          <div class="ratio-indicator badge badge-green">1,5 a 2</div>
+        </div>
+        <div class="ratio-detail">
+          Mide la capacidad de pagar deudas de corto plazo.<br><br>
+          <strong>Lectura:</strong> por cada $1 de deuda a enfrentar, la empresa <em>cree</em> que generará X pesos.<br>
+          <strong>Si R &lt; 1 →</strong> no hay liquidez (ej: 0,90 → genera 90 centavos por cada peso de deuda)<br>
+          <strong>Si R &gt; 2 →</strong> exceso de liquidez (dinero ocioso, pierde rentabilidad)<br><br>
+          <em>⚠️ Siempre leer en fracciones, no como porcentaje</em>
+        </div>
+      </div>
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num">4</div>
+          <div><div class="ratio-name">Liquidez ácida</div><div class="ratio-formula">(AC − Inventario) / Pasivo Corriente</div></div>
+          <div class="ratio-indicator badge badge-green">≥ 1</div>
+        </div>
+        <div class="ratio-detail">
+          Más exigente que la liquidez corriente: excluye el inventario porque puede que NO se venda.<br><br>
+          <strong>Lectura:</strong> por cada $1 de deuda, cuánto se convierte en efectivo sin vender inventario.<br><br>
+          <em>Ejemplo: R = 0,60 → por cada peso de pasivo, tenemos 60 centavos que se vuelven efectivo sin necesidad de vender stock</em>
+        </div>
+      </div>
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num">5</div>
+          <div><div class="ratio-name">Plazo de cobro</div><div class="ratio-formula">(CxC / Ventas) × 365</div></div>
+          <div class="ratio-indicator badge badge-gray">Relativo</div>
+        </div>
+        <div class="ratio-detail">
+          Indica cuántos días tarda la empresa en cobrar sus ventas.<br><br>
+          <strong>Evaluación:</strong> depende de la política de crédito acordada con los clientes. Si el plazo acordado era 60 días y el ratio da 55 → bien. Si era 30 días → hay atraso.<br><br>
+          <em>Ejemplo: R = 55 días → la deuda de los clientes tiene 55 días de antigüedad promedio</em>
+        </div>
+      </div>
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num">6</div>
+          <div><div class="ratio-name">Plazo de pago</div><div class="ratio-formula">(CxP / Compras) × 365</div></div>
+          <div class="ratio-indicator badge badge-gray">Relativo</div>
+        </div>
+        <div class="ratio-detail">
+          Indica cuántos días tarda la empresa en pagar a sus proveedores.<br><br>
+          <strong>Comparar con plazo de cobro:</strong> idealmente el plazo de pago debe ser ≥ al plazo de cobro (cobro antes de pagar → mejor liquidez).<br><br>
+          <em>Ejemplo: R = 144 días → la empresa tarda 144 días en pagar a sus proveedores (cobra a 55 días → está usando el crédito de proveedores para financiarse)</em>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Ratios del Estado de Resultados (rentabilidad)</div>
+    <div class="ratios-grid">
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num" style="background:var(--er-bg);color:var(--er);">R1</div>
+          <div><div class="ratio-name">ROA — Rendimiento sobre Activos</div><div class="ratio-formula">Resultado Final / Total Activos × 100 = Margen × Rotación</div></div>
+        </div>
+        <div class="ratio-detail">
+          Rendimiento que generan los activos, sin importar cómo se financiaron.<br><br>
+          <strong>Descomposición:</strong><br>
+          ROA = (Resultado Final / Ventas) × (Ventas / Activos) = <strong>Margen × Rotación</strong><br><br>
+          — Margen: % de cada peso de ventas que queda como ganancia<br>
+          — Rotación: cuántas veces el activo se convierte en ventas (ej: 2,67 veces)<br><br>
+          Cuadrantes: Alta rot + Alto margen (tech) · Alta rot + Bajo margen (supermercados) · Baja rot + Alto margen (lujo) · Baja rot + Bajo margen (evitar)
+        </div>
+      </div>
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num" style="background:var(--er-bg);color:var(--er);">R2</div>
+          <div><div class="ratio-name">ROE — Rendimiento sobre PN</div><div class="ratio-formula">Resultado Final / PN × 100 = ROA × Palanca Financiera</div></div>
+        </div>
+        <div class="ratio-detail">
+          Cuán rentable es la empresa para sus <strong>accionistas</strong>.<br><br>
+          <strong>Palanca Financiera</strong> = Activo / PN = 1 + (Pasivo / PN)<br><br>
+          ↑ Deuda → ↑ ROE para accionistas → ↑ Riesgo<br><br>
+          Conviene endeudarse si: <strong>costo de la deuda &lt; rentabilidad generada</strong> y la empresa puede pagarlo con su flujo de ingresos.
+        </div>
+      </div>
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num" style="background:var(--er-bg);color:var(--er);">R3</div>
+          <div><div class="ratio-name">ROIC — Rendimiento sobre Capital Invertido</div><div class="ratio-formula">EBIT × (1−T) / Capital Invertido</div></div>
+        </div>
+        <div class="ratio-detail">
+          Mide la rentabilidad de una inversión específica.<br><br>
+          — ROIC &gt; 0 → inversión rentable ✅<br>
+          — ROIC &lt; 0 → se perdió dinero ❌<br><br>
+          <strong>Capital Invertido</strong> = Activos Totales − Fuentes Espontáneas
+        </div>
+      </div>
+      <div class="ratio-card" onclick="toggleRatio(this)">
+        <div class="ratio-head">
+          <div class="ratio-num" style="background:var(--er-bg);color:var(--er);">R4</div>
+          <div><div class="ratio-name">EVA — Valor Económico Agregado</div><div class="ratio-formula">CI × (ROIC − WACC)</div></div>
+        </div>
+        <div class="ratio-detail">
+          ¿La empresa gana más de lo que cuesta mantener el capital invertido?<br><br>
+          <strong>WACC</strong> = % Deuda × k_deuda + % Acciones × k_acc (costo promedio del capital)<br><br>
+          — ROIC &gt; WACC → empresa <strong>crea valor</strong> ✅<br>
+          — ROIC &lt; WACC → empresa <strong>destruye valor</strong> ❌ (aunque tenga ganancias)<br><br>
+          <em>Ej: ROIC = 10%, WACC = 12% → gana 10% pero le cuesta 12% financiarse → destruye valor</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALCULADORA -->
+  <section id="calc">
+    <div class="sec-header sec-rat">
+      <div class="sec-icon">🧮</div>
+      <div class="sec-meta">
+        <div class="sec-num">Herramienta</div>
+        <div class="sec-title">Calculadora de Ratios</div>
+      </div>
+    </div>
+    <div class="calc-box">
+      <div class="calc-title">Ingresá los datos del ESP y ER para calcular todos los ratios automáticamente</div>
+      <div class="calc-grid">
+        <div class="calc-field"><label>Activo Corriente</label><input type="number" id="ac" placeholder="8400" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Activo No Corriente</label><input type="number" id="anc" placeholder="6600" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Pasivo Corriente</label><input type="number" id="pc" placeholder="6000" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Pasivo No Corriente</label><input type="number" id="pnc" placeholder="3600" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Inventario</label><input type="number" id="inv" placeholder="4800" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Cuentas por Cobrar</label><input type="number" id="cxc" placeholder="2400" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Cuentas por Pagar</label><input type="number" id="cxp" placeholder="4500" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Ventas</label><input type="number" id="ventas" placeholder="16000" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Compras</label><input type="number" id="compras" placeholder="14400" oninput="liveCalc()"></div>
+        <div class="calc-field"><label>Resultado Final</label><input type="number" id="rf" placeholder="29681" oninput="liveCalc()"></div>
+      </div>
+      <button class="calc-btn" onclick="calcRatios()">Calcular todos los ratios</button>
+      <div class="calc-results" id="calc-results"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function toggleCard(card) {
+  const isOpen = card.classList.contains('open');
+  card.closest('.cards').querySelectorAll('.card').forEach(c => c.classList.remove('open'));
+  if (!isOpen) card.classList.add('open');
+}
+
+function toggleRatio(card) {
+  card.classList.toggle('open');
+}
+
+let activeTip = null;
+function showTip(id) {
+  if (activeTip && activeTip !== id) {
+    document.getElementById(activeTip)?.classList.remove('show');
+  }
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isShow = el.classList.contains('show');
+  el.classList.toggle('show', !isShow);
+  activeTip = !isShow ? id : null;
+}
+
+function calcRatios() {
+  liveCalc();
+}
+
+function liveCalc() {
+  const g = id => parseFloat(document.getElementById(id).value) || 0;
+  const ac = g('ac'), anc = g('anc'), pc = g('pc'), pnc = g('pnc');
+  const inv = g('inv'), cxc = g('cxc'), cxp = g('cxp');
+  const ventas = g('ventas'), compras = g('compras'), rf = g('rf');
+
+  if (!ac && !pc) return;
+
+  const totalActivo = ac + anc;
+  const totalPasivo = pc + pnc;
+  const pn = totalActivo - totalPasivo;
+
+  const rend   = totalPasivo / (totalPasivo + pn);
+  const rcal   = pc / totalPasivo;
+  const rliq   = pc > 0 ? ac / pc : 0;
+  const rliqA  = pc > 0 ? (ac - inv) / pc : 0;
+  const rcobro = ventas > 0 ? (cxc / ventas) * 365 : 0;
+  const rpago  = compras > 0 ? (cxp / compras) * 365 : 0;
+  const roa    = totalActivo > 0 ? (rf / totalActivo) * 100 : 0;
+  const roe    = pn > 0 ? (rf / pn) * 100 : 0;
+
+  const results = [
+    { label: 'Endeudamiento', val: rend.toFixed(2), unit: '', ok: rend <= 0.6, warn: rend > 0.6 && rend <= 0.7, ref: '≤ 0,60' },
+    { label: 'Calidad deuda', val: rcal.toFixed(2), unit: '', ok: rcal <= 0.4, warn: rcal > 0.4 && rcal <= 0.6, ref: '→ 0 mejor' },
+    { label: 'Liq. corriente', val: rliq.toFixed(2), unit: '', ok: rliq >= 1.5 && rliq <= 2, warn: rliq >= 1 && rliq < 1.5, ref: '1,5 a 2' },
+    { label: 'Liq. ácida', val: rliqA.toFixed(2), unit: '', ok: rliqA >= 1, warn: rliqA >= 0.8 && rliqA < 1, ref: '≥ 1' },
+    { label: 'Plazo cobro', val: Math.round(rcobro), unit: ' días', ok: true, warn: false, ref: 'vs política' },
+    { label: 'Plazo pago', val: Math.round(rpago), unit: ' días', ok: true, warn: false, ref: 'vs política' },
+    { label: 'ROA', val: roa.toFixed(2), unit: '%', ok: roa > 8, warn: roa > 0 && roa <= 8, ref: '> inflación' },
+    { label: 'ROE', val: roe.toFixed(2), unit: '%', ok: roe > 10, warn: roe > 0 && roe <= 10, ref: '> ROA' },
+  ];
+
+  const container = document.getElementById('calc-results');
+  container.className = 'calc-results show';
+  container.innerHTML = results.map(r => `
+    <div class="result-card">
+      <div class="result-label">${r.label}</div>
+      <div class="result-val ${r.ok ? 'ok' : r.warn ? 'warn' : 'bad'}">${r.val}${r.unit}</div>
+      <div class="result-sub">Ref: ${r.ref}</div>
+    </div>
+  `).join('');
+}
+
+// scroll spy
+const sections = ['intro','er','esp','efe','ratios','calc'];
+window.addEventListener('scroll', () => {
+  let cur = 'intro';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < 80) cur = id;
+  });
+  document.querySelectorAll('.nav-btn').forEach((b, i) => {
+    b.classList.toggle('active', sections[i] === cur);
+  });
+});
+</script>
+</body>
+</html>
