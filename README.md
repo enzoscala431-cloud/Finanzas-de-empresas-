@@ -38,13 +38,14 @@ Bienvenido a mi espacio personal donde paso en limpio los conceptos de la materi
  
 ---
 ### Unidad IV · Administración Financiera de Largo Plazo
- 
+
 | | Enlace |
 |---|---|
-| 📄 Resumen Markdown | [Ver resumen](./Unidad%204%20--%20Administraci%C3%B3n%20financiera%20de%20largo%20plazo/Resumen.md) |
-| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%204%20--%20Administraci%C3%B3n%20financiera%20de%20largo%20plazo/) |
-| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%204%20--%20Administraci%C3%B3n%20financiera%20de%20largo%20plazo/Repaso.html) |
+| 📄 Resumen Markdown | [Ver resumen](./Unidad%204%20%E2%80%94%20Administraci%C3%B3n%20financiera%20de%20largo%20plazo/Resumen.md) |
+| 🌐 Página web interactiva | [Abrir página](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%204%20%E2%80%94%20Administraci%C3%B3n%20financiera%20de%20largo%20plazo/index.html) |
+| 🎮 Repaso interactivo | [Abrir repaso](https://enzoscala431-cloud.github.io/Finanzas-de-empresas-/Unidad%204%20%E2%80%94%20Administraci%C3%B3n%20financiera%20de%20largo%20plazo/Repaso.html) |
 
+---
 ---
 ### Unidad V · Costos
 
