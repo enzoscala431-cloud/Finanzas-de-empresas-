@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Repaso U4 — Largo Plazo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#080810;--s1:#10101c;--s2:#18182a;--border:rgba(255,255,255,0.07);
+  --text:#e0dcf8;--text2:#6860a0;--accent:#7050e8;--green:#40d880;--red:#f05858;--gold:#f0b840;--r:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:2rem 1rem 5rem;display:flex;flex-direction:column;align-items:center;}
+.wrap{width:100%;max-width:720px;position:relative;}
+
+.hdr{text-align:center;margin-bottom:2.5rem;}
+.hdr .kicker{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.hdr h1{font-family:'Syne',sans-serif;font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.1;}
+.hdr h1 span{color:var(--accent);}
+.hdr p{font-size:13px;color:var(--text2);margin-top:6px;}
+
+.screen{display:none;}
+.screen.active{display:block;animation:fi .3s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* MENU */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:1.5rem 0;}
+.mode-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem 1rem;cursor:pointer;text-align:center;transition:all .2s;color:var(--text);}
+.mode-card:hover{border-color:rgba(112,80,232,.5);transform:translateY(-3px);}
+.mode-card .icon{font-size:30px;margin-bottom:10px;}
+.mode-card .title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;}
+.mode-card .desc{font-size:12px;color:var(--text2);line-height:1.4;}
+.btn-primary{width:100%;padding:14px;border:none;border-radius:var(--r);background:var(--accent);color:white;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
+.btn-primary:hover{opacity:.85;}
+
+/* SCOREBAR */
+.scorebar{display:flex;justify-content:space-between;align-items:center;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:.65rem 1.25rem;margin-bottom:1.25rem;font-family:'Space Mono',monospace;font-size:11px;}
+.prog-bar{height:2px;background:var(--s2);border-radius:999px;overflow:hidden;margin-bottom:1.25rem;}
+.prog-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .5s;}
+
+/* MATCHING GAME */
+.match-instruction{font-size:13px;color:var(--text2);text-align:center;margin-bottom:1.25rem;}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+@media(max-width:500px){.match-grid{grid-template-columns:1fr;}}
+.match-col-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:8px;text-align:center;}
+.match-col{display:flex;flex-direction:column;gap:8px;}
+.match-item{padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-size:13px;cursor:pointer;background:var(--s1);color:var(--text);transition:all .18s;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;line-height:1.4;}
+.match-item:hover:not(.used):not(.locked){border-color:rgba(112,80,232,.4);background:rgba(112,80,232,.06);}
+.match-item.selected{border-color:var(--accent);background:rgba(112,80,232,.12);color:var(--accent);}
+.match-item.correct{border-color:var(--green);background:rgba(64,216,128,.1);color:var(--green);cursor:default;}
+.match-item.wrong{border-color:var(--red);background:rgba(240,88,88,.1);color:var(--red);}
+.match-item.locked{opacity:.5;cursor:default;}
+.match-item.used{opacity:.4;cursor:default;}
+
+.match-fb{display:none;margin-top:.75rem;padding:.75rem 1rem;border-radius:10px;font-size:13px;text-align:center;animation:fi .2s ease;}
+.match-fb.show{display:block;}
+.match-fb.ok{background:rgba(64,216,128,.08);border:1px solid rgba(64,216,128,.2);color:var(--green);}
+.match-fb.bad{background:rgba(240,88,88,.08);border:1px solid rgba(240,88,88,.2);color:#f09898;}
+
+/* NUMERIC GAME */
+.num-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;margin-bottom:1rem;animation:fi .3s ease;}
+.num-cat{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.num-q{font-size:15px;font-weight:500;line-height:1.55;margin-bottom:1rem;}
+.num-data{background:var(--s2);border-radius:8px;padding:.75rem 1rem;font-family:'Space Mono',monospace;font-size:12px;color:var(--text2);margin-bottom:1.25rem;line-height:1.8;}
+.opts-num{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:480px){.opts-num{grid-template-columns:1fr;}}
+.opt-n{padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-family:'Space Mono',monospace;font-size:13px;cursor:pointer;background:var(--s2);color:var(--text);transition:all .18s;text-align:center;}
+.opt-n:hover:not(:disabled){border-color:rgba(112,80,232,.4);}
+.opt-n.correct{border-color:var(--green);background:rgba(64,216,128,.1);color:var(--green);}
+.opt-n.wrong{border-color:var(--red);background:rgba(240,88,88,.1);color:var(--red);}
+.opt-n:disabled{cursor:default;}
+.num-fb{display:none;margin-top:.75rem;padding:.75rem 1rem;border-radius:10px;font-size:13px;line-height:1.6;animation:fi .2s ease;}
+.num-fb.show{display:block;}
+.num-fb.ok{background:rgba(64,216,128,.07);border:1px solid rgba(64,216,128,.2);color:var(--green);}
+.num-fb.bad{background:rgba(240,88,88,.07);border:1px solid rgba(240,88,88,.2);color:#f09898;}
+.btn-next{width:100%;margin-top:.75rem;padding:12px;border:none;border-radius:10px;background:var(--accent);color:white;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:none;transition:opacity .2s;}
+.btn-next.show{display:block;}
+.btn-next:hover{opacity:.85;}
+
+/* RESULTS */
+#screen-results{text-align:center;}
+.res-ring{width:130px;height:130px;margin:0 auto 1.5rem;position:relative;}
+.res-ring svg{transform:rotate(-90deg);}
+.res-ring .rt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.res-ring .rn{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--accent);}
+.res-ring .rl{font-size:10px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;font-family:'Space Mono',monospace;}
+#screen-results h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;}
+#screen-results p{font-size:13px;color:var(--text2);margin-bottom:1.5rem;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem;}
+.res-stat{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:.85rem;}
+.res-stat .n{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:2px;}
+.res-stat .l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;font-family:'Space Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div class="kicker">Finanzas de Empresas · 2025</div>
+    <h1>Modo <span>Repaso</span></h1>
+    <p>Unidad IV — Administración Financiera de Largo Plazo</p>
+  </div>
+
+  <!-- MENU -->
+  <div class="screen active" id="screen-menu">
+    <div class="mode-grid">
+      <div class="mode-card" onclick="startMatch()">
+        <div class="icon">🔗</div>
+        <div class="title">Relacionar</div>
+        <div class="desc">Conectá cada concepto con su definición correcta</div>
+      </div>
+      <div class="mode-card" onclick="startNumeric()">
+        <div class="icon">🔢</div>
+        <div class="title">Ejercicios numéricos</div>
+        <div class="desc">Calculá CAPM, WACC, VAN y elegí la respuesta correcta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATCHING GAME -->
+  <div class="screen" id="screen-match">
+    <div class="scorebar">
+      <span style="color:var(--text2);font-family:'Space Mono',monospace;font-size:10px">🔗 RELACIONAR</span>
+      <span style="font-family:'Space Mono',monospace">✓ <span id="m-correct">0</span> &nbsp; ✗ <span id="m-wrong">0</span></span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="m-prog" style="width:0%"></div></div>
+    <p class="match-instruction" id="m-inst">Tocá un concepto y luego su definición</p>
+    <div id="m-round-title" style="text-align:center;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--accent);margin-bottom:1rem;"></div>
+    <div class="match-grid">
+      <div>
+        <div class="match-col-title">Concepto</div>
+        <div class="match-col" id="m-left"></div>
+      </div>
+      <div>
+        <div class="match-col-title">Definición</div>
+        <div class="match-col" id="m-right"></div>
+      </div>
+    </div>
+    <div class="match-fb" id="m-fb"></div>
+    <button class="btn-primary" id="m-next-btn" style="display:none;margin-top:1rem" onclick="nextMatchRound()">Siguiente ronda →</button>
+  </div>
+
+  <!-- NUMERIC GAME -->
+  <div class="screen" id="screen-numeric">
+    <div class="scorebar">
+      <span id="n-counter" style="color:var(--text2);font-family:'Space Mono',monospace;font-size:10px">1 / 10</span>
+      <span style="font-family:'Space Mono',monospace">✓ <span id="n-correct">0</span> &nbsp; ✗ <span id="n-wrong">0</span></span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="n-prog" style="width:0%"></div></div>
+    <div class="num-card" id="n-card">
+      <div class="num-cat" id="n-cat"></div>
+      <div class="num-q" id="n-q"></div>
+      <div class="num-data" id="n-data"></div>
+      <div class="opts-num" id="n-opts"></div>
+      <div class="num-fb" id="n-fb"></div>
+    </div>
+    <button class="btn-next" id="n-next" onclick="nextNumeric()">Siguiente →</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screen-results">
+    <div class="res-ring">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle cx="65" cy="65" r="54" fill="none" stroke="#18182a" stroke-width="8"/>
+        <circle cx="65" cy="65" r="54" fill="none" stroke="#7050e8" stroke-width="8" stroke-linecap="round"
+          stroke-dasharray="339.3" id="res-circle" stroke-dashoffset="339.3"/>
+      </svg>
+      <div class="rt"><div class="rn" id="res-pct">0%</div><div class="rl">score</div></div>
+    </div>
+    <h2 id="res-title"></h2>
+    <p id="res-msg"></p>
+    <div class="res-stats">
+      <div class="res-stat"><div class="n" style="color:var(--green)" id="res-c">0</div><div class="l">Correctas</div></div>
+      <div class="res-stat"><div class="n" style="color:var(--red)" id="res-w">0</div><div class="l">Incorrectas</div></div>
+      <div class="res-stat"><div class="n" style="color:#a090f0" id="res-t">0</div><div class="l">Total</div></div>
+    </div>
+    <button class="btn-primary" onclick="goMenu()">Volver al menú</button>
+  </div>
+</div>
+
+<script>
+// ===== MATCHING DATA =====
+const MATCH_ROUNDS = [
+  {
+    title: "Conceptos de evaluación",
+    pairs: [
+      { l:"VAN", r:"Valor que crea el proyecto al traer flujos al presente" },
+      { l:"TIR", r:"Tasa que hace VAN = 0" },
+      { l:"WACC", r:"Costo promedio ponderado de todas las fuentes de financiamiento" },
+      { l:"PRI", r:"Cuántos años tardo en recuperar la inversión" },
+    ]
+  },
+  {
+    title: "Conceptos de riesgo",
+    pairs: [
+      { l:"Beta > 1", r:"Más volátil que el mercado → más riesgosa" },
+      { l:"Riesgo sistemático", r:"Riesgo del mercado general que no se puede eliminar" },
+      { l:"Riesgo no sistemático", r:"Específico de empresa/sector — se elimina diversificando" },
+      { l:"Desviación estándar", r:"Mide cuánto se alejan los resultados del promedio" },
+    ]
+  },
+  {
+    title: "Modelo CAPM",
+    pairs: [
+      { l:"rf", r:"Tasa libre de riesgo (bonos USA)" },
+      { l:"Erm − rf", r:"Prima de riesgo del mercado" },
+      { l:"Kcp", r:"Rentabilidad mínima que exigen los accionistas" },
+      { l:"Beta", r:"Índice de sensibilidad de una acción frente al mercado" },
+    ]
+  },
+  {
+    title: "FCF y decisiones",
+    pairs: [
+      { l:"Costo hundido", r:"Costo irrecuperable que debe ignorarse al evaluar" },
+      { l:"Base incremental", r:"Analizar los cambios, no el total del proyecto" },
+      { l:"Escudo fiscal", r:"Ahorro de impuestos por financiarse con deuda" },
+      { l:"Valor terminal", r:"Valor estimado del proyecto al final del período T" },
+    ]
+  }
+];
+
+// ===== NUMERIC DATA =====
+const NUMERIC_QS = [
+  { cat:"CAPM", q:"¿Cuál es el Kcp (costo del capital propio)?",
+    data:"rf = 5%\nβ = 1,2\nErm = 12%",
+    ans:"13,4%",
+    opts:["13,4%","17,0%","10,2%","8,4%"],
+    exp:"Kcp = 5% + 1,2 × (12% − 5%) = 5% + 1,2 × 7% = 5% + 8,4% = 13,4%" },
+
+  { cat:"CAPM con riesgo país", q:"¿Cuál es el Kcp incluyendo riesgo país?",
+    data:"rf = 4%\nβ = 1,5\nErm = 10%\nRiesgo país = 3%",
+    ans:"16%",
+    opts:["16%","13%","19%","11%"],
+    exp:"Kcp = 4% + 1,5 × (10% − 4%) + 3% = 4% + 9% + 3% = 16%" },
+
+  { cat:"WACC", q:"¿Cuál es el WACC de la empresa?",
+    data:"Deuda = $40.000 (Kd = 11%)\nCapital propio = $60.000 (Kcp = 13%)\nTax = 40%",
+    ans:"10,44%",
+    opts:["10,44%","12,00%","8,80%","11,20%"],
+    exp:"WACC = 11% × 40% × (1−0,4) + 13% × 60% = 2,64% + 7,80% = 10,44%" },
+
+  { cat:"Escudo fiscal", q:"¿Cuál es el costo real de la deuda con escudo fiscal?",
+    data:"Kd = 15%\nTax = 35%",
+    ans:"9,75%",
+    opts:["9,75%","15%","5,25%","10,5%"],
+    exp:"Costo real = Kd × (1 − tax) = 15% × (1 − 0,35) = 15% × 0,65 = 9,75%" },
+
+  { cat:"VAN", q:"¿El proyecto conviene?",
+    data:"Inversión = $100.000\nFCF año 1 = $40.000\nFCF año 2 = $40.000\nFCF año 3 = $40.000\nTasa = 10%",
+    ans:"Sí — VAN = −$569 ≈ 0 (muy justo)",
+    opts:["Sí — VAN = +$120.000","Sí — VAN = −$569 ≈ 0 (muy justo)","No — VAN = −$569 < 0","No — VAN = −$20.000"],
+    exp:"VAN = −100.000 + 40.000/1,1 + 40.000/1,1² + 40.000/1,1³ = −100.000 + 36.364 + 33.058 + 30.053 = −$525 ≈ 0. El proyecto casi no conviene a esta tasa." },
+
+  { cat:"Beta", q:"Una acción tiene β = 0,6. ¿Qué significa?",
+    data:"El mercado sube un 10%",
+    ans:"La acción sube ~6% (menos que el mercado)",
+    opts:["La acción sube ~6% (menos que el mercado)","La acción sube ~16% (más que el mercado)","La acción cae 6%","La acción no se mueve"],
+    exp:"β = 0,6 < 1 → la acción es menos volátil que el mercado. Si el mercado sube 10%, la acción sube aproximadamente 6%." },
+
+  { cat:"TIR vs WACC", q:"¿Se acepta o rechaza el proyecto?",
+    data:"TIR del proyecto = 18%\nWACC de la empresa = 12%",
+    ans:"Se acepta — TIR > WACC",
+    opts:["Se acepta — TIR > WACC","Se rechaza — TIR > WACC","Se acepta — TIR < WACC","Se rechaza — TIR < WACC"],
+    exp:"TIR (18%) > WACC (12%) → el proyecto genera más de lo que cuesta el capital → VAN > 0 → se acepta." },
+
+  { cat:"Riesgo y rentabilidad", q:"¿Cuál de estas opciones NO debería elegirse nunca?",
+    data:"A: Bajo riesgo + Alta rentabilidad\nB: Alto riesgo + Alta rentabilidad\nC: Bajo riesgo + Baja rentabilidad\nD: Alto riesgo + Baja rentabilidad",
+    ans:"D: Alto riesgo + Baja rentabilidad",
+    opts:["A: Bajo riesgo + Alta rentabilidad","B: Alto riesgo + Alta rentabilidad","C: Bajo riesgo + Baja rentabilidad","D: Alto riesgo + Baja rentabilidad"],
+    exp:"D es el peor escenario: mucho riesgo pero poca recompensa. Nadie debería invertir en proyectos con alto riesgo y baja rentabilidad." },
+
+  { cat:"FCF", q:"¿Por qué se suma la depreciación al calcular el FCF?",
+    data:"FCF = EBIT × (1 − tax) + Depreciación − ΔNOF − Inversiones",
+    ans:"Porque no es una salida real de efectivo",
+    opts:["Porque no es una salida real de efectivo","Porque reduce el impuesto a pagar","Porque aumenta el EBIT","Porque compensa la inversión inicial"],
+    exp:"La depreciación se restó del EBIT (para calcular impuestos) pero NO implica salida de efectivo. Se suma para corregir eso y reflejar el flujo real de caja." },
+
+  { cat:"CAPM", q:"Si β = 1,5 y la prima de riesgo del mercado es 6%, ¿cuánto agrega el beta al Kcp?",
+    data:"β = 1,5\nErm − rf = 6%",
+    ans:"9%",
+    opts:["9%","6%","4%","15%"],
+    exp:"Prima por riesgo = β × (Erm − rf) = 1,5 × 6% = 9%. A mayor beta, mayor la prima que exigen los accionistas." },
+];
+
+// ===== STATE =====
+let matchRound=0, matchCorrect=0, matchWrong=0;
+let matchTotal=0, selectedLeft=null, selectedRight=null;
+let numQueue=[], numCurrent=0, numCorrect=0, numWrong=0, numAnswered=false;
+let gameMode='';
+
+function goMenu(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-menu').classList.add('active');
+}
+
+// ===== MATCHING =====
+function startMatch(){
+  gameMode='match'; matchRound=0; matchCorrect=0; matchWrong=0; matchTotal=0;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-match').classList.add('active');
+  loadMatchRound();
+}
+
+function loadMatchRound(){
+  if(matchRound>=MATCH_ROUNDS.length){ showResults(matchCorrect,matchTotal); return; }
+  selectedLeft=null; selectedRight=null;
+  const round=MATCH_ROUNDS[matchRound];
+  document.getElementById('m-round-title').textContent=round.title;
+  document.getElementById('m-fb').className='match-fb';
+  document.getElementById('m-next-btn').style.display='none';
+  document.getElementById('m-prog').style.width=`${(matchRound/MATCH_ROUNDS.length)*100}%`;
+  document.getElementById('m-correct').textContent=matchCorrect;
+  document.getElementById('m-wrong').textContent=matchWrong;
+
+  const shuffle=a=>[...a].sort(()=>Math.random()-.5);
+  const lefts=shuffle(round.pairs.map(p=>p.l));
+  const rights=shuffle(round.pairs.map(p=>p.r));
+  const pairMap=Object.fromEntries(round.pairs.map(p=>[p.l,p.r]));
+
+  const lCol=document.getElementById('m-left');
+  const rCol=document.getElementById('m-right');
+  lCol.innerHTML=''; rCol.innerHTML='';
+
+  lefts.forEach(txt=>{
+    const el=document.createElement('div');
+    el.className='match-item'; el.textContent=txt; el.dataset.val=txt;
+    el.onclick=()=>selectLeft(el,pairMap);
+    lCol.appendChild(el);
+  });
+  rights.forEach(txt=>{
+    const el=document.createElement('div');
+    el.className='match-item'; el.textContent=txt; el.dataset.val=txt;
+    el.onclick=()=>selectRight(el,pairMap);
+    rCol.appendChild(el);
+  });
+}
+
+function selectLeft(el,pairMap){
+  if(el.classList.contains('correct')||el.classList.contains('used')) return;
+  document.querySelectorAll('#m-left .match-item').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedLeft=el;
+  if(selectedRight) checkMatch(pairMap);
+}
+function selectRight(el,pairMap){
+  if(el.classList.contains('correct')||el.classList.contains('used')) return;
+  document.querySelectorAll('#m-right .match-item').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedRight=el;
+  if(selectedLeft) checkMatch(pairMap);
+}
+
+function checkMatch(pairMap){
+  const lVal=selectedLeft.dataset.val;
+  const rVal=selectedRight.dataset.val;
+  const isCorrect=pairMap[lVal]===rVal;
+  matchTotal++;
+  if(isCorrect){
+    matchCorrect++;
+    selectedLeft.classList.remove('selected'); selectedLeft.classList.add('correct','locked');
+    selectedRight.classList.remove('selected'); selectedRight.classList.add('correct','locked');
+  } else {
+    matchWrong++;
+    selectedLeft.classList.remove('selected'); selectedLeft.classList.add('wrong');
+    selectedRight.classList.remove('selected'); selectedRight.classList.add('wrong');
+    setTimeout(()=>{
+      selectedLeft.classList.remove('wrong');
+      selectedRight.classList.remove('wrong');
+    },800);
+  }
+  document.getElementById('m-correct').textContent=matchCorrect;
+  document.getElementById('m-wrong').textContent=matchWrong;
+  selectedLeft=null; selectedRight=null;
+
+  // Check if all matched
+  const allDone=document.querySelectorAll('#m-left .match-item.correct').length===MATCH_ROUNDS[matchRound].pairs.length;
+  if(allDone){
+    const fb=document.getElementById('m-fb');
+    const pct=Math.round(matchCorrect/matchTotal*100);
+    fb.className=`match-fb show ${pct>=70?'ok':'bad'}`;
+    fb.textContent=`Ronda ${matchRound+1} completada. Aciertos: ${matchCorrect}/${matchTotal}`;
+    document.getElementById('m-next-btn').style.display='block';
+    document.getElementById('m-next-btn').textContent=matchRound+1<MATCH_ROUNDS.length?'Siguiente ronda →':'Ver resultados →';
+  }
+}
+
+function nextMatchRound(){
+  matchRound++;
+  if(matchRound>=MATCH_ROUNDS.length) showResults(matchCorrect,matchTotal);
+  else loadMatchRound();
+}
+
+// ===== NUMERIC =====
+function startNumeric(){
+  gameMode='num';
+  numQueue=[...NUMERIC_QS].sort(()=>Math.random()-.5);
+  numCurrent=0; numCorrect=0; numWrong=0; numAnswered=false;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-numeric').classList.add('active');
+  renderNumeric();
+}
+
+function renderNumeric(){
+  numAnswered=false;
+  const q=numQueue[numCurrent], total=numQueue.length;
+  document.getElementById('n-counter').textContent=`${numCurrent+1} / ${total}`;
+  document.getElementById('n-correct').textContent=numCorrect;
+  document.getElementById('n-wrong').textContent=numWrong;
+  document.getElementById('n-prog').style.width=`${(numCurrent/total)*100}%`;
+  document.getElementById('n-cat').textContent=q.cat;
+  document.getElementById('n-q').textContent=q.q;
+  document.getElementById('n-data').textContent=q.data;
+  const opts=document.getElementById('n-opts');
+  opts.innerHTML='';
+  const shuffled=[...q.opts].sort(()=>Math.random()-.5);
+  shuffled.forEach(o=>{
+    const btn=document.createElement('button');
+    btn.className='opt-n'; btn.textContent=o;
+    btn.onclick=()=>answerNumeric(btn,o===q.ans,q);
+    opts.appendChild(btn);
+  });
+  document.getElementById('n-fb').className='num-fb';
+  document.getElementById('n-next').className='btn-next';
+  document.getElementById('n-card').style.animation='none';
+  requestAnimationFrame(()=>{document.getElementById('n-card').style.animation='';});
+}
+
+function answerNumeric(btn,isCorrect,q){
+  if(numAnswered) return; numAnswered=true;
+  document.querySelectorAll('.opt-n').forEach(b=>b.disabled=true);
+  if(isCorrect){btn.classList.add('correct');numCorrect++;}
+  else{
+    btn.classList.add('wrong');numWrong++;
+    document.querySelectorAll('.opt-n').forEach(b=>{if(b.textContent===q.ans)b.classList.add('correct');});
+  }
+  document.getElementById('n-correct').textContent=numCorrect;
+  document.getElementById('n-wrong').textContent=numWrong;
+  const fb=document.getElementById('n-fb');
+  fb.className=`num-fb show ${isCorrect?'ok':'bad'}`;
+  fb.innerHTML=`<strong>${isCorrect?'✓ Correcto':'✗ Incorrecto'}</strong> — ${q.exp}`;
+  const nb=document.getElementById('n-next');
+  nb.className='btn-next show';
+  nb.textContent=numCurrent+1<numQueue.length?'Siguiente →':'Ver resultados →';
+}
+
+function nextNumeric(){
+  numCurrent++;
+  if(numCurrent>=numQueue.length) showResults(numCorrect,numQueue.length);
+  else renderNumeric();
+}
+
+// ===== RESULTS =====
+function showResults(correct,total){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-results').classList.add('active');
+  const pct=Math.round(correct/total*100);
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-c').textContent=correct;
+  document.getElementById('res-w').textContent=total-correct;
+  document.getElementById('res-t').textContent=total;
+  setTimeout(()=>{
+    const c=document.getElementById('res-circle');
+    c.style.transition='stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)';
+    c.style.strokeDashoffset=339.3-(pct/100)*339.3;
+  },100);
+  const t=pct===100?['¡Perfecto! 🎉','Dominás toda la Unidad IV.']:
+           pct>=80?['¡Muy bien! 💪','Sólido manejo del tema.']:
+           pct>=60?['Bien, podés más 📖','Algunos conceptos flojos.']:
+           ['Seguí repasando 📚','Volvé a los apuntes e intentá de nuevo.'];
+  document.getElementById('res-title').textContent=t[0];
+  document.getElementById('res-msg').textContent=t[1];
+}
+</script>
+</body>
+</html>
