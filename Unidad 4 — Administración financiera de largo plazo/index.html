@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Unidad IV — Largo Plazo</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0c0c14;--s1:#13131e;--s2:#1a1a28;--s3:#222235;
+  --text:#e8e4f8;--text2:#8880b8;--text3:#4a4870;
+  --purple:#8060f0;--purple-bg:rgba(128,96,240,.12);
+  --green:#40d890;--green-bg:rgba(64,216,144,.1);
+  --red:#f05060;--red-bg:rgba(240,80,96,.1);
+  --gold:#f0c040;--gold-bg:rgba(240,192,64,.1);
+  --blue:#4090f0;--blue-bg:rgba(64,144,240,.1);
+  --border:rgba(255,255,255,0.07);--r:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);padding-bottom:5rem;}
+
+.masthead{padding:2.5rem 2rem 2rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:end;background:linear-gradient(135deg,rgba(128,96,240,.08) 0%,transparent 60%);}
+.masthead .eye{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem;}
+.masthead h1{font-size:clamp(22px,4vw,36px);font-weight:700;line-height:1.05;letter-spacing:-.02em;}
+.masthead h1 em{font-style:italic;color:var(--purple);}
+.masthead .meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);text-align:right;line-height:1.8;}
+
+.nav{background:var(--s1);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 1.5rem;position:sticky;top:0;z-index:99;}
+.nav button{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:13px 14px;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all .2s;}
+.nav button:hover{color:var(--text);}
+.nav button.active{color:var(--purple);border-bottom-color:var(--purple);}
+
+main{max-width:880px;margin:0 auto;padding:2rem 1.5rem;}
+.section{display:none;animation:up .3s ease;}
+.section.active{display:block;}
+@keyframes up{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.sec-title{font-size:clamp(18px,3vw,26px);font-weight:700;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);}
+.sec-title em{color:var(--purple);font-style:italic;}
+
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.card-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr;}}
+
+p.body{font-size:14px;line-height:1.75;color:var(--text2);margin-bottom:.75rem;}
+ul.list{font-size:14px;line-height:1.75;color:var(--text2);padding-left:1.25rem;margin-bottom:.75rem;}
+ul.list li{margin-bottom:.3rem;}
+
+.formula{background:var(--s2);border-left:3px solid var(--purple);padding:.65rem 1rem;font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin:.75rem 0;border-radius:0 var(--r) var(--r) 0;line-height:1.7;}
+
+.badge{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;margin:2px;}
+.b-purple{background:var(--purple-bg);color:var(--purple);}
+.b-green{background:var(--green-bg);color:var(--green);}
+.b-red{background:var(--red-bg);color:var(--red);}
+.b-gold{background:var(--gold-bg);color:var(--gold);}
+.b-blue{background:var(--blue-bg);color:var(--blue);}
+
+.note{background:var(--gold-bg);border:1px solid rgba(240,192,64,.25);border-radius:var(--r);padding:.75rem 1rem;font-size:13px;color:var(--gold);margin:.75rem 0;}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0;}
+.tbl th{background:var(--s2);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;text-align:left;border:1px solid var(--border);color:var(--text2);}
+.tbl td{padding:7px 10px;border:1px solid var(--border);color:var(--text2);vertical-align:top;}
+.tbl tr:nth-child(even) td{background:var(--s1);}
+.tbl .ok{color:var(--green);font-weight:600;}
+.tbl .bad{color:var(--red);}
+.tbl .hl{color:var(--purple);font-family:'Space Mono',monospace;}
+
+/* BETA VISUAL */
+.beta-scale{position:relative;height:60px;margin:1rem 0;}
+.beta-track{height:8px;background:linear-gradient(to right,var(--blue),var(--green),var(--gold),var(--red));border-radius:999px;position:absolute;top:50%;transform:translateY(-50%);width:100%;}
+.beta-labels{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);margin-top:4px;padding-top:28px;}
+.beta-marker{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;border:2px solid var(--bg);cursor:pointer;transition:transform .2s;}
+.beta-marker:hover{transform:translate(-50%,-50%) scale(1.3);}
+
+/* CALC */
+.calc-wrap{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem;}
+.calc-head{background:var(--s2);border-bottom:1px solid var(--border);padding:.75rem 1.25rem;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);display:flex;align-items:center;gap:8px;}
+.calc-head::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--purple);}
+.calc-body{padding:1.25rem 1.5rem;}
+.fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1rem;}
+@media(max-width:540px){.fields{grid-template-columns:1fr 1fr;}}
+.field label{display:block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
+.field input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--r);font-family:'Space Mono',monospace;font-size:12px;background:var(--s2);color:var(--text);outline:none;transition:border-color .2s;}
+.field input:focus{border-color:var(--purple);}
+.btn-calc{padding:10px 20px;border:none;background:var(--purple);color:white;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:var(--r);transition:opacity .2s;}
+.btn-calc:hover{opacity:.85;}
+.result-box{display:none;margin-top:1rem;background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;animation:up .25s ease;}
+.result-box.show{display:block;}
+.r-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.r-value{font-size:28px;font-weight:700;color:var(--purple);}
+.r-detail{font-family:'Space Mono',monospace;font-size:11px;color:var(--text2);margin-top:6px;line-height:1.8;}
+.r-value.ok{color:var(--green);}
+.r-value.bad{color:var(--red);}
+
+/* VAN timeline */
+.van-timeline{display:flex;gap:6px;overflow-x:auto;padding:.5rem 0;margin:1rem 0;}
+.van-period{flex-shrink:0;text-align:center;min-width:70px;}
+.van-box{padding:.5rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:11px;margin-bottom:4px;}
+.van-box.neg{background:var(--red-bg);border:1px solid rgba(240,80,96,.25);color:var(--red);}
+.van-box.pos{background:var(--green-bg);border:1px solid rgba(64,216,144,.25);color:var(--green);}
+.van-lbl{font-size:10px;color:var(--text3);}
+</style>
+</head>
+<body>
+<div class="masthead">
+  <div>
+    <div class="eye">Finanzas de Empresas · 2025</div>
+    <h1>Admin. Financiera de<br><em>Largo Plazo</em></h1>
+  </div>
+  <div class="meta">Unidad IV<br>VAN · TIR · WACC · CAPM</div>
+</div>
+
+<nav class="nav">
+  <button class="active" onclick="show('intro',this)">Intro</button>
+  <button onclick="show('van',this)">VAN</button>
+  <button onclick="show('wacc',this)">WACC</button>
+  <button onclick="show('riesgo',this)">Riesgo</button>
+  <button onclick="show('beta',this)">Beta</button>
+  <button onclick="show('capm',this)">CAPM</button>
+  <button onclick="show('fcf',this)">FCF</button>
+  <button onclick="show('tir',this)">TIR y PRI</button>
+  <button onclick="show('calcs',this)">🧮 Calculadoras</button>
+</nav>
+
+<main>
+
+<!-- INTRO -->
+<div class="section active" id="s-intro">
+  <div class="sec-title">Evaluación de <em>Inversiones</em></div>
+  <div class="card">
+    <p class="body">Al analizar una inversión no solo importa <strong>cuánto dinero genera</strong>, sino <strong>qué tan seguro es</strong> que ese dinero se obtenga. Para incorporar el riesgo usamos la tasa de descuento.</p>
+    <div class="formula">Tasa de descuento = Costo de oportunidad + Prima de riesgo</div>
+  </div>
+  <div class="g3">
+    <div class="card" style="border-top:2px solid var(--purple)">
+      <div class="card-label">Método 1</div>
+      <div style="font-size:20px;font-weight:700;color:var(--purple);margin:.25rem 0">VAN</div>
+      <p style="font-size:12px;color:var(--text2)">Valor Actual Neto — trae los flujos al presente</p>
+    </div>
+    <div class="card" style="border-top:2px solid var(--green)">
+      <div class="card-label">Método 2</div>
+      <div style="font-size:20px;font-weight:700;color:var(--green);margin:.25rem 0">TIR</div>
+      <p style="font-size:12px;color:var(--text2)">Tasa que hace VAN = 0</p>
+    </div>
+    <div class="card" style="border-top:2px solid var(--gold)">
+      <div class="card-label">Método 3</div>
+      <div style="font-size:20px;font-weight:700;color:var(--gold);margin:.25rem 0">PRI</div>
+      <p style="font-size:12px;color:var(--text2)">Plazo de Recuperación de la Inversión</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Principios clave</div>
+    <div class="formula">"$1 hoy > $1 mañana"<br>"$1 seguro > $1 riesgoso"<br>"Comparar solo activos de riesgo equivalente"</div>
+  </div>
+</div>
+
+<!-- VAN -->
+<div class="section" id="s-van">
+  <div class="sec-title"><em>VAN</em> — Valor Actual Neto</div>
+  <div class="card">
+    <p class="body">Trae al presente todos los flujos de caja descontados por la tasa de descuento. Mide el valor que crea (o destruye) el proyecto.</p>
+    <div class="formula">VAN = FCF₀ + FCF₁/(1+r)¹ + FCF₂/(1+r)² + ... + VT/(1+r)ᵀ</div>
+  </div>
+  <div class="g3">
+    <div class="card" style="border-left:3px solid var(--green)">
+      <div style="font-size:22px;font-weight:700;color:var(--green)">VAN &gt; 0</div>
+      <p class="body" style="margin-top:.5rem">Genera valor → <strong>Aceptar</strong></p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--gold)">
+      <div style="font-size:22px;font-weight:700;color:var(--gold)">VAN = 0</div>
+      <p class="body" style="margin-top:.5rem">Devuelve lo invertido → Indiferente</p>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red)">
+      <div style="font-size:22px;font-weight:700;color:var(--red)">VAN &lt; 0</div>
+      <p class="body" style="margin-top:.5rem">Destruye valor → <strong>Rechazar</strong></p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Ejemplo visual de flujos</div>
+    <div class="van-timeline" id="van-demo"></div>
+    <p style="font-size:12px;color:var(--text3);margin-top:.5rem">FCF₀ es la inversión (negativa). Los demás son los flujos que genera el proyecto.</p>
+  </div>
+</div>
+
+<!-- WACC -->
+<div class="section" id="s-wacc">
+  <div class="sec-title"><em>WACC</em> — Costo Promedio de Capital</div>
+  <div class="card">
+    <p class="body">Promedio ponderado del costo de todas las fuentes de financiamiento. Se usa como tasa de descuento del proyecto.</p>
+    <div class="formula">WACC = Kd × %D × (1−tax) + Kac × %ac + Kap × %ap</div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-label">Escudo fiscal de la deuda</div>
+      <p class="body">Los intereses son deducibles de impuestos → el Estado "subsidia" parte del costo de la deuda.</p>
+      <div class="formula">Costo real = Kd × (1 − tax)</div>
+      <p style="font-size:12px;color:var(--text2)">Ej: Kd=11%, tax=40% → Costo real = 6,6%</p>
+    </div>
+    <div class="card">
+      <div class="card-label">Regla de decisión</div>
+      <ul class="list">
+        <li>VAN &gt; 0 usando WACC → <span class="badge b-green">conviene</span></li>
+        <li>TIR &gt; WACC → <span class="badge b-green">conviene</span></li>
+        <li>TIR &lt; WACC → <span class="badge b-red">no conviene</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- RIESGO -->
+<div class="section" id="s-riesgo">
+  <div class="sec-title">Riesgo y <em>Rentabilidad</em></div>
+  <div class="card">
+    <p class="body"><strong>Riesgo</strong> = variabilidad de los resultados respecto a lo esperado. Se mide con desviación estándar (σ) — mayor σ = mayor riesgo.</p>
+  </div>
+  <div class="card">
+    <div class="card-label">Los 4 cuadrantes</div>
+    <div class="g2" style="margin-top:.75rem">
+      <div style="background:var(--gold-bg);border:1px solid rgba(240,192,64,.2);border-radius:var(--r);padding:.75rem;text-align:center">
+        <div style="font-size:11px;color:var(--gold);font-weight:600;margin-bottom:4px">IDEAL — poco común</div>
+        <div style="font-size:13px;color:var(--text2)">Bajo riesgo + Alta rentabilidad</div>
+      </div>
+      <div style="background:var(--green-bg);border:1px solid rgba(64,216,144,.2);border-radius:var(--r);padding:.75rem;text-align:center">
+        <div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:4px">COMÚN — acciones, startups</div>
+        <div style="font-size:13px;color:var(--text2)">Alto riesgo + Alta rentabilidad</div>
+      </div>
+      <div style="background:var(--blue-bg);border:1px solid rgba(64,144,240,.2);border-radius:var(--r);padding:.75rem;text-align:center">
+        <div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:4px">CONSERVADOR — bonos, plazo fijo</div>
+        <div style="font-size:13px;color:var(--text2)">Bajo riesgo + Baja rentabilidad</div>
+      </div>
+      <div style="background:var(--red-bg);border:1px solid rgba(240,80,96,.2);border-radius:var(--r);padding:.75rem;text-align:center">
+        <div style="font-size:11px;color:var(--red);font-weight:600;margin-bottom:4px">EVITAR — el peor escenario</div>
+        <div style="font-size:13px;color:var(--text2)">Alto riesgo + Baja rentabilidad</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Tipos de riesgo</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Descripción</th><th>¿Se elimina?</th></tr>
+      <tr><td><strong>No sistemático</strong></td><td>Específico de empresa/sector (fracaso de producto, demanda legal)</td><td class="ok">✅ Diversificando</td></tr>
+      <tr><td><strong>Sistemático</strong></td><td>Riesgo del mercado (COVID, crisis global)</td><td class="bad">❌ No se elimina</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- BETA -->
+<div class="section" id="s-beta">
+  <div class="sec-title">Coeficiente <em>Beta</em></div>
+  <div class="card">
+    <p class="body">Beta mide la <strong>sensibilidad de una acción frente al mercado</strong>. Es el índice de riesgo sistemático.</p>
+    <div class="formula">β = σᵢₘ / σ²ₘ</div>
+    <div class="beta-scale">
+      <div class="beta-track"></div>
+      <div class="beta-marker" style="left:0%;background:var(--blue)" title="β < 0: Activos defensivos (oro)"></div>
+      <div class="beta-marker" style="left:33%;background:var(--green)" title="β < 1: Menos riesgo que el mercado"></div>
+      <div class="beta-marker" style="left:50%;background:var(--gold)" title="β = 1: Se mueve igual que el mercado"></div>
+      <div class="beta-marker" style="left:75%;background:var(--red)" title="β > 1: Más riesgo que el mercado"></div>
+      <div class="beta-labels">
+        <span>β &lt; 0</span><span>β &lt; 1</span><span>β = 1</span><span>β &gt; 1</span>
+      </div>
+    </div>
+  </div>
+  <table class="tbl">
+    <tr><th>Beta</th><th>Significado</th><th>Ejemplo</th></tr>
+    <tr><td class="hl">β = 1</td><td>Se mueve igual que el mercado</td><td>Índice del mercado</td></tr>
+    <tr><td class="hl">β &gt; 1</td><td>Más volátil → más riesgosa</td><td>Startups, tecnológicas</td></tr>
+    <tr><td class="hl">β &lt; 1</td><td>Menos volátil → más estable</td><td>Utilities, consumo básico</td></tr>
+    <tr><td class="hl">β = 0</td><td>No se mueve con el mercado</td><td>Efectivo</td></tr>
+    <tr><td class="hl">β &lt; 0</td><td>Se mueve al revés (defensivo)</td><td>Oro</td></tr>
+  </table>
+  <div class="note"><strong>Dato práctico:</strong> para empresas que cotizan en bolsa, el beta se consulta en Yahoo Finance, Reuters o Market Data. Para empresas que no cotizan, se usan betas del sector.</div>
+</div>
+
+<!-- CAPM -->
+<div class="section" id="s-capm">
+  <div class="sec-title">Modelo <em>CAPM</em></div>
+  <div class="card">
+    <p class="body">Calcula la rentabilidad mínima que exigen los accionistas por el riesgo que asumen.</p>
+    <div class="formula">Kcp = rf + β × (Erm − rf)<br><br>Con riesgo país:<br>Kcp = rf + β × (Erm − rf) + Riesgo País</div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-label">Variables</div>
+      <ul class="list" style="font-size:13px">
+        <li><strong>rf</strong> → tasa libre de riesgo (bonos USA)</li>
+        <li><strong>β</strong> → coeficiente beta de la acción</li>
+        <li><strong>Erm</strong> → rentabilidad esperada del mercado</li>
+        <li><strong>Erm − rf</strong> → prima de riesgo del mercado</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">Tasa libre de riesgo (rf)</div>
+      <ul class="list" style="font-size:13px">
+        <li>Sin riesgo de default</li>
+        <li>Rendimiento esperado = real</li>
+        <li>Misma moneda que el FCF</li>
+        <li>Consistente con inflación</li>
+        <li>Se usan bonos USA → <span class="badge b-gold">dato en el parcial</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- FCF -->
+<div class="section" id="s-fcf">
+  <div class="sec-title"><em>FCF</em> — Free Cash Flow</div>
+  <div class="card">
+    <div class="card-label">Principios</div>
+    <div class="g2">
+      <ul class="list" style="font-size:13px">
+        <li>Solo el flujo de efectivo real importa</li>
+        <li>Base <strong>incremental</strong> (los cambios, no el total)</li>
+        <li>Incluir efectos derivados (venta del activo viejo)</li>
+        <li>No olvidar ΔCapital de Trabajo</li>
+      </ul>
+      <ul class="list" style="font-size:13px">
+        <li><strong>Ignorar costos hundidos</strong> (irrecuperables)</li>
+        <li>Incluir costos de oportunidad</li>
+        <li>Todo nominal o todo real (no mezclar)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Método Indirecto</div>
+    <div class="formula">FCF = EBIT × (1 − tax)<br>    + Depreciación<br>    − ΔCapital de Trabajo<br>    − Inversiones operativas</div>
+    <p class="body">La depreciación se suma porque no es una salida real de efectivo — solo es un ajuste contable.</p>
+  </div>
+</div>
+
+<!-- TIR Y PRI -->
+<div class="section" id="s-tir">
+  <div class="sec-title">TIR y <em>PRI</em></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-label">TIR — Tasa Interna de Retorno</div>
+      <p class="body">La tasa que hace <strong>VAN = 0</strong>. Es la "tasa máxima que puedo usar sin perder plata".</p>
+      <div class="formula">TIR > WACC → VAN > 0 → aceptar<br>TIR < WACC → VAN < 0 → rechazar</div>
+      <p class="body"><strong>Debilidades:</strong> no sirve con flujos no convencionales, no considera escala, puede haber múltiples TIR.</p>
+    </div>
+    <div class="card">
+      <div class="card-label">PRI — Plazo de Recuperación</div>
+      <p class="body">¿Cuántos años tardo en recuperar la inversión?</p>
+      <div class="formula">Aceptar si: PRI ≤ plazo máximo</div>
+      <p class="body"><strong>Problemas:</strong> no considera el valor del dinero en el tiempo, puede aceptar proyectos con VAN negativo. Pero es muy intuitivo y muy usado.</p>
+    </div>
+  </div>
+  <table class="tbl">
+    <tr><th>Criterio</th><th>Considera VDT</th><th>Fácil</th><th>Confiable</th></tr>
+    <tr><td class="hl">VAN</td><td class="ok">✅ Sí</td><td>Medio</td><td class="ok">✅ El mejor</td></tr>
+    <tr><td class="hl">TIR</td><td class="ok">✅ Sí</td><td>Medio</td><td>Bueno</td></tr>
+    <tr><td class="hl">PRI</td><td class="bad">❌ No</td><td class="ok">✅ Muy fácil</td><td>Limitado</td></tr>
+  </table>
+</div>
+
+<!-- CALCULADORAS -->
+<div class="section" id="s-calcs">
+  <div class="sec-title">🧮 <em>Calculadoras</em></div>
+
+  <!-- CAPM -->
+  <div class="calc-wrap">
+    <div class="calc-head">Calculadora CAPM</div>
+    <div class="calc-body">
+      <div class="fields">
+        <div class="field"><label>rf — Tasa libre riesgo (%)</label><input type="number" id="c1-rf" value="4" step="0.1"/></div>
+        <div class="field"><label>Beta (β)</label><input type="number" id="c1-b" value="1.5" step="0.1"/></div>
+        <div class="field"><label>Erm — Rent. mercado (%)</label><input type="number" id="c1-erm" value="10" step="0.1"/></div>
+        <div class="field"><label>Riesgo país (%) — opcional</label><input type="number" id="c1-rp" value="0" step="0.1"/></div>
+      </div>
+      <button class="btn-calc" onclick="calcCAPM()">Calcular →</button>
+      <div class="result-box" id="c1-res">
+        <div class="r-label">Kcp — Costo del capital propio</div>
+        <div class="r-value" id="c1-kcp">—</div>
+        <div class="r-detail" id="c1-det"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WACC -->
+  <div class="calc-wrap">
+    <div class="calc-head">Calculadora WACC</div>
+    <div class="calc-body">
+      <div class="fields">
+        <div class="field"><label>Deuda ($)</label><input type="number" id="c2-d" value="40000"/></div>
+        <div class="field"><label>Capital propio ($)</label><input type="number" id="c2-cp" value="60000"/></div>
+        <div class="field"><label>Capital preferente ($)</label><input type="number" id="c2-pp" value="0"/></div>
+        <div class="field"><label>Kd — Costo deuda (%)</label><input type="number" id="c2-kd" value="11" step="0.1"/></div>
+        <div class="field"><label>Kcp — Costo cap. propio (%)</label><input type="number" id="c2-kcp" value="13" step="0.1"/></div>
+        <div class="field"><label>Kap — Costo cap. pref. (%)</label><input type="number" id="c2-kap" value="0" step="0.1"/></div>
+        <div class="field"><label>Tax — Tasa impuesto (%)</label><input type="number" id="c2-tax" value="40" step="0.1"/></div>
+      </div>
+      <button class="btn-calc" onclick="calcWACC()">Calcular →</button>
+      <div class="result-box" id="c2-res">
+        <div class="r-label">WACC</div>
+        <div class="r-value" id="c2-wacc">—</div>
+        <div class="r-detail" id="c2-det"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VAN -->
+  <div class="calc-wrap">
+    <div class="calc-head">Calculadora VAN (hasta 5 períodos)</div>
+    <div class="calc-body">
+      <div class="fields">
+        <div class="field"><label>FCF₀ — Inversión inicial ($)</label><input type="number" id="v-f0" value="-50000"/></div>
+        <div class="field"><label>FCF₁ ($)</label><input type="number" id="v-f1" value="20000"/></div>
+        <div class="field"><label>FCF₂ ($)</label><input type="number" id="v-f2" value="20000"/></div>
+        <div class="field"><label>FCF₃ ($)</label><input type="number" id="v-f3" value="20000"/></div>
+        <div class="field"><label>FCF₄ ($)</label><input type="number" id="v-f4" value="0"/></div>
+        <div class="field"><label>FCF₅ ($)</label><input type="number" id="v-f5" value="0"/></div>
+        <div class="field"><label>Tasa de descuento (%)</label><input type="number" id="v-r" value="10" step="0.1"/></div>
+      </div>
+      <button class="btn-calc" onclick="calcVAN()">Calcular →</button>
+      <div class="result-box" id="v-res">
+        <div class="r-label">VAN</div>
+        <div class="r-value" id="v-van">—</div>
+        <div class="r-detail" id="v-det"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function show(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// VAN demo timeline
+const demoFlows=[{v:-50000,l:'FCF₀'},{v:20000,l:'FCF₁'},{v:20000,l:'FCF₂'},{v:20000,l:'FCF₃'}];
+const tl=document.getElementById('van-demo');
+tl.innerHTML=demoFlows.map(f=>`<div class="van-period">
+  <div class="van-box ${f.v<0?'neg':'pos'}">${f.v<0?'-':''}$${Math.abs(f.v/1000)}K</div>
+  <div class="van-lbl">${f.l}</div>
+</div>`).join('');
+
+function fmtP(n){return(n>=0?'+':'')+n.toFixed(2)+'%';}
+function fmtM(n){return(n>=0?'':'-')+'$'+Math.abs(Math.round(n)).toLocaleString('es-AR');}
+
+function calcCAPM(){
+  const rf=+document.getElementById('c1-rf').value/100;
+  const b=+document.getElementById('c1-b').value;
+  const erm=+document.getElementById('c1-erm').value/100;
+  const rp=+document.getElementById('c1-rp').value/100;
+  const kcp=(rf+b*(erm-rf)+rp)*100;
+  document.getElementById('c1-res').className='result-box show';
+  document.getElementById('c1-kcp').textContent=kcp.toFixed(2)+'%';
+  document.getElementById('c1-det').textContent=
+    `rf = ${(rf*100).toFixed(2)}%\nβ = ${b}\nPrima de riesgo = β × (Erm − rf) = ${b} × ${((erm-rf)*100).toFixed(2)}% = ${(b*(erm-rf)*100).toFixed(2)}%${rp>0?'\nRiesgo país = '+(rp*100).toFixed(2)+'%':''}\n\nKcp = ${(rf*100).toFixed(2)}% + ${(b*(erm-rf)*100).toFixed(2)}%${rp>0?' + '+(rp*100).toFixed(2)+'%':''} = ${kcp.toFixed(2)}%`;
+}
+
+function calcWACC(){
+  const d=+document.getElementById('c2-d').value;
+  const cp=+document.getElementById('c2-cp').value;
+  const pp=+document.getElementById('c2-pp').value;
+  const kd=+document.getElementById('c2-kd').value/100;
+  const kcp=+document.getElementById('c2-kcp').value/100;
+  const kap=+document.getElementById('c2-kap').value/100;
+  const tax=+document.getElementById('c2-tax').value/100;
+  const total=d+cp+pp;
+  const pD=d/total, pCP=cp/total, pPP=pp/total;
+  const wacc=(kd*pD*(1-tax)+kcp*pCP+kap*pPP)*100;
+  document.getElementById('c2-res').className='result-box show';
+  document.getElementById('c2-wacc').textContent=wacc.toFixed(2)+'%';
+  document.getElementById('c2-det').textContent=
+    `%Deuda = ${(pD*100).toFixed(1)}% | %Cap. propio = ${(pCP*100).toFixed(1)}%${pp>0?' | %Cap. pref. = '+(pPP*100).toFixed(1)+'%':''}\nEscudo fiscal deuda = Kd × (1−tax) = ${(kd*100).toFixed(2)}% × ${((1-tax)*100).toFixed(0)}% = ${(kd*(1-tax)*100).toFixed(2)}%\n\nWACC = ${(kd*pD*(1-tax)*100).toFixed(2)}% + ${(kcp*pCP*100).toFixed(2)}%${pp>0?' + '+(kap*pPP*100).toFixed(2)+'%':''} = ${wacc.toFixed(2)}%`;
+}
+
+function calcVAN(){
+  const flows=[+document.getElementById('v-f0').value,+document.getElementById('v-f1').value,
+    +document.getElementById('v-f2').value,+document.getElementById('v-f3').value,
+    +document.getElementById('v-f4').value,+document.getElementById('v-f5').value];
+  const r=+document.getElementById('v-r').value/100;
+  let van=0, detail='';
+  flows.forEach((f,i)=>{
+    const pv=f/Math.pow(1+r,i);
+    van+=pv;
+    if(f!==0) detail+=`FCF${i} = ${fmtM(f)} → VP = ${fmtM(pv)}\n`;
+  });
+  document.getElementById('v-res').className='result-box show';
+  const vanEl=document.getElementById('v-van');
+  vanEl.textContent=fmtM(van);
+  vanEl.className=`r-value ${van>=0?'ok':'bad'}`;
+  document.getElementById('v-det').textContent=detail+`\nVAN = ${fmtM(van)}\n${van>0?'✓ VAN > 0 → ACEPTAR el proyecto':van===0?'VAN = 0 → Indiferente':'✗ VAN < 0 → RECHAZAR el proyecto'}`;
+}
+</script>
+</body>
+</html>
