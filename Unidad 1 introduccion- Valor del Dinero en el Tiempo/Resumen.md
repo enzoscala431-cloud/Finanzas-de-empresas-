@@ -1,7 +1,6 @@
 # Unidad II — Estados Financieros
 
 > **Finanzas de Empresas · Ing. Industrial · UNCUYO**  
-> Prof. Guillermo Cruz
 
 ---
 
