@@ -29,33 +29,45 @@ Se realiza por el **criterio del devengado**: se consideran ingresos y egresos q
 ### Estructura del Estado de Resultados
 
 ```
-Ventas netas
-− Costo de Mercadería Vendida (CMV)
-= UTILIDAD BRUTA
+# Esquema de Estado de Resultados
 
-− Costos Comerciales (CC)
-− Costos Administrativos (CADM)
-− Depreciaciones y Amortizaciones (D&A)
-= EBITDA (Resultado antes de intereses, impuestos, D&A)
+Este documento detalla la estructura correcta del Estado de Resultados (P&L), fundamental para el análisis de procesos en Ingeniería Industrial.
 
-− Depreciaciones y Amortizaciones
-= EBIT (Resultado Operativo — antes de intereses e impuestos)
+## Estructura del Informe
 
-− Intereses (Gastos Financieros)
-= Resultado antes de impuestos
+| Concepto | Operación | Resultado |
+| :--- | :---: | :--- |
+| **Ventas Netas** | | |
+| Costo de Mercadería Vendida (CMV) | (-) | |
+| **UTILIDAD BRUTA** | **(=)** | |
+| Costos Comerciales (CC) | (-) | |
+| Costos Administrativos (CADM) | (-) | |
+| **EBITDA** | **(=)** | **Resultado antes de intereses, impuestos y depreciaciones** |
+| Depreciaciones y Amortizaciones (D&A) | (-) | |
+| **EBIT** | **(=)** | **Resultado Operativo** |
+| Intereses (Gastos Financieros) | (-) | |
+| **Resultado antes de Impuestos** | **(=)** | |
+| Impuesto a las Ganancias | (-) | |
+| **UTILIDAD NETA** | **(=)** | **Resultado Final** |
 
-− Impuesto a las ganancias
-= RESULTADO FINAL (Utilidad Neta)
+---
+
+## Notas Técnicas para Ingeniería
+* **EBITDA:** Es el indicador clave de la capacidad operativa para generar caja, sin considerar el financiamiento ni el desgaste de activos.
+* **D&A:** Se restan después del EBITDA para reflejar el desgaste de la maquinaria o infraestructura.
+* **EBIT:** Refleja la rentabilidad del negocio principal (core business).
 ```
 
-### Conceptos clave del ER
+### Conceptos Clave del Estado de Resultados (ER)
 
-- **Utilidad Bruta**: Ventas − CMV. Mide el resultado de la actividad productiva pura.
-- **EBITDA**: Resultado antes de intereses, impuestos, depreciaciones y amortizaciones.
-- **EBIT**: Resultado operativo. Representa lo que generan los activos **independientemente de cómo se financió** la empresa.
-- **Depreciaciones y Amortizaciones (D&A)**: No implican salida real de dinero, son ajustes contables. Las depreciaciones reflejan pérdida de valor de activos fijos (maquinarias, vehículos); las amortizaciones, de activos intangibles (patentes, licencias).
-- **Resultado Final**: Si es positivo, se destina a dividendos y reservas. Si es negativo, la empresa tuvo pérdidas.
-- **Resultados extraordinarios**: Provenientes de venta de activos fijos, comisiones ganadas, alquileres, indemnizaciones, etc.
+* **Utilidad Bruta:** Ventas − CMV. Mide el resultado de la actividad productiva pura.
+* **EBITDA:** Refleja la capacidad de la empresa para generar efectivo a través de su operación, antes de considerar gastos financieros, impuestos y el desgaste de activos.
+* **EBIT (Resultado Operativo):** Representa lo que generan los activos **independientemente de cómo se financió** la empresa. Es el EBITDA menos las depreciaciones.
+* **Depreciaciones y Amortizaciones (D&A):** Son ajustes contables que no implican salida real de dinero hoy. 
+    * *Depreciaciones:* Pérdida de valor de activos fijos (maquinarias, vehículos).
+    * *Amortizaciones:* Pérdida de valor de activos intangibles (patentes, licencias).
+* **Resultados Extraordinarios:** Ingresos o egresos que no son del día a día, como la venta de una máquina vieja, alquileres cobrados o indemnizaciones.
+* **Resultado Final (Utilidad Neta):** Es la ganancia real. Si es positiva, se destina a dividendos (pagar a dueños/accionistas) o reservas para reinvertir.
 
 ---
 
