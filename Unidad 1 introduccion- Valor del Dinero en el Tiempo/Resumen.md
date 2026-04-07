@@ -31,43 +31,35 @@ Se realiza por el **criterio del devengado**: se consideran ingresos y egresos q
 ```
 # Esquema de Estado de Resultados
 
-Este documento detalla la estructura correcta del Estado de Resultados (P&L), fundamental para el análisis de procesos en Ingeniería Industrial.
+Este documento detalla la estructura del Estado de Resultados (P&L), fundamental para el análisis de procesos y finanzas corporativas.
 
 ## Estructura del Informe
 
-| Concepto | Operación | Resultado |
+| Concepto | Operación | Resultado Esperado |
 | :--- | :---: | :--- |
-| **Ventas Netas** | | |
+| **Ventas Netas** | | Ingresos totales |
 | Costo de Mercadería Vendida (CMV) | (-) | |
-| **UTILIDAD BRUTA** | **(=)** | |
+| **UTILIDAD BRUTA** | **(=)** | Margen industrial |
 | Costos Comerciales (CC) | (-) | |
 | Costos Administrativos (CADM) | (-) | |
-| **EBITDA** | **(=)** | **Resultado antes de intereses, impuestos y depreciaciones** |
-| Depreciaciones y Amortizaciones (D&A) | (-) | |
+| **EBITDA** | **(=)** | **Caja Operativa** |
+| Depreciaciones y Amortizaciones (D&A) | (-) | Desgaste de activos |
 | **EBIT** | **(=)** | **Resultado Operativo** |
-| Intereses (Gastos Financieros) | (-) | |
+| Intereses (Gastos Financieros) | (-) | Costo de deuda |
 | **Resultado antes de Impuestos** | **(=)** | |
 | Impuesto a las Ganancias | (-) | |
 | **UTILIDAD NETA** | **(=)** | **Resultado Final** |
 
 ---
 
-## Notas Técnicas para Ingeniería
-* **EBITDA:** Es el indicador clave de la capacidad operativa para generar caja, sin considerar el financiamiento ni el desgaste de activos.
-* **D&A:** Se restan después del EBITDA para reflejar el desgaste de la maquinaria o infraestructura.
-* **EBIT:** Refleja la rentabilidad del negocio principal (core business).
-```
+## Conceptos Clave para Ingeniería Industrial
 
-### Conceptos Clave del Estado de Resultados (ER)
+- **EBITDA:** Es el indicador clave de la capacidad operativa para generar caja. No incluye financiamiento ni desgaste de equipos.
+- **D&A:** Se restan después del EBITDA. Reflejan el costo contable del uso de la maquinaria e infraestructura de la planta.
+- **EBIT:** Refleja la rentabilidad del negocio principal (*core business*). Es vital para comparar la eficiencia entre distintas plantas o empresas sin importar cómo paguen sus deudas.
+- **Utilidad Neta:** Lo que queda para los accionistas o para reinvertir en la empresa.
 
-* **Utilidad Bruta:** Ventas − CMV. Mide el resultado de la actividad productiva pura.
-* **EBITDA:** Refleja la capacidad de la empresa para generar efectivo a través de su operación, antes de considerar gastos financieros, impuestos y el desgaste de activos.
-* **EBIT (Resultado Operativo):** Representa lo que generan los activos **independientemente de cómo se financió** la empresa. Es el EBITDA menos las depreciaciones.
-* **Depreciaciones y Amortizaciones (D&A):** Son ajustes contables que no implican salida real de dinero hoy. 
-    * *Depreciaciones:* Pérdida de valor de activos fijos (maquinarias, vehículos).
-    * *Amortizaciones:* Pérdida de valor de activos intangibles (patentes, licencias).
-* **Resultados Extraordinarios:** Ingresos o egresos que no son del día a día, como la venta de una máquina vieja, alquileres cobrados o indemnizaciones.
-* **Resultado Final (Utilidad Neta):** Es la ganancia real. Si es positiva, se destina a dividendos (pagar a dueños/accionistas) o reservas para reinvertir.
+> **Nota:** Las Depreciaciones y Amortizaciones no son salidas de efectivo (cash out), sino asientos contables que impactan en el resultado pero no en la billetera inmediata de la empresa.
 
 ---
 
