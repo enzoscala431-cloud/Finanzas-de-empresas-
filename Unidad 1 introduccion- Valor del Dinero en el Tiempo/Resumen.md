@@ -235,12 +235,38 @@ ROA = Margen de Rentabilidad × Rotación
     = (Resultado Final / Ventas) × (Ventas / Total Activos)
 ```
 
-| Cuadrante | Descripción | Ejemplos |
-|:---|:---|:---|
-| Alta rotación + Alto margen | Ideal | Empresas de tecnología premium |
-| Alta rotación + Bajo margen | Volumen | Supermercados |
-| Baja rotación + Alto margen | Lujo | Productos de lujo |
-| Baja rotación + Bajo margen | Evitar | — |
+| Cuadrante | Descripción | Ejemplos | Explicación |
+|:---|:---|:---|:---|
+| Alta rotación + Alto margen | Ideal | Empresas de tecnología premium | El mejor de los mundos: vendés caro y mucho |
+| Alta rotación + Bajo margen | Volumen | Supermercados | Ganás poquito por producto, pero vendés millones|
+| Baja rotación + Alto margen | Lujo | Productos de lujo, Joyería | Vendés muy poco, pero cada unidad te deja muchísima ganancia |
+| Baja rotación + Bajo margen | Evitar | Empresas en crisis o mal gestionadas| Negocio ineficiente. Los activos están quietos y no dejan margen|
+#### La Rotación de Activos (Eficiencia Operativa)
+
+La rotación mide la **productividad de los activos**. Nos dice cuántos pesos de ventas generamos por cada peso que tenemos invertido en la empresa (maquinaria, inventario, edificios).
+
+$$Rotación = \frac{\text{Ventas Netas}}{\text{Total Activos}}$$
+
+##### ¿Qué significa el resultado?
+* **Si la Rotación es 2:** Significa que por cada \$1 que tenés en máquinas y stock, lográs vender \$2 al año. ¡Hiciste "girar" tu capital dos veces!
+* **Si la Rotación es 0,5:** Tus activos están "pesados". Necesitás \$2 de inversión para generar apenas \$1 de venta.
+
+---
+
+##### El ADN del Ingeniero Industrial: Cómo mejorar la Rotación
+
+A diferencia del contador, el Ingeniero Industrial mejora el ROA actuando directamente sobre la Rotación. ¿Cómo lo hacemos en la práctica?
+
+1. **Gestión de Inventarios (Stock):** Si aplicás *Just in Time* (JIT), reducís el stock parado. Menos activos para las mismas ventas = **Sube la Rotación.**
+2. **Mantenimiento (TPM):** Si las máquinas no se rompen, producen más en el mismo tiempo. Más ventas con la misma máquina = **Sube la Rotación.**
+3. **Optimización de Layout:** Si reducís los recorridos en la planta , sacás el producto terminado más rápido al mercado.
+4. **Venta de Activos Ociosos:** Si tenés una máquina vieja que no se usa, estás "inflando" el denominador. Venderla mejora el ratio inmediatamente.
+
+---
+
+> **💡 Ejemplo rápido:**
+> * **Empresa A (Supermercado):** Margen bajísimo (2%), pero Rotación altísima (15 veces al año). Su ROA es 30%.
+> * **Empresa B (Inmobiliaria):** Margen altísimo (20%), pero vende una casa cada muerte de obispo (Rotación 0.5). Su ROA es 10%.
 
 ---
 
