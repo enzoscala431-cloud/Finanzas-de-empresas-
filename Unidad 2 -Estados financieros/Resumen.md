@@ -1,6 +1,6 @@
 # Unidad II — Estados Financieros
 
-> **Finanzas de Empresas · Ing. Industrial · UNCUYO**  
+> **Finanzas de Empresas · Ing. Industrial · UNCUYO**
 
 ---
 
@@ -13,7 +13,7 @@ Su función principal es **facilitar la toma de decisiones** de los administrado
 ### Los 4 estados principales
 
 | Estado | También llamado |
-|--------|----------------|
+|:---|:---|
 | Estado de Situación Patrimonial | Balance General / Estado de Situación Financiera |
 | Estado de Resultados | Estado de Pérdidas y Ganancias |
 | Estado de Evolución de Patrimonio Neto | Estado de Cambios en el PN |
@@ -23,39 +23,34 @@ Su función principal es **facilitar la toma de decisiones** de los administrado
 
 ## 1. Estado de Resultados
 
-Informa las **ventas y costos** de una empresa durante un período (generalmente anual).  
+Informa las **ventas y costos** de una empresa durante un período (generalmente anual).
 Se realiza por el **criterio del devengado**: se consideran ingresos y egresos que competen al período, independientemente de cuándo entre o salga el dinero.
 
 ### Estructura del Estado de Resultados
 
-```
-Ventas netas
-− Costo de Mercadería Vendida (CMV)
-= UTILIDAD BRUTA
+| Concepto | Operación | Resultado Esperado |
+|:---|:---:|:---|
+| **Ventas Netas** | | Ingresos totales |
+| Costo de Mercadería Vendida (CMV) | (-) | |
+| **UTILIDAD BRUTA** | **(=)** | Margen industrial |
+| Costos Comerciales (CC) | (-) | |
+| Costos Administrativos (CADM) | (-) | |
+| **EBITDA** | **(=)** | **Caja Operativa** |
+| Depreciaciones y Amortizaciones (D&A) | (-) | Desgaste de activos |
+| **EBIT** | **(=)** | **Resultado Operativo** |
+| Intereses (Gastos Financieros) | (-) | Costo de deuda |
+| **Resultado antes de Impuestos** | **(=)** | |
+| Impuesto a las Ganancias | (-) | |
+| **UTILIDAD NETA** | **(=)** | **Resultado Final** |
 
-− Costos Comerciales (CC)
-− Costos Administrativos (CADM)
-− Depreciaciones y Amortizaciones (D&A)
-= EBITDA (Resultado antes de intereses, impuestos, D&A)
+### Conceptos Clave
 
-− Depreciaciones y Amortizaciones
-= EBIT (Resultado Operativo — antes de intereses e impuestos)
+- **EBITDA:** Indicador clave de la capacidad operativa para generar caja. No incluye financiamiento ni desgaste de equipos.
+- **D&A:** Se restan después del EBITDA. Reflejan el costo contable del uso de la maquinaria e infraestructura de la planta.
+- **EBIT:** Refleja la rentabilidad del negocio principal (*core business*). Permite comparar eficiencia entre plantas o empresas sin importar su financiamiento.
+- **Utilidad Neta:** Lo que queda para los accionistas o para reinvertir en la empresa.
 
-− Intereses (Gastos Financieros)
-= Resultado antes de impuestos
-
-− Impuesto a las ganancias
-= RESULTADO FINAL (Utilidad Neta)
-```
-
-### Conceptos clave del ER
-
-- **Utilidad Bruta**: Ventas − CMV. Mide el resultado de la actividad productiva pura.
-- **EBITDA**: Resultado antes de intereses, impuestos, depreciaciones y amortizaciones.
-- **EBIT**: Resultado operativo. Representa lo que generan los activos **independientemente de cómo se financió** la empresa.
-- **Depreciaciones y Amortizaciones (D&A)**: No implican salida real de dinero, son ajustes contables. Las depreciaciones reflejan pérdida de valor de activos fijos (maquinarias, vehículos); las amortizaciones, de activos intangibles (patentes, licencias).
-- **Resultado Final**: Si es positivo, se destina a dividendos y reservas. Si es negativo, la empresa tuvo pérdidas.
-- **Resultados extraordinarios**: Provenientes de venta de activos fijos, comisiones ganadas, alquileres, indemnizaciones, etc.
+> **Nota:** Las Depreciaciones y Amortizaciones no son salidas de efectivo (cash out), sino asientos contables que impactan en el resultado pero no en la caja de la empresa.
 
 ---
 
@@ -70,19 +65,19 @@ ACTIVO = PASIVO + PATRIMONIO NETO
 PATRIMONIO NETO = ACTIVO − PASIVO
 ```
 
-### Estructura (5 masas patrimoniales)
+### Estructura — 5 masas patrimoniales
 
-| Lado izquierdo (usos) | Lado derecho (fuentes) |
-|----------------------|----------------------|
+| Lado izquierdo — Usos | Lado derecho — Fuentes |
+|:---|:---|
 | **Activos Corrientes** (se convierten en efectivo en ≤ 12 meses): caja, bancos, cuentas por cobrar, inventarios | **Pasivos Corrientes** (vencen en ≤ 12 meses): proveedores, deudas CP |
 | **Activos No Corrientes** (se convierten en efectivo en > 12 meses): bienes de uso, inversiones LP, intangibles | **Pasivos No Corrientes** (vencen en > 12 meses): deudas LP |
 | | **Patrimonio Neto**: capital aportado por socios + utilidades retenidas |
 
 ### Criterios de ordenamiento
 
-- **Activos**: de mayor a menor liquidez (en América Latina). El más líquido es el dinero en caja.
-- **Pasivos**: de mayor a menor exigibilidad (primero vence el pasivo corriente).
-- **PN**: al final, por ser el de menor exigibilidad.
+- **Activos:** de mayor a menor liquidez (en América Latina). El más líquido es el dinero en caja.
+- **Pasivos:** de mayor a menor exigibilidad (primero vence el pasivo corriente).
+- **PN:** al final, por ser el de menor exigibilidad.
 
 ---
 
@@ -102,7 +97,7 @@ Expone, en forma **dinámica**, las entradas y salidas de efectivo de una empres
 ### Elementos básicos
 
 | Elemento | Descripción |
-|----------|-------------|
+|:---|:---|
 | Saldo inicial de caja | Efectivo al inicio del período (del ESP inicial) |
 | Entradas de efectivo | Basadas en ER y movimientos del ESP |
 | Salidas de efectivo | Idem anterior |
@@ -111,21 +106,21 @@ Expone, en forma **dinámica**, las entradas y salidas de efectivo de una empres
 
 ### Los 3 tipos de flujo
 
-1. **Flujos operativos**: entradas/salidas relacionadas directamente con la producción y venta de bienes y servicios.
-2. **Flujos de inversión**: compra y venta de activos fijos e inversiones en otras empresas. Compras = salidas; ventas = entradas.
-3. **Flujos de financiamiento**: transacciones de deuda y capital. Contraer deuda = entrada; pagar deuda = salida. Venta de acciones = entrada; dividendos = salida.
+1. **Flujos operativos:** entradas/salidas relacionadas directamente con la producción y venta de bienes y servicios.
+2. **Flujos de inversión:** compra y venta de activos fijos e inversiones en otras empresas. Compras = salidas; ventas = entradas.
+3. **Flujos de financiamiento:** transacciones de deuda y capital. Contraer deuda = entrada; pagar deuda = salida. Venta de acciones = entrada; dividendos = salida.
 
 ### Cómo identificar fuentes y usos
 
 | Situación | Efecto |
-|-----------|--------|
-| Resultado positivo (ganancia) | **FUENTE** (genera fondos) |
-| Resultado negativo (pérdida) | **USO** (consume fondos) |
-| Depreciaciones/amortizaciones | **FUENTE** (no son salida real de dinero) |
-| Activo **aumenta** | **USO** (la empresa invirtió fondos) |
-| Activo **disminuye** | **FUENTE** (la empresa liberó fondos) |
-| Pasivo **aumenta** | **FUENTE** (más financiamiento disponible) |
-| Pasivo **disminuye** | **USO** (la empresa canceló deuda) |
+|:---|:---|
+| Resultado positivo (ganancia) | **FUENTE** — genera fondos |
+| Resultado negativo (pérdida) | **USO** — consume fondos |
+| Depreciaciones/amortizaciones | **FUENTE** — no son salida real de dinero |
+| Activo **aumenta** | **USO** — la empresa invirtió fondos |
+| Activo **disminuye** | **FUENTE** — la empresa liberó fondos |
+| Pasivo **aumenta** | **FUENTE** — más financiamiento disponible |
+| Pasivo **disminuye** | **USO** — la empresa canceló deuda |
 
 ### Pasos para elaborar el Estado de Flujo
 
@@ -141,56 +136,62 @@ Expone, en forma **dinámica**, las entradas y salidas de efectivo de una empres
 ### Tipos de análisis
 
 | Tipo | Descripción |
-|------|-------------|
+|:---|:---|
 | **Estático** | Analiza un solo ESP (foto). Permite comparar con otras empresas |
 | **Dinámico** | Compara 2 o más ESP en el tiempo (película). Se hace de a pares (año actual vs. año anterior o vs. año base) |
 
 ### Herramientas
 
-- **Análisis vertical**: composición porcentual. Para activos: cada cuenta / Total Activo. Para el ER: cada cuenta / Ventas.
-- **Análisis horizontal**: variación entre períodos. ∆% = (X₁ − X₀) / X₀ × 100
-- **Representación gráfica**: a escala, para visualizar el peso relativo de cada masa
-- **Ratios financieros**: relaciones entre variables con lógica financiera
+- **Análisis vertical:** composición porcentual. Para activos: cada cuenta / Total Activo. Para el ER: cada cuenta / Ventas.
+- **Análisis horizontal:** variación entre períodos. ∆% = (X₁ − X₀) / X₀ × 100
+- **Representación gráfica:** a escala, para visualizar el peso relativo de cada masa
+- **Ratios financieros:** relaciones entre variables con lógica financiera
 
 ---
 
-## 5. Ratios del Estado Patrimonial (6 ratios)
+## 5. Ratios del Estado Patrimonial
 
 ### 1. Ratio de Endeudamiento
-> Mide qué proporción de mis fuentes son deuda.
+
+Mide qué proporción de mis fuentes son deuda.
 
 ```
 R_end = Total Pasivo / (Pasivo + PN)    →    indicador: ≤ 0,60
 ```
-Por cada peso que tengo, cuántos centavos debo.  
+
+Por cada peso que tengo, cuántos centavos debo.
 ⚠️ Si supera 0,60 → empresa descapitalizada (riesgo alto para los acreedores).
 
 ---
 
 ### 2. Ratio de Calidad de Deuda
-> Mide qué porcentaje de la deuda es a corto plazo.
+
+Mide qué porcentaje de la deuda es a corto plazo.
 
 ```
 R_calidad = Pasivo Corriente / Total Pasivo    →    mejor caso: 0 / peor caso: 1
 ```
+
 Mientras más a largo plazo sea la deuda, **mejor** (más tiempo para devolver).
 
 ---
 
 ### 3. Ratio de Liquidez Corriente
-> Mide la capacidad de pagar deudas de corto plazo.
+
+Mide la capacidad de pagar deudas de corto plazo.
 
 ```
 R_liq = Activo Corriente / Pasivo Corriente    →    indicador: entre 1,5 y 2
 ```
-Se lee como: "por cada peso de deuda a enfrentar, la empresa **cree** que va a generar X pesos".  
-- Si R < 1 → no hay liquidez  
+
+- Si R < 1 → no hay liquidez
 - Si R > 2 → exceso de liquidez (dinero ocioso, pierde rentabilidad)
 
 ---
 
 ### 4. Ratio de Liquidez Ácida
-> Más exigente: excluye el inventario (que puede no venderse).
+
+Más exigente: excluye el inventario (que puede no venderse).
 
 ```
 R_ácida = (Activo Corriente − Inventario) / Pasivo Corriente    →    indicador: ≥ 1
@@ -199,28 +200,32 @@ R_ácida = (Activo Corriente − Inventario) / Pasivo Corriente    →    indica
 ---
 
 ### 5. Ratio de Plazo de Cobro
-> Cuántos días tarda la empresa en cobrar sus ventas.
+
+Cuántos días tarda la empresa en cobrar sus ventas.
 
 ```
-R_cobro = (Cuentas por Cobrar / Ventas) × 365    →    indicador: relativo a política de crédito
+R_cobro = (Cuentas por Cobrar / Ventas) × 365
 ```
+
 Está bien si el resultado coincide con el plazo acordado con los clientes.
 
 ---
 
 ### 6. Ratio de Plazo de Pago
-> Cuántos días tarda la empresa en pagar a sus proveedores.
+
+Cuántos días tarda la empresa en pagar a sus proveedores.
 
 ```
-R_pago = (Cuentas por Pagar / Compras) × 365    →    indicador: relativo a política de pago
+R_pago = (Cuentas por Pagar / Compras) × 365
 ```
 
 ---
 
-## 6. Ratios del Estado de Resultados (4 ratios)
+## 6. Ratios del Estado de Resultados
 
 ### 1. ROA — Rendimiento sobre Activos
-> Qué rendimiento generan los activos, sin importar cómo se financiaron.
+
+Qué rendimiento generan los activos, sin importar cómo se financiaron.
 
 ```
 ROA = (Resultado Final / Total Activos) × 100
@@ -230,17 +235,40 @@ ROA = Margen de Rentabilidad × Rotación
     = (Resultado Final / Ventas) × (Ventas / Total Activos)
 ```
 
-| Cuadrante | Descripción | Ejemplos |
-|-----------|-------------|----------|
-| Alta rotación + Alto margen | Ideal | Empresas de tecnología premium |
-| Alta rotación + Bajo margen | Volumen | Supermercados |
-| Baja rotación + Alto margen | Lujo | Productos de lujo |
-| Baja rotación + Bajo margen | ❌ Evitar | — |
+| Cuadrante | Descripción | Ejemplos | Explicación |
+|:---|:---|:---|:---|
+| Alta rotación + Alto margen | Ideal | Tecnología premium | El mejor de los mundos: vendés caro y mucho |
+| Alta rotación + Bajo margen | Volumen | Supermercados | Ganás poco por producto, pero vendés millones |
+| Baja rotación + Alto margen | Lujo | Joyería, inmobiliarias | Vendés poco, pero cada unidad deja mucha ganancia |
+| Baja rotación + Bajo margen | Evitar | Empresas en crisis | Activos quietos y sin margen — negocio ineficiente |
+
+#### La Rotación de Activos (Eficiencia Operativa)
+
+La rotación mide la **productividad de los activos**: cuántos pesos de ventas se generan por cada peso invertido en la empresa (maquinaria, inventario, edificios).
+
+```
+Rotación = Ventas Netas / Total Activos
+```
+
+- **Rotación = 2:** Por cada $1 en activos, se generan $2 en ventas. El capital "giró" dos veces.
+- **Rotación = 0,5:** Se necesitan $2 de inversión para generar apenas $1 de venta.
+
+#### El ROA desde la mirada del Ingeniero Industrial
+
+A diferencia del contador, el Ingeniero Industrial puede mejorar el ROA actuando directamente sobre la **Rotación**:
+
+1. **Gestión de Inventarios (JIT):** Reducir el stock parado → menos activos para las mismas ventas → sube la Rotación.
+2. **Mantenimiento (TPM):** Máquinas que no se rompen producen más → más ventas con el mismo activo.
+3. **Optimización de Layout:** Menos recorridos en planta → producto terminado más rápido al mercado.
+4. **Venta de Activos Ociosos:** Una máquina que no se usa "infla" el denominador → venderla mejora el ratio inmediatamente.
+
+> **Ejemplo:** Supermercado: margen del 2%, rotación de 15 → ROA = 30%. Inmobiliaria: margen del 20%, rotación de 0,5 → ROA = 10%.
 
 ---
 
 ### 2. ROE — Rendimiento sobre Patrimonio Neto
-> Cuán rentable es la empresa para sus accionistas.
+
+Cuán rentable es la empresa para sus accionistas.
 
 ```
 ROE = (Resultado Final Neto / Patrimonio Neto) × 100
@@ -252,13 +280,15 @@ ROE = ROA × Palanca Financiera
 Palanca Financiera (PF) = Activo / PN = 1 + (Pasivo / PN)
 ```
 
-↑ Deuda → ↑ ROE para los accionistas → ↑ Riesgo  
+↑ Deuda → ↑ ROE para los accionistas → ↑ Riesgo
+
 Conviene endeudarse si: costo de la deuda < rentabilidad generada Y la empresa puede pagarlo con su flujo.
 
 ---
 
 ### 3. ROIC — Rendimiento sobre Capital Invertido
-> Mide la rentabilidad de una inversión específica.
+
+Mide la rentabilidad de una inversión específica.
 
 ```
 ROIC = EBIT × (1 − T) / Capital Invertido
@@ -272,7 +302,8 @@ CI (por fuentes) = Activos Totales − Fuentes Espontáneas
 ---
 
 ### 4. EVA — Economic Value Added
-> ¿La empresa gana más de lo que cuesta mantener el capital invertido?
+
+¿La empresa gana más de lo que cuesta mantener el capital invertido?
 
 ```
 EVA = CI × (ROIC − WACC)
@@ -288,20 +319,20 @@ WACC = % Deuda × k_deuda + % Acc. × k_acc
 ## Resumen de Fórmulas Clave
 
 | Fórmula | Expresión |
-|---------|-----------|
-| Ecuación patrimonial | `PN = Activo − Pasivo` |
-| Estado de Resultados | `ROP = Ventas − CMV − CC − CADM − D&A` |
-| Flujo neto | `Saldo final = Saldo inicial + Flujo neto` |
-| Endeudamiento | `Pasivo / (Pasivo + PN) ≤ 0,60` |
-| Liquidez corriente | `AC / PC` → entre 1,5 y 2 |
-| Liquidez ácida | `(AC − Inventario) / PC ≥ 1` |
-| Plazo de cobro | `(CxC / Ventas) × 365` |
-| Plazo de pago | `(CxP / Compras) × 365` |
-| ROA | `Resultado Final / Activos × 100` |
-| ROE | `ROA × Palanca Financiera` |
-| ROIC | `EBIT × (1−T) / CI` |
-| EVA | `CI × (ROIC − WACC)` |
+|:---|:---|
+| Ecuación patrimonial | PN = Activo − Pasivo |
+| Estado de Resultados | ROP = Ventas − CMV − CC − CADM − D&A |
+| Flujo neto | Saldo final = Saldo inicial + Flujo neto |
+| Endeudamiento | Pasivo / (Pasivo + PN) ≤ 0,60 |
+| Liquidez corriente | AC / PC → entre 1,5 y 2 |
+| Liquidez ácida | (AC − Inventario) / PC ≥ 1 |
+| Plazo de cobro | (CxC / Ventas) × 365 |
+| Plazo de pago | (CxP / Compras) × 365 |
+| ROA | Resultado Final / Activos × 100 |
+| ROE | ROA × Palanca Financiera |
+| ROIC | EBIT × (1−T) / CI |
+| EVA | CI × (ROIC − WACC) |
 
 ---
 
-*Resumen elaborado en base a los apuntes del Prof. Guillermo Cruz — UNCUYO 2025*
+*Resumen — UNCUYO 2025*
