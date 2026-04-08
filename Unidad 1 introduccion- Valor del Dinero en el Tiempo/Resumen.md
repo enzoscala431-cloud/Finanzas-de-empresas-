@@ -160,18 +160,6 @@ La cuota fija de un préstamo se calcula como:
 ```
 PMT = VP × i / [ 1 − (1 + i)^−n ]
 ```
-
-### Evaluación de Proyectos — VAN y TIR
-
-| Indicador | Definición | Criterio |
-|:---|:---|:---|
-| **VAN** (Valor Actual Neto) | Suma de flujos futuros descontados menos la inversión inicial | VAN > 0 → proyecto rentable |
-| **TIR** (Tasa Interna de Retorno) | Tasa que hace VAN = 0 | TIR > costo del capital → aceptar |
-
-```
-VAN = −Inversión + Σ [ FC_t / (1 + i)^t ]
-```
-
 ---
 
 ## Resumen de Fórmulas Clave
@@ -187,7 +175,6 @@ VAN = −Inversión + Σ [ FC_t / (1 + i)^t ]
 | VF Anualidad | VF = PMT × [(1+i)^n − 1] / i |
 | Perpetuidad | VP = PMT / i |
 | Cuota préstamo | PMT = VP × i / [1 − (1+i)^−n] |
-| VAN | −I₀ + Σ [FC_t / (1+i)^t] |
 
 ---
 
